@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,11 @@ namespace WireForm
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
 
         bool mouseDown = false;
@@ -46,14 +52,14 @@ namespace WireForm
             mouseDown = false;
             //If line is pointing to itself, delete
             bool current = true;
-            if(currentLine.WireStart == currentLine.WireEnd)
+            if(currentLine.Start == currentLine.End)
             {
                 wireLines.Remove(currentLine);
                 current = false;
                 Debug.WriteLine("Removed");
             }
             bool secondary = true;
-            if (secondaryCurrentLine.WireStart == secondaryCurrentLine.WireEnd)
+            if (secondaryCurrentLine.Start == secondaryCurrentLine.End)
             {
                 secondary = false;
                 wireLines.Remove(secondaryCurrentLine);
@@ -64,17 +70,17 @@ namespace WireForm
                 if (secondary)
                 {
                     wireLines.Remove(secondaryCurrentLine);
-                    currentLine.IncludeWire(wireLines);
+                    currentLine.Validate(wireLines, connections);
                     wireLines.Add(secondaryCurrentLine);
                 }
                 else
                 {
-                    currentLine.IncludeWire(wireLines);
+                    currentLine.Validate(wireLines, connections);
                 }
             }
             if (secondary)
             {
-                secondaryCurrentLine.IncludeWire(wireLines);
+                secondaryCurrentLine.Validate(wireLines, connections);
             }
             
             Debug.WriteLine(wireLines.Count);
@@ -87,15 +93,15 @@ namespace WireForm
             if (mouseDown)
             {
                 //Update End point
-                currentLine.WireEnd = e.Location.Plus(25).Times(1 / 50f);
+                currentLine.End = e.Location.Plus(25).Times(1 / 50f);
 
                 //Define how curvature is drawn
-                if (currentLine.WireStart.X == currentLine.WireEnd.X)
+                if (currentLine.Start.X == currentLine.End.X)
                 {
                     currentLine.XPriority = false;
                     secondaryCurrentLine.XPriority = true;
                 }
-                if (currentLine.WireStart.Y == currentLine.WireEnd.Y)
+                if (currentLine.Start.Y == currentLine.End.Y)
                 {
                     currentLine.XPriority = true;
                     secondaryCurrentLine.XPriority = false;
@@ -103,28 +109,28 @@ namespace WireForm
 
                 if (currentLine.XPriority)
                 {
-                    var currentLineNewEnd = new Point(currentLine.WireEnd.X, currentLine.WireStart.Y);
-                    secondaryCurrentLine.WireStart = currentLineNewEnd;
-                    secondaryCurrentLine.WireEnd = new Point(secondaryCurrentLine.WireStart.X, currentLine.WireEnd.Y);
-                    Debug.WriteLine(secondaryCurrentLine.WireEnd);
-                    currentLine.WireEnd = currentLineNewEnd;
+                    var currentLineNewEnd = new Point(currentLine.End.X, currentLine.Start.Y);
+                    secondaryCurrentLine.Start = currentLineNewEnd;
+                    secondaryCurrentLine.End = new Point(secondaryCurrentLine.Start.X, currentLine.End.Y);
+                    Debug.WriteLine(secondaryCurrentLine.End);
+                    currentLine.End = currentLineNewEnd;
                 }
                 else
                 {
-                    var currentLineNewEnd = new Point(currentLine.WireStart.X, currentLine.WireEnd.Y);
-                    secondaryCurrentLine.WireStart = currentLineNewEnd;
-                    secondaryCurrentLine.WireEnd = new Point(currentLine.WireEnd.X, secondaryCurrentLine.WireStart.Y);
-                    currentLine.WireEnd = currentLineNewEnd;
+                    var currentLineNewEnd = new Point(currentLine.Start.X, currentLine.End.Y);
+                    secondaryCurrentLine.Start = currentLineNewEnd;
+                    secondaryCurrentLine.End = new Point(currentLine.End.X, secondaryCurrentLine.Start.Y);
+                    currentLine.End = currentLineNewEnd;
                 }
 
                 //Refresh if updated
                 bool toRefresh = false;
-                if(wireLines[wireLines.Count - 1].WireEnd != currentLine.WireEnd)
+                if(wireLines[wireLines.Count - 1].End != currentLine.End)
                 {
                     toRefresh = true;
                 }
                 wireLines[wireLines.Count - 1] = currentLine;
-                if (wireLines[wireLines.Count - 2].WireEnd != secondaryCurrentLine.WireEnd)
+                if (wireLines[wireLines.Count - 2].End != secondaryCurrentLine.End)
                 {
                     toRefresh = true;
                 }
@@ -138,6 +144,8 @@ namespace WireForm
             }
         }
 
+
+        Point temp = new Point(1, 1);
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (WireLine wireLine in wireLines) {
@@ -151,7 +159,51 @@ namespace WireForm
                     e.Graphics.DrawRectangle(new Pen(Color.Gray, 1), new Rectangle(new Point(x * 50, y * 50), new Size(1, 1)));
                 }
             }
-
+            ColorPropogate(temp, new WireLine(), e.Graphics, new List<WireLine>());
         }
+
+        private void ColorPropogate(Point point, WireLine prevLine, Graphics gfx, List<WireLine> processed)
+        {
+            if (!connections.ContainsKey(point))
+            {
+                return;
+            }
+            List<WireLine> lines = connections[point];
+            foreach (WireLine line in lines)
+            {
+                if (processed.Contains(line))
+                {
+                    continue;
+                }
+                gfx.DrawLine(new Pen(Color.Blue, 3), line.Start.Times(50), line.End.Times(50));
+                processed.Add(line);
+                if (line.Start == prevLine.Start && line.End == prevLine.End)
+                {
+                    continue;
+                }
+                ColorPropogate(line.Start, line, gfx, processed);
+                ColorPropogate(line.End, line, gfx, processed);
+            }
+        }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(e.KeyChar == 's')
+            {
+                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), wireLines);
+            }
+            if(e.KeyChar == 'l')
+            {
+                SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "lines.json")), out connections, out wireLines);
+                
+            }
+            if(e.KeyChar == 'c')
+            {
+                wireLines.Clear();
+                connections.Clear();
+            }
+            Refresh();
+        }
+
     }
 }

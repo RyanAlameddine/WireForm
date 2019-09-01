@@ -20,9 +20,9 @@ namespace WireForm
 
         public void DrawLine(Graphics graphics, WireLine wireLine)
         {
-            DrawLine(graphics, wireLine.WireStart, wireLine.WireEnd);
-            graphics.DrawEllipse(thin, new Rectangle(wireLine.WireStart.X * 50 - 10, wireLine.WireStart.Y * 50 - 10, 20, 20));
-            graphics.DrawEllipse(thin, new Rectangle(wireLine.WireEnd.X * 50 - 10, wireLine.WireEnd.Y * 50 - 10, 20, 20));
+            DrawLine(graphics, wireLine.Start, wireLine.End);
+            graphics.DrawEllipse(thin, new Rectangle(wireLine.Start.X * 50 - 10, wireLine.Start.Y * 50 - 10, 20, 20));
+            graphics.DrawEllipse(thin, new Rectangle(wireLine.End.X * 50 - 10, wireLine.End.Y * 50 - 10, 20, 20));
         }
 
         public void DrawLine(Graphics graphics, Point start, Point end)
@@ -31,6 +31,5 @@ namespace WireForm
             end = end.Times(50);
             graphics.DrawLine(pen, start, end);
         }
-
     }
 }
