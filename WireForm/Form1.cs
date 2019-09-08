@@ -29,59 +29,58 @@ namespace WireForm
 
         }
 
-        bool mouseDown = false;
-        WireLine currentLine;
+        bool mouseLeftDown = false;
+        bool mouseRightDown = false;
+        WireLine currentLine = new WireLine(Point.Empty, Point.Empty, false);
         WireLine secondaryCurrentLine;
 
         //bool editing = false;
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            //Create Line
-            currentLine = new WireLine(e.Location.Plus(25).Times(1 / 50f), e.Location.Plus(25).Times(1 / 50f), true);
-            secondaryCurrentLine = new WireLine(e.Location.Plus(25).Times(1 / 50f), e.Location.Plus(25).Times(1 / 50f), true);
-            mouseDown = true;
+            Point mousePoint = e.Location.Plus(25).Times(1 / 50f);
+            if (e.Button == MouseButtons.Left)
+            {
+                //Create Line
+                currentLine = new WireLine(mousePoint, mousePoint, true);
+                secondaryCurrentLine = new WireLine(mousePoint, mousePoint, true);
+                mouseLeftDown = true;
 
 
-            //Register Line to draw
-            wireLines.Add(secondaryCurrentLine);
-            wireLines.Add(currentLine);
+                //Register Line to draw
+                wireLines.Add(secondaryCurrentLine);
+                wireLines.Add(currentLine);
+            }
+            else if(e.Button == MouseButtons.Right)
+            {
+                mouseRightDown = true;
+                for (int i = 0; i < wireLines.Count; i++)
+                {
+                    if (mousePoint.IsContainedIn(wireLines[i]))
+                    {
+                        WireLine.RemovePointFromWire(mousePoint, connections, wireLines, i);
+
+                        i = -1;
+                    }
+                }
+                Refresh();
+            }
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            mouseDown = false;
-            //If line is pointing to itself, delete
-            bool current = true;
-            if(currentLine.Start == currentLine.End)
+            mouseRightDown = false;
+            if (!mouseLeftDown)
             {
-                wireLines.Remove(currentLine);
-                current = false;
-                Debug.WriteLine("Removed");
-            }
-            bool secondary = true;
-            if (secondaryCurrentLine.Start == secondaryCurrentLine.End)
-            {
-                secondary = false;
-                wireLines.Remove(secondaryCurrentLine);
+                return;
             }
 
-            if (current)
-            {
-                if (secondary)
-                {
-                    wireLines.Remove(secondaryCurrentLine);
-                    currentLine.Validate(wireLines, connections);
-                    wireLines.Add(secondaryCurrentLine);
-                }
-                else
-                {
-                    currentLine.Validate(wireLines, connections);
-                }
-            }
-            if (secondary)
-            {
-                secondaryCurrentLine.Validate(wireLines, connections);
-            }
+            mouseLeftDown = false;
+            //If line is pointing to itself, delete
+
+            wireLines.Remove(secondaryCurrentLine);
+            currentLine.Validate(wireLines, connections);
+            wireLines.Add(secondaryCurrentLine);
+            secondaryCurrentLine.Validate(wireLines, connections);
             
             Debug.WriteLine(wireLines.Count);
             //editing = false;
@@ -90,10 +89,16 @@ namespace WireForm
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (mouseDown)
+            //Refresh if updated
+            bool toRefresh = false;
+
+            //Update End point
+            Point newLocation = e.Location.Plus(25).Times(1 / 50f);
+            toRefresh = newLocation != currentLine.End;
+
+            if (mouseLeftDown)
             {
-                //Update End point
-                currentLine.End = e.Location.Plus(25).Times(1 / 50f);
+                currentLine.End = newLocation;
 
                 //Define how curvature is drawn
                 if (currentLine.Start.X == currentLine.End.X)
@@ -112,7 +117,6 @@ namespace WireForm
                     var currentLineNewEnd = new Point(currentLine.End.X, currentLine.Start.Y);
                     secondaryCurrentLine.Start = currentLineNewEnd;
                     secondaryCurrentLine.End = new Point(secondaryCurrentLine.Start.X, currentLine.End.Y);
-                    Debug.WriteLine(secondaryCurrentLine.End);
                     currentLine.End = currentLineNewEnd;
                 }
                 else
@@ -123,22 +127,26 @@ namespace WireForm
                     currentLine.End = currentLineNewEnd;
                 }
 
-                //Refresh if updated
-                bool toRefresh = false;
-                if(wireLines[wireLines.Count - 1].End != currentLine.End)
-                {
-                    toRefresh = true;
-                }
-                wireLines[wireLines.Count - 1] = currentLine;
-                if (wireLines[wireLines.Count - 2].End != secondaryCurrentLine.End)
-                {
-                    toRefresh = true;
-                }
-                wireLines[wireLines.Count - 2] = secondaryCurrentLine;
-
 
                 if (toRefresh)
                 {
+                    Refresh();
+                }
+            }
+
+            if (mouseRightDown)
+            {
+                if (toRefresh)
+                {
+                    for (int i = 0; i < wireLines.Count; i++)
+                    {
+                        if (newLocation.IsContainedIn(wireLines[i]))
+                        {
+                            WireLine.RemovePointFromWire(newLocation, connections, wireLines, i);
+
+                            i = -1;
+                        }
+                    }
                     Refresh();
                 }
             }
@@ -149,7 +157,7 @@ namespace WireForm
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (WireLine wireLine in wireLines) {
-                painter.DrawLine(e.Graphics, wireLine);
+                painter.DrawWireLine(e.Graphics, wireLine);
             }
 
             for(int x = 0; x < 10; x++)
@@ -158,31 +166,6 @@ namespace WireForm
                 {
                     e.Graphics.DrawRectangle(new Pen(Color.Gray, 1), new Rectangle(new Point(x * 50, y * 50), new Size(1, 1)));
                 }
-            }
-            ColorPropogate(temp, new WireLine(), e.Graphics, new List<WireLine>());
-        }
-
-        private void ColorPropogate(Point point, WireLine prevLine, Graphics gfx, List<WireLine> processed)
-        {
-            if (!connections.ContainsKey(point))
-            {
-                return;
-            }
-            List<WireLine> lines = connections[point];
-            foreach (WireLine line in lines)
-            {
-                if (processed.Contains(line))
-                {
-                    continue;
-                }
-                gfx.DrawLine(new Pen(Color.Blue, 3), line.Start.Times(50), line.End.Times(50));
-                processed.Add(line);
-                if (line.Start == prevLine.Start && line.End == prevLine.End)
-                {
-                    continue;
-                }
-                ColorPropogate(line.Start, line, gfx, processed);
-                ColorPropogate(line.End, line, gfx, processed);
             }
         }
 

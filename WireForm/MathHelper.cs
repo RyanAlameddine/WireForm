@@ -19,7 +19,12 @@ namespace WireForm
             return new Point(point.X + x, point.Y + x);
         }
 
-        public static bool ContainedIn(this Point point, WireLine line)
+        public static Point Plus(this Point point1, Point point2)
+        {
+            return new Point(point1.X + point2.X, point1.Y + point2.Y);
+        }
+
+        public static bool IsContainedIn(this Point point, WireLine line)
         {
             if (line.Start.X == line.End.X && point.X == line.Start.X)
             {

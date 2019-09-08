@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WireForm
 {
-    public struct WireLine
+    public class WireLine
     {
         public Point Start { get; set; }
         public Point End { get; set; }
@@ -16,24 +16,53 @@ namespace WireForm
         [JsonIgnore]
         public bool XPriority { get; set; }
 
+        /// <summary>
+        /// Data related to the flow of electricity
+        /// </summary>
+        public WireData Data { get; set; }
+
         public WireLine(Point start, Point end, bool XPriority)
         {
             Start = start;
             End = end;
             this.XPriority = XPriority;
+            Data = new WireData(1);
         }
 
-        //TODO ADD THE ABILITY TO BREAK LINES
         public void Validate(List<WireLine> wires, Dictionary<Point, List<WireLine>> connections)
         {
             wires.Remove(this);
+            bool fullyContained = false;
+
+            if (Start == End)
+            {
+                //Check to see if this is a request to dot two wires together
+                for(int i = 0; i < wires.Count; i++)
+                {
+                    if (Start.IsContainedIn(wires[i]))
+                    {
+                        WireLine wire1 = new WireLine(Start, wires[i].End, wires[i].XPriority);
+                        WireLine wire2 = new WireLine(wires[i].Start, Start, wires[i].XPriority);
+                        if (wire1.Start != wire1.End && wire2.Start != wire2.End)
+                        {
+                            RemoveConnections(wires[i], connections);
+                            wires[i] = wire1;
+                            wires[i].Validate(wires, connections);
+                            wires.Add(wire2);
+                            wires[wires.Count - 1].Validate(wires, connections);
+                        }
+                        return;
+                    }
+                }
+                return;
+            }
 
             for (int i = 0; i < wires.Count; i++)
             {
                 if (!MathHelper.OnLine(this, wires[i]))
                 {
                     //If wirestart is contained in wires[i], split wires[i] into two wires
-                    if (MathHelper.ContainedIn(Start, wires[i]))
+                    if (MathHelper.IsContainedIn(Start, wires[i]))
                     {
                         WireLine wire1 = new WireLine(Start, wires[i].End, wires[i].XPriority);
                         WireLine wire2 = new WireLine(wires[i].Start, Start, wires[i].XPriority);
@@ -42,15 +71,24 @@ namespace WireForm
                         {
                             RemoveConnections(wires[i], connections);
 
-                            wires[i] = wire1;
-                            wires.Add(wire2);
+                            //Temporarily add this wire as a validated wire, then split wires[i] and validate both splits
+                            //before removing the temporary wire and revalidating this
 
-                            AddConnections(wires[i], connections);
-                            AddConnections(wires[wires.Count - 1], connections);
+                            AddConnections(this, connections);
+                            wires.Add(this);
+                            wires[i] = wire1;
+                            wires[i].Validate(wires, connections);
+                            wires.Add(wire2);
+                            wires[wires.Count - 1].Validate(wires, connections);
+                            wires.Remove(this);
+                            RemoveConnections(this, connections);
+
+                            this.Validate(wires, connections);
+                            return;
                         }
                     }
                     //If wireend is contained in wires[i], split wires[i] into two wires
-                    else if (MathHelper.ContainedIn(End, wires[i]))
+                    else if (MathHelper.IsContainedIn(End, wires[i]))
                     {
                         WireLine wire1 = new WireLine(End, wires[i].End, wires[i].XPriority);
                         WireLine wire2 = new WireLine(wires[i].Start, End, wires[i].XPriority);
@@ -59,16 +97,25 @@ namespace WireForm
                         {
                             RemoveConnections(wires[i], connections);
 
-                            wires[i] = wire1;
-                            wires.Add(wire2);
+                            //Temporarily add this wire as a validated wire, then split wires[i] and validate both splits
+                            //before removing the temporary wire and revalidating this
 
-                            AddConnections(wires[i], connections);
-                            AddConnections(wires[wires.Count - 1], connections);
+                            AddConnections(this, connections);
+                            wires.Add(this);
+                            wires[i] = wire1;
+                            wires[i].Validate(wires, connections);
+                            wires.Add(wire2);
+                            wires[wires.Count - 1].Validate(wires, connections);
+                            wires.Remove(this);
+                            RemoveConnections(this, connections);
+
+                            this.Validate(wires, connections);
+                            return;
                         }
                     }
 
                     //If wires[i].wirestart is contained in this wire, split this wire into two wires
-                    if (MathHelper.ContainedIn(wires[i].Start, this))
+                    if (MathHelper.IsContainedIn(wires[i].Start, this))
                     {
                         WireLine wire1 = new WireLine(wires[i].Start, End, XPriority);
                         WireLine wire2 = new WireLine(Start, wires[i].Start, XPriority);
@@ -83,7 +130,7 @@ namespace WireForm
                         }
                     }
                     //If wires[i].wireend is contained in this wire, split this wire into two wires
-                    if (MathHelper.ContainedIn(wires[i].End, this))
+                    if (MathHelper.IsContainedIn(wires[i].End, this))
                     {
                         WireLine wire1 = new WireLine(wires[i].End, End, XPriority);
                         WireLine wire2 = new WireLine(Start, wires[i].End, XPriority);
@@ -108,12 +155,13 @@ namespace WireForm
                 }
 
                 //Cases where this wire is contained in the target wire
-                if (Start.ContainedIn(wires[i]))
+                if (Start.IsContainedIn(wires[i]))
                 {
                     //If both points of this wire are contained in the target wire
-                    if (End.ContainedIn(wires[i]))
+                    if (End.IsContainedIn(wires[i]))
                     {
-                        return;
+                        fullyContained = true;
+                        continue;
                     }
                     //Else
 
@@ -127,7 +175,7 @@ namespace WireForm
                     Start = temp;
                     continue;
                 }
-                if (End.ContainedIn(wires[i]))
+                if (End.IsContainedIn(wires[i]))
                 {
                     //Create a match case
                     Point temp = End;
@@ -141,14 +189,8 @@ namespace WireForm
                 }
 
                 //Cases where the target wire is contained in this wire
-                if (wires[i].Start.ContainedIn(this) && wires[i].End.ContainedIn(this))
+                if (wires[i].Start.IsContainedIn(this) && wires[i].End.IsContainedIn(this))
                 {
-                    /*
-                    RemoveConnections(wires[i], connections);
-                    wires[i] = this;
-                    wires[i].Validate(wires, connections);
-                    return;
-                    */
                     //Split wire in two and validate both sides
                     int startDist = MathHelper.ManhattanDistance(wires[i].Start, Start);
                     int endDist = MathHelper.ManhattanDistance(wires[i].End, Start);
@@ -176,6 +218,11 @@ namespace WireForm
                     return;
                 }
             }
+            if (fullyContained)
+            {
+                return;
+            }
+
             wires.Add(this);
             AddConnections(wires[wires.Count - 1], connections);
         }
@@ -215,7 +262,7 @@ namespace WireForm
             }
 
             //This wire is completely contained in that wire
-            if (chkThis.ContainedIn(wires[i]))
+            if (chkThis.IsContainedIn(wires[i]))
             {
                 return true;
             }
@@ -272,6 +319,63 @@ namespace WireForm
         {
             connections[wire.Start].Remove(wire);
             connections[wire.End].Remove(wire);
+        }
+
+        public static void RemovePointFromWire(Point point, Dictionary<Point, List<WireLine>> connections, List<WireLine> wires, int i)
+        {
+            RemoveConnections(wires[i], connections);
+            Point initialStart = wires[i].Start;
+            Point initialEnd = wires[i].End;
+
+            Point startsEnd;
+            Point endsStart;
+            var xpri = wires[i].XPriority;
+            if (xpri)
+            {
+                if(wires[i].Start.X > wires[i].End.X)
+                {
+                    startsEnd = point.Plus(new Point( 1, 0));
+                    endsStart = point.Plus(new Point(-1, 0));
+                }
+                else
+                {
+                    startsEnd = point.Plus(new Point(-1, 0));
+                    endsStart = point.Plus(new Point( 1, 0));
+                }
+            }
+            else
+            {
+                if (wires[i].Start.Y > wires[i].End.Y)
+                {
+                    startsEnd = point.Plus(new Point(0,  1));
+                    endsStart = point.Plus(new Point(0, -1));
+                }
+                else
+                {
+                    startsEnd = point.Plus(new Point(0, -1));
+                    endsStart = point.Plus(new Point(0,  1));
+                }
+            }
+
+            if (point == wires[i].Start)
+            {
+                wires[i] = new WireLine(endsStart, wires[i].End, wires[i].XPriority);
+                wires[i].Validate(wires, connections);
+            }
+            else if (point == wires[i].End)
+            {
+                wires[i] = new WireLine(wires[i].Start, startsEnd, wires[i].XPriority);
+                wires[i].Validate(wires, connections);
+            }
+            else
+            {
+                var temp = wires[i].Start;
+                wires[i] = new WireLine(endsStart, wires[i].End, wires[i].XPriority);
+                wires[i].Validate(wires, connections);
+                WireLine newWire = new WireLine(temp, startsEnd, xpri);
+                wires.Add(newWire);
+                newWire.Validate(wires, connections);
+            }
         }
     }
 }
