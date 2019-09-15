@@ -19,15 +19,15 @@ namespace WireForm
             File.WriteAllText(path, output);
         }
         
-        public static void Load(string json, out Dictionary<Point, List<WireLine>> connections, out List<WireLine> wires)
+        public static void Load(string json, out Dictionary<Point, List<CircuitConnector>> connections, out List<WireLine> wires)
         {
             wires = JsonConvert.DeserializeObject<List<WireLine>>(json);
-            connections = new Dictionary<Point, List<WireLine>>();
+            connections = new Dictionary<Point, List<CircuitConnector>>();
             for (int i = 0; i < wires.Count; i++)
             {
-                if (wires[i].Start.Y == wires[i].End.Y)
+                if (wires[i].StartPoint.Y == wires[i].EndPoint.Y)
                 {
-                    wires[i] = new WireLine(wires[i].Start, wires[i].End, true);
+                    wires[i] = new WireLine(wires[i].StartPoint, wires[i].EndPoint, true);
                 }
                 WireLine.AddConnections(wires[i], connections);
             }

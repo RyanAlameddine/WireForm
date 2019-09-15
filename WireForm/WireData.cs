@@ -8,11 +8,11 @@ namespace WireForm
 {
     public class WireData
     {
-        public BitValue[] bitValues;
+        public BitValue bitValue = BitValue.Nothing;
 
         public WireData(int valueCount)
         {
-            bitValues = new BitValue[valueCount];
+            //bitValues = new BitValue[valueCount];
         }
     }
 

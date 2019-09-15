@@ -26,36 +26,36 @@ namespace WireForm
 
         public static bool IsContainedIn(this Point point, WireLine line)
         {
-            if (line.Start.X == line.End.X && point.X == line.Start.X)
+            if (line.StartPoint.X == line.EndPoint.X && point.X == line.StartPoint.X)
             {
-                if (point.Y == line.Start.Y || point.Y == line.End.Y)
+                if (point.Y == line.StartPoint.Y || point.Y == line.EndPoint.Y)
                 {
                     return true;
                 }
 
-                if (line.Start.Y > point.Y)
+                if (line.StartPoint.Y > point.Y)
                 {
-                    return point.Y > line.End.Y;
+                    return point.Y > line.EndPoint.Y;
                 }
                 else
                 {
-                    return point.Y < line.End.Y;
+                    return point.Y < line.EndPoint.Y;
                 }
             }
-            else if (line.Start.Y == line.End.Y && point.Y == line.Start.Y)
+            else if (line.StartPoint.Y == line.EndPoint.Y && point.Y == line.StartPoint.Y)
             {
-                if (point.X == line.Start.X || point.X == line.End.X)
+                if (point.X == line.StartPoint.X || point.X == line.EndPoint.X)
                 {
                     return true;
                 }
 
-                if (line.Start.X > point.X)
+                if (line.StartPoint.X > point.X)
                 {
-                    return point.X > line.End.X;
+                    return point.X > line.EndPoint.X;
                 }
                 else
                 {
-                    return point.X < line.End.X;
+                    return point.X < line.EndPoint.X;
                 }
             }
 
@@ -64,7 +64,7 @@ namespace WireForm
 
         public static bool OnLine(WireLine line1, WireLine line2)
         {
-            if((line1.XPriority && line2.XPriority && line1.Start.Y == line2.Start.Y) || (!line1.XPriority && !line2.XPriority && line1.Start.X == line2.Start.X))
+            if((line1.XPriority && line2.XPriority && line1.StartPoint.Y == line2.StartPoint.Y) || (!line1.XPriority && !line2.XPriority && line1.StartPoint.X == line2.StartPoint.X))
             {
                 return true;
             }

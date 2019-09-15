@@ -20,9 +20,9 @@ namespace WireForm
 
         public void DrawWireLine(Graphics graphics, WireLine wireLine)
         {
-            DrawWire(graphics, wireLine.Start, wireLine.End, wireLine.Data.bitValues[0]);
-            graphics.DrawEllipse(thin, new Rectangle(wireLine.Start.X * 50 - 10, wireLine.Start.Y * 50 - 10, 20, 20));
-            graphics.DrawEllipse(thin, new Rectangle(wireLine.End.X * 50 - 10, wireLine.End.Y * 50 - 10, 20, 20));
+            DrawWire(graphics, wireLine.StartPoint, wireLine.EndPoint, wireLine.Data.bitValue);
+            graphics.DrawEllipse(thin, new Rectangle(wireLine.StartPoint.X * 50 - 10, wireLine.StartPoint.Y * 50 - 10, 20, 20));
+            graphics.DrawEllipse(thin, new Rectangle(wireLine.EndPoint.X * 50 - 10, wireLine.EndPoint.Y * 50 - 10, 20, 20));
         }
 
         public void DrawWire(Graphics graphics, Point start, Point end, BitValue value)
@@ -45,6 +45,17 @@ namespace WireForm
                     graphics.DrawLine(new Pen(Color.DarkBlue, 4), start, end);
                     break;
             }
+        }
+
+        public static void DrawGate(Graphics graphics, Point position, Color color)
+        {
+            position = position.Times(50);
+            graphics.DrawRectangle(new Pen(color, 5), position.X - 10, position.Y - 10, 20, 20);
+        }
+        public static void DrawPin(Graphics graphics, Point position, Color color)
+        {
+            position = position.Times(50);
+            graphics.DrawEllipse(new Pen(color, 5), position.X - 5, position.Y - 5, 10, 10);
         }
     }
 }

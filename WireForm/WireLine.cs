@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace WireForm
 {
-    public class WireLine
+    public class WireLine : CircuitConnector
     {
-        public Point Start { get; set; }
-        public Point End { get; set; }
+        public override Point StartPoint { get; set; }
+        public Point EndPoint { get; set; }
 
         [JsonIgnore]
         public bool XPriority { get; set; }
@@ -23,27 +23,27 @@ namespace WireForm
 
         public WireLine(Point start, Point end, bool XPriority)
         {
-            Start = start;
-            End = end;
+            StartPoint = start;
+            EndPoint = end;
             this.XPriority = XPriority;
             Data = new WireData(1);
         }
 
-        public void Validate(List<WireLine> wires, Dictionary<Point, List<WireLine>> connections)
+        public void Validate(List<WireLine> wires, Dictionary<Point, List<CircuitConnector>> connections)
         {
             wires.Remove(this);
             bool fullyContained = false;
 
-            if (Start == End)
+            if (StartPoint == EndPoint)
             {
                 //Check to see if this is a request to dot two wires together
                 for(int i = 0; i < wires.Count; i++)
                 {
-                    if (Start.IsContainedIn(wires[i]))
+                    if (StartPoint.IsContainedIn(wires[i]))
                     {
-                        WireLine wire1 = new WireLine(Start, wires[i].End, wires[i].XPriority);
-                        WireLine wire2 = new WireLine(wires[i].Start, Start, wires[i].XPriority);
-                        if (wire1.Start != wire1.End && wire2.Start != wire2.End)
+                        WireLine wire1 = new WireLine(StartPoint, wires[i].EndPoint, wires[i].XPriority);
+                        WireLine wire2 = new WireLine(wires[i].StartPoint, StartPoint, wires[i].XPriority);
+                        if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             RemoveConnections(wires[i], connections);
                             wires[i] = wire1;
@@ -62,12 +62,12 @@ namespace WireForm
                 if (!MathHelper.OnLine(this, wires[i]))
                 {
                     //If wirestart is contained in wires[i], split wires[i] into two wires
-                    if (MathHelper.IsContainedIn(Start, wires[i]))
+                    if (MathHelper.IsContainedIn(StartPoint, wires[i]))
                     {
-                        WireLine wire1 = new WireLine(Start, wires[i].End, wires[i].XPriority);
-                        WireLine wire2 = new WireLine(wires[i].Start, Start, wires[i].XPriority);
+                        WireLine wire1 = new WireLine(StartPoint, wires[i].EndPoint, wires[i].XPriority);
+                        WireLine wire2 = new WireLine(wires[i].StartPoint, StartPoint, wires[i].XPriority);
                         //Both wires exist
-                        if(wire1.Start != wire1.End && wire2.Start != wire2.End)
+                        if(wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             RemoveConnections(wires[i], connections);
 
@@ -88,12 +88,12 @@ namespace WireForm
                         }
                     }
                     //If wireend is contained in wires[i], split wires[i] into two wires
-                    else if (MathHelper.IsContainedIn(End, wires[i]))
+                    else if (MathHelper.IsContainedIn(EndPoint, wires[i]))
                     {
-                        WireLine wire1 = new WireLine(End, wires[i].End, wires[i].XPriority);
-                        WireLine wire2 = new WireLine(wires[i].Start, End, wires[i].XPriority);
+                        WireLine wire1 = new WireLine(EndPoint, wires[i].EndPoint, wires[i].XPriority);
+                        WireLine wire2 = new WireLine(wires[i].StartPoint, EndPoint, wires[i].XPriority);
                         //Both wires exist
-                        if (wire1.Start != wire1.End && wire2.Start != wire2.End)
+                        if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             RemoveConnections(wires[i], connections);
 
@@ -115,12 +115,12 @@ namespace WireForm
                     }
 
                     //If wires[i].wirestart is contained in this wire, split this wire into two wires
-                    if (MathHelper.IsContainedIn(wires[i].Start, this))
+                    if (MathHelper.IsContainedIn(wires[i].StartPoint, this))
                     {
-                        WireLine wire1 = new WireLine(wires[i].Start, End, XPriority);
-                        WireLine wire2 = new WireLine(Start, wires[i].Start, XPriority);
+                        WireLine wire1 = new WireLine(wires[i].StartPoint, EndPoint, XPriority);
+                        WireLine wire2 = new WireLine(StartPoint, wires[i].StartPoint, XPriority);
                         //Both wires exist
-                        if (wire1.Start != wire1.End && wire2.Start != wire2.End)
+                        if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             wires.Add(wire1);
                             wire1.Validate(wires, connections);
@@ -130,12 +130,12 @@ namespace WireForm
                         }
                     }
                     //If wires[i].wireend is contained in this wire, split this wire into two wires
-                    if (MathHelper.IsContainedIn(wires[i].End, this))
+                    if (MathHelper.IsContainedIn(wires[i].EndPoint, this))
                     {
-                        WireLine wire1 = new WireLine(wires[i].End, End, XPriority);
-                        WireLine wire2 = new WireLine(Start, wires[i].End, XPriority);
+                        WireLine wire1 = new WireLine(wires[i].EndPoint, EndPoint, XPriority);
+                        WireLine wire2 = new WireLine(StartPoint, wires[i].EndPoint, XPriority);
                         //Both wires exist
-                        if (wire1.Start != wire1.End && wire2.Start != wire2.End)
+                        if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             wires.Add(wire1);
                             wire1.Validate(wires, connections);
@@ -155,10 +155,10 @@ namespace WireForm
                 }
 
                 //Cases where this wire is contained in the target wire
-                if (Start.IsContainedIn(wires[i]))
+                if (StartPoint.IsContainedIn(wires[i]))
                 {
                     //If both points of this wire are contained in the target wire
-                    if (End.IsContainedIn(wires[i]))
+                    if (EndPoint.IsContainedIn(wires[i]))
                     {
                         fullyContained = true;
                         continue;
@@ -166,39 +166,39 @@ namespace WireForm
                     //Else
 
                     //Create a match case
-                    Point temp = Start;
-                    Start = wires[i].Start;
+                    Point temp = StartPoint;
+                    StartPoint = wires[i].StartPoint;
                     if (checkMatchCases(connections, wires, i))
                     {
                         return;
                     }
-                    Start = temp;
+                    StartPoint = temp;
                     continue;
                 }
-                if (End.IsContainedIn(wires[i]))
+                if (EndPoint.IsContainedIn(wires[i]))
                 {
                     //Create a match case
-                    Point temp = End;
-                    End = wires[i].End;
+                    Point temp = EndPoint;
+                    EndPoint = wires[i].EndPoint;
                     if (checkMatchCases(connections, wires, i))
                     {
                         return;
                     }
-                    End = temp;
+                    EndPoint = temp;
                     continue;
                 }
 
                 //Cases where the target wire is contained in this wire
-                if (wires[i].Start.IsContainedIn(this) && wires[i].End.IsContainedIn(this))
+                if (wires[i].StartPoint.IsContainedIn(this) && wires[i].EndPoint.IsContainedIn(this))
                 {
                     //Split wire in two and validate both sides
-                    int startDist = MathHelper.ManhattanDistance(wires[i].Start, Start);
-                    int endDist = MathHelper.ManhattanDistance(wires[i].End, Start);
+                    int startDist = MathHelper.ManhattanDistance(wires[i].StartPoint, StartPoint);
+                    int endDist = MathHelper.ManhattanDistance(wires[i].EndPoint, StartPoint);
 
                     if(startDist < endDist)
                     {
-                        WireLine toStart = new WireLine(Start, wires[i].Start, wires[i].XPriority);
-                        WireLine toEnd = new WireLine(End, wires[i].End, wires[i].XPriority);
+                        WireLine toStart = new WireLine(StartPoint, wires[i].StartPoint, wires[i].XPriority);
+                        WireLine toEnd = new WireLine(EndPoint, wires[i].EndPoint, wires[i].XPriority);
 
                         wires.Add(toStart);
                         toStart.Validate(wires, connections);
@@ -207,8 +207,8 @@ namespace WireForm
                     }
                     else
                     {
-                        WireLine toStart = new WireLine(End, wires[i].Start, wires[i].XPriority);
-                        WireLine toEnd = new WireLine(Start, wires[i].End, wires[i].XPriority);
+                        WireLine toStart = new WireLine(EndPoint, wires[i].StartPoint, wires[i].XPriority);
+                        WireLine toEnd = new WireLine(StartPoint, wires[i].EndPoint, wires[i].XPriority);
 
                         wires.Add(toStart);
                         toStart.Validate(wires, connections);
@@ -227,24 +227,24 @@ namespace WireForm
             AddConnections(wires[wires.Count - 1], connections);
         }
 
-        private bool checkMatchCases(Dictionary<Point, List<WireLine>> connections, List<WireLine> wires, int i)
+        private bool checkMatchCases(Dictionary<Point, List<CircuitConnector>> connections, List<WireLine> wires, int i)
         {
-            if (wires[i].Start == Start)
+            if (wires[i].StartPoint == StartPoint)
             {
-                return runCases(Start, End, wires[i].Start, wires[i].End, connections, wires, i);
+                return runCases(StartPoint, EndPoint, wires[i].StartPoint, wires[i].EndPoint, connections, wires, i);
             }
-            if (wires[i].Start == End)
+            if (wires[i].StartPoint == EndPoint)
             {
-                return runCases(End, Start, wires[i].Start, wires[i].End, connections, wires, i);
+                return runCases(EndPoint, StartPoint, wires[i].StartPoint, wires[i].EndPoint, connections, wires, i);
             }
 
-            if (wires[i].End == End)
+            if (wires[i].EndPoint == EndPoint)
             {
-                return runCases(End, Start, wires[i].End, wires[i].Start, connections, wires, i);
+                return runCases(EndPoint, StartPoint, wires[i].EndPoint, wires[i].StartPoint, connections, wires, i);
             }
-            if (wires[i].End == Start)
+            if (wires[i].EndPoint == StartPoint)
             {
-                return runCases(Start, End, wires[i].End, wires[i].Start, connections, wires, i);
+                return runCases(StartPoint, EndPoint, wires[i].EndPoint, wires[i].StartPoint, connections, wires, i);
             }
             return false;
         }
@@ -253,7 +253,7 @@ namespace WireForm
         /// <param name="chkThis">Point on this wire that may or may not be equal to chkThat</param>
         /// <param name="eqThat">Point on taret wire that is equal to eqThis</param>
         /// <param name="chkThat">Point on target wire that may or may not be equal to chkThis</param>
-        private bool runCases(Point eqThis, Point chkThis, Point eqThat, Point chkThat, Dictionary<Point, List<WireLine>> connections, List<WireLine> wires, int i)
+        private bool runCases(Point eqThis, Point chkThis, Point eqThat, Point chkThat, Dictionary<Point, List<CircuitConnector>> connections, List<WireLine> wires, int i)
         {
             //Wires are the same
             if (chkThat == chkThis)
@@ -297,42 +297,42 @@ namespace WireForm
         /// <summary>
         /// Add wire to connections
         /// </summary>
-        public static void AddConnections(WireLine wire, Dictionary<Point, List<WireLine>> connections)
+        public static void AddConnections(WireLine wire, Dictionary<Point, List<CircuitConnector>> connections)
         {
-            if (!connections.ContainsKey(wire.Start))
+            if (!connections.ContainsKey(wire.StartPoint))
             {
-                connections[wire.Start] = new List<WireLine>();
+                connections[wire.StartPoint] = new List<CircuitConnector>();
             }
-            if (!connections.ContainsKey(wire.End))
+            if (!connections.ContainsKey(wire.EndPoint))
             {
-                connections[wire.End] = new List<WireLine>();
+                connections[wire.EndPoint] = new List<CircuitConnector>();
             }
 
-            connections[wire.Start].Add(wire);
-            connections[wire.End  ].Add(wire);
+            connections[wire.StartPoint].Add(wire);
+            connections[wire.EndPoint  ].Add(wire);
         }
 
         /// <summary>
         /// Remove wire from connections
         /// </summary>
-        public static void RemoveConnections(WireLine wire, Dictionary<Point, List<WireLine>> connections)
+        public static void RemoveConnections(WireLine wire, Dictionary<Point, List<CircuitConnector>> connections)
         {
-            connections[wire.Start].Remove(wire);
-            connections[wire.End].Remove(wire);
+            connections[wire.StartPoint].Remove(wire);
+            connections[wire.EndPoint].Remove(wire);
         }
 
-        public static void RemovePointFromWire(Point point, Dictionary<Point, List<WireLine>> connections, List<WireLine> wires, int i)
+        public static void RemovePointFromWire(Point point, Dictionary<Point, List<CircuitConnector>> connections, List<WireLine> wires, int i)
         {
             RemoveConnections(wires[i], connections);
-            Point initialStart = wires[i].Start;
-            Point initialEnd = wires[i].End;
+            Point initialStart = wires[i].StartPoint;
+            Point initialEnd = wires[i].EndPoint;
 
             Point startsEnd;
             Point endsStart;
             var xpri = wires[i].XPriority;
             if (xpri)
             {
-                if(wires[i].Start.X > wires[i].End.X)
+                if(wires[i].StartPoint.X > wires[i].EndPoint.X)
                 {
                     startsEnd = point.Plus(new Point( 1, 0));
                     endsStart = point.Plus(new Point(-1, 0));
@@ -345,7 +345,7 @@ namespace WireForm
             }
             else
             {
-                if (wires[i].Start.Y > wires[i].End.Y)
+                if (wires[i].StartPoint.Y > wires[i].EndPoint.Y)
                 {
                     startsEnd = point.Plus(new Point(0,  1));
                     endsStart = point.Plus(new Point(0, -1));
@@ -357,20 +357,20 @@ namespace WireForm
                 }
             }
 
-            if (point == wires[i].Start)
+            if (point == wires[i].StartPoint)
             {
-                wires[i] = new WireLine(endsStart, wires[i].End, wires[i].XPriority);
+                wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].XPriority);
                 wires[i].Validate(wires, connections);
             }
-            else if (point == wires[i].End)
+            else if (point == wires[i].EndPoint)
             {
-                wires[i] = new WireLine(wires[i].Start, startsEnd, wires[i].XPriority);
+                wires[i] = new WireLine(wires[i].StartPoint, startsEnd, wires[i].XPriority);
                 wires[i].Validate(wires, connections);
             }
             else
             {
-                var temp = wires[i].Start;
-                wires[i] = new WireLine(endsStart, wires[i].End, wires[i].XPriority);
+                var temp = wires[i].StartPoint;
+                wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].XPriority);
                 wires[i].Validate(wires, connections);
                 WireLine newWire = new WireLine(temp, startsEnd, xpri);
                 wires.Add(newWire);
