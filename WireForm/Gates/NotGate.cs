@@ -9,18 +9,16 @@ namespace WireForm.Gates
 {
     class NotGate : Gate
     {
-        public NotGate(Point Position, Dictionary<Point, List<CircuitConnector>> connections)
-            : base(Position, 1, connections)
+        public NotGate(Vec2 Position, Dictionary<Vec2, List<CircuitConnector>> connections)
+            : base(Position)
         {
             Inputs = new GatePin[] {
-                new GatePin(this, new Point(-1, 0), BitValue.Nothing)
+                new GatePin(this, new Vec2(-1, 0), BitValue.Nothing)
             };
-            connections.AddConnection(Inputs[0]);
 
             Outputs = new GatePin[] {
-                new GatePin(this, Point.Empty, BitValue.Error)
+                new GatePin(this, new Vec2(), BitValue.Error)
             };
-            connections.AddConnection(Outputs[0]);
         }
 
         protected override void compute()
@@ -30,6 +28,10 @@ namespace WireForm.Gates
 
         protected override void draw(Graphics gfx)
         {
+            gfx.DrawLine(new Pen(Color.Black, 5), (Point) MathHelper.Plus(Position, new Vec2(-2, 1)).Times(50), (Point) MathHelper.Plus(Position, new Vec2()).Times(50));
+            gfx.DrawLine(new Pen(Color.Black, 5), (Point) MathHelper.Plus(Position, new Vec2(-2, -1)).Times(50), (Point) MathHelper.Plus(Position, new Vec2()).Times(50));
+            gfx.DrawLine(new Pen(Color.Black, 5), (Point) MathHelper.Plus(Position, new Vec2(-2, 1)).Times(50), (Point) MathHelper.Plus(Position, new Vec2(-2, -1)).Times(50));
+
             Painter.DrawGate(gfx, Position, Color.Black);
         }
     }

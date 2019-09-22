@@ -7,29 +7,55 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WireForm.Gates;
 
 namespace WireForm
 {
     public class SaveManager
     {
-        public static void Save(string path, List<WireLine> wires)
+        public static void Save(string path, FlowPropogator propogator)
         {
-            string output = JsonConvert.SerializeObject(wires);
+            string output = JsonConvert.SerializeObject(propogator, Formatting.Indented,
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.Auto
+                }) ;
             Debug.WriteLine(output);
             File.WriteAllText(path, output);
         }
         
-        public static void Load(string json, out Dictionary<Point, List<CircuitConnector>> connections, out List<WireLine> wires)
+        public static void Load(string json, out FlowPropogator propogator)
         {
-            wires = JsonConvert.DeserializeObject<List<WireLine>>(json);
-            connections = new Dictionary<Point, List<CircuitConnector>>();
-            for (int i = 0; i < wires.Count; i++)
-            {
-                if (wires[i].StartPoint.Y == wires[i].EndPoint.Y)
+            propogator = JsonConvert.DeserializeObject<FlowPropogator>(json, 
+                new JsonSerializerSettings()
                 {
-                    wires[i] = new WireLine(wires[i].StartPoint, wires[i].EndPoint, true);
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.Auto
+                });
+            propogator.Connections = new Dictionary<Vec2, List<CircuitConnector>>();
+            for (int i = 0; i < propogator.wires.Count; i++)
+            {
+                if (propogator.wires[i].StartPoint.Y == propogator.wires[i].EndPoint.Y)
+                {
+                    propogator.wires[i] = new WireLine(propogator.wires[i].StartPoint, propogator.wires[i].EndPoint, true);
                 }
-                WireLine.AddConnections(wires[i], connections);
+                WireLine.AddConnections(propogator.wires[i], propogator.Connections);
+            }
+
+            foreach(Gate gate in propogator.gates)
+            {
+                foreach(GatePin input in gate.Inputs)
+                {
+                    input.Parent = gate;
+                    input.LocalPoint = input.LocalPoint;
+                }
+                foreach(GatePin output in gate.Outputs)
+                {
+                    output.Parent = gate;
+                    output.LocalPoint = output.LocalPoint;
+                }
+                gate.AddConnections(propogator.Connections);
             }
         }
     }

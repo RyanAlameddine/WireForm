@@ -21,38 +21,38 @@ namespace WireForm
         public void DrawWireLine(Graphics graphics, WireLine wireLine)
         {
             DrawWire(graphics, wireLine.StartPoint, wireLine.EndPoint, wireLine.Data.bitValue);
-            graphics.DrawEllipse(thin, new Rectangle(wireLine.StartPoint.X * 50 - 10, wireLine.StartPoint.Y * 50 - 10, 20, 20));
-            graphics.DrawEllipse(thin, new Rectangle(wireLine.EndPoint.X * 50 - 10, wireLine.EndPoint.Y * 50 - 10, 20, 20));
+            graphics.DrawEllipse(thin, new Rectangle((int) wireLine.StartPoint.X * 50 - 10, (int) wireLine.StartPoint.Y * 50 - 10, 20, 20));
+            graphics.DrawEllipse(thin, new Rectangle((int) wireLine.EndPoint.X * 50 - 10, (int) wireLine.EndPoint.Y * 50 - 10, 20, 20));
         }
 
-        public void DrawWire(Graphics graphics, Point start, Point end, BitValue value)
+        public void DrawWire(Graphics graphics, Vec2 start, Vec2 end, BitValue value)
         {
             start = start.Times(50);
             end = end.Times(50);
-            graphics.DrawLine(pen, start, end);
+            //graphics.DrawLine(pen, (Point) start, (Point) end);
             switch (value)
             {
                 case BitValue.Error:
-                    graphics.DrawLine(new Pen(Color.DarkRed, 4), start, end);
+                    graphics.DrawLine(new Pen(Color.DarkRed, 6), (Point) start, (Point) end);
                     break;
                 case BitValue.Nothing:
-                    graphics.DrawLine(new Pen(Color.DimGray, 4), start, end);
+                    graphics.DrawLine(new Pen(Color.DimGray, 6), (Point) start, (Point) end);
                     break;
                 case BitValue.One:
-                    graphics.DrawLine(new Pen(Color.MediumBlue, 4), start, end);
+                    graphics.DrawLine(new Pen(Color.MediumBlue, 6), (Point) start, (Point) end);
                     break;
                 case BitValue.Zero:
-                    graphics.DrawLine(new Pen(Color.Navy, 4), start, end);
+                    graphics.DrawLine(new Pen(Color.Navy, 6), (Point) start, (Point) end);
                     break;
             }
         }
 
-        public static void DrawGate(Graphics graphics, Point position, Color color)
+        public static void DrawGate(Graphics graphics, Vec2 position, Color color)
         {
             position = position.Times(50);
             graphics.DrawRectangle(new Pen(color, 5), position.X - 10, position.Y - 10, 20, 20);
         }
-        public static void DrawPin(Graphics graphics, Point position, BitValue value)
+        public static void DrawPin(Graphics graphics, Vec2 position, BitValue value)
         {
             position = position.Times(50);
             switch (value)

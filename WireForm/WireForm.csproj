@@ -69,6 +69,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveManager.cs" />
+    <Compile Include="Vec2.cs" />
     <Compile Include="WireData.cs" />
     <Compile Include="WireLine.cs" />
     <EmbeddedResource Include="Form1.resx">

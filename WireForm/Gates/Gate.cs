@@ -10,15 +10,25 @@ namespace WireForm.Gates
 {
     public abstract class Gate
     {
-        public Point Position { get; set; }
+        public Vec2 Position { get; set; }
         public GatePin[] Outputs { get; set; }
         public GatePin[] Inputs { get; set; }
-        public int InputCount { get; set; }
 
-        public Gate(Point Position, int InputCount, Dictionary<Point, List<CircuitConnector>> connections)
+        public Gate(Vec2 Position)
         {
             this.Position = Position;
-            this.InputCount = InputCount;
+        }
+
+        public void AddConnections(Dictionary<Vec2, List<CircuitConnector>> connections)
+        {
+            foreach (GatePin input in Inputs)
+            {
+                connections.AddConnection(input);
+            }
+            foreach (GatePin output in Outputs)
+            {
+                connections.AddConnection(output);
+            }
         }
 
         protected abstract void draw(Graphics gfx);

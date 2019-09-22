@@ -27,13 +27,15 @@ namespace WireForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            propogator.gates.Add(new BitSource(new Point(3, 3), propogator.Connections));
-            propogator.gates.Add(new NotGate  (new Point(5, 5), propogator.Connections));
+            propogator.gates.Add(new BitSource(new Vec2(3, 3), propogator.Connections));
+            propogator.gates[propogator.gates.Count - 1].AddConnections(propogator.Connections);
+            propogator.gates.Add(new NotGate  (new Vec2(5, 5), propogator.Connections));
+            propogator.gates[propogator.gates.Count - 1].AddConnections(propogator.Connections);
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = handler.MouseDown(propogator, e.Location, e.Button);
+            bool toRefresh = handler.MouseDown(propogator, (Vec2) e.Location, e.Button);
 
             if (toRefresh) Refresh();
         }
@@ -47,7 +49,7 @@ namespace WireForm
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = handler.MouseMove(e.Location, propogator);
+            bool toRefresh = handler.MouseMove((Vec2) e.Location, propogator);
 
             if(toRefresh) Refresh();
         }
@@ -59,7 +61,7 @@ namespace WireForm
             Queue<Gate> sources = new Queue<Gate>();
             foreach(Gate gate in propogator.gates)
             {
-                if(gate.InputCount == 0)
+                if(gate.Inputs.Length == 0)
                 {
                     sources.Enqueue(gate);
                 }
@@ -88,18 +90,19 @@ namespace WireForm
         {
             if(e.KeyChar == 's')
             {
-                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), propogator.wires);
+                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), propogator);
             }
             if(e.KeyChar == 'l')
             {
-                SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "lines.json")), out var connects, out var wires);
-                propogator.Connections = connects;
-                propogator.wires = wires;
+                SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "lines.json")), out var prop);
+                propogator = prop;
             }
             if(e.KeyChar == 'c')
             {
-                propogator.wires.Clear();
-                propogator.Connections.Clear();
+                propogator = new FlowPropogator();
+                //propogator.wires.Clear();
+                //propogator.Connections.Clear();
+                //propogator.gates.Clear();
             }
             Refresh();
         }

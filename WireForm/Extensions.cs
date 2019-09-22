@@ -9,7 +9,7 @@ namespace WireForm
 {
     public static class Extensions
     {
-        public static void AddConnection(this Dictionary<Point, List<CircuitConnector>> connections, CircuitConnector connector)
+        public static void AddConnection(this Dictionary<Vec2, List<CircuitConnector>> connections, CircuitConnector connector)
         {
             if (!connections.ContainsKey(connector.StartPoint))
             {

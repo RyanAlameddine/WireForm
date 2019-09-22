@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,9 @@ namespace WireForm.Gates
     public class GatePin : CircuitConnector
     {
         [JsonIgnore]
-        public override Point StartPoint { get; set; }
-        Point localPoint;
-        public Point LocalPoint
+        public override Vec2 StartPoint { get; set; }
+        Vec2 localPoint;
+        public Vec2 LocalPoint
         {
             get
             {
@@ -22,13 +23,21 @@ namespace WireForm.Gates
             set
             {
                 localPoint = value;
+
+                if(Parent == null)
+                {
+                    Debug.WriteLine("Null parent in gatepin initialization - If this occurs while loading, this is not an error");
+                    return;
+                }
+
                 StartPoint = MathHelper.Plus(value, Parent.Position);
+
             }
         }
         [JsonIgnore]
         public BitValue Value { get; set; }
         public Gate Parent { get; set; }
-        public GatePin(Gate Parent, Point LocalStart, BitValue value)
+        public GatePin(Gate Parent, Vec2 LocalStart, BitValue value)
         {
             this.Parent = Parent;
 

@@ -12,7 +12,7 @@ namespace WireForm
     {
         bool mouseLeftDown = false;
         bool mouseRightDown = false;
-        WireLine currentLine = new WireLine(Point.Empty, Point.Empty, false);
+        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
         WireLine secondaryCurrentLine;
 
         Tool tool { get; set; }
@@ -22,10 +22,10 @@ namespace WireForm
             tool = Tool.Painter;
         }
 
-        public bool MouseDown(FlowPropogator propogator, Point position, MouseButtons button)
+        public bool MouseDown(FlowPropogator propogator, Vec2 position, MouseButtons button)
         {
             bool toRefresh = false;
-            Point mousePoint = position.Plus(25).Times(1 / 50f);
+            Vec2 mousePoint = position.Plus(25).Times(1 / 50f);
             if (tool == Tool.Painter)
             {
                 if (button == MouseButtons.Left)
@@ -88,13 +88,13 @@ namespace WireForm
             }
         }
 
-        public bool MouseMove(Point position, FlowPropogator propogator)
+        public bool MouseMove(Vec2 position, FlowPropogator propogator)
         {
             //Refresh if updated
             bool toRefresh = false;
 
             //Update End point
-            Point newLocation = position.Plus(25).Times(1 / 50f);
+            Vec2 newLocation = position.Plus(25).Times(1 / 50f);
 
             if (tool == Tool.Painter)
             {
@@ -117,16 +117,16 @@ namespace WireForm
 
                     if (currentLine.XPriority)
                     {
-                        var currentLineNewEnd = new Point(currentLine.EndPoint.X, currentLine.StartPoint.Y);
+                        var currentLineNewEnd = new Vec2(currentLine.EndPoint.X, currentLine.StartPoint.Y);
                         secondaryCurrentLine.StartPoint = currentLineNewEnd;
-                        secondaryCurrentLine.EndPoint = new Point(secondaryCurrentLine.StartPoint.X, currentLine.EndPoint.Y);
+                        secondaryCurrentLine.EndPoint = new Vec2(secondaryCurrentLine.StartPoint.X, currentLine.EndPoint.Y);
                         currentLine.EndPoint = currentLineNewEnd;
                     }
                     else
                     {
-                        var currentLineNewEnd = new Point(currentLine.StartPoint.X, currentLine.EndPoint.Y);
+                        var currentLineNewEnd = new Vec2(currentLine.StartPoint.X, currentLine.EndPoint.Y);
                         secondaryCurrentLine.StartPoint = currentLineNewEnd;
-                        secondaryCurrentLine.EndPoint = new Point(currentLine.EndPoint.X, secondaryCurrentLine.StartPoint.Y);
+                        secondaryCurrentLine.EndPoint = new Vec2(currentLine.EndPoint.X, secondaryCurrentLine.StartPoint.Y);
                         currentLine.EndPoint = currentLineNewEnd;
                     }
                 }

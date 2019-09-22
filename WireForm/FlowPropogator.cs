@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,12 +11,13 @@ namespace WireForm
 {
     public class FlowPropogator
     {
-        public Dictionary<Point, List<CircuitConnector>> Connections { get; set; }
+        [JsonIgnore]
+        public Dictionary<Vec2, List<CircuitConnector>> Connections { get; set; }
         public List<WireLine> wires { get; set; }
         public List<Gate> gates { get; set; }
         public FlowPropogator()
         {
-            Connections = new Dictionary<Point, List<CircuitConnector>>();
+            Connections = new Dictionary<Vec2, List<CircuitConnector>>();
             wires = new List<WireLine>();
             gates = new List<Gate>();
         }
@@ -85,7 +87,7 @@ namespace WireForm
             
         }
 
-        void PropogateWire(HashSet<WireLine> visitedWires, List<Gate> changedGates, Point position, BitValue value)
+        void PropogateWire(HashSet<WireLine> visitedWires, List<Gate> changedGates, Vec2 position, BitValue value)
         {
             if (!Connections.ContainsKey(position))
             {

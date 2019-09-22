@@ -9,22 +9,22 @@ namespace WireForm
 {
     public static class MathHelper
     {
-        public static Point Times(this Point point, float x)
+        public static Vec2 Times(this Vec2 point, float x)
         {
-            return new Point((int) (point.X * x), (int) (point.Y * x));
+            return new Vec2((int) (point.X * x), (int) (point.Y * x));
         }
 
-        public static Point Plus(this Point point, int x)
+        public static Vec2 Plus(this Vec2 point, int x)
         {
-            return new Point(point.X + x, point.Y + x);
+            return new Vec2(point.X + x, point.Y + x);
         }
 
-        public static Point Plus(this Point point1, Point point2)
+        public static Vec2 Plus(this Vec2 point1, Vec2 point2)
         {
-            return new Point(point1.X + point2.X, point1.Y + point2.Y);
+            return new Vec2(point1.X + point2.X, point1.Y + point2.Y);
         }
 
-        public static bool IsContainedIn(this Point point, WireLine line)
+        public static bool IsContainedIn(this Vec2 point, WireLine line)
         {
             if (line.StartPoint.X == line.EndPoint.X && point.X == line.StartPoint.X)
             {
@@ -71,9 +71,9 @@ namespace WireForm
             return false;
         }
 
-        public static int ManhattanDistance(Point point1, Point point2)
+        public static int ManhattanDistance(Vec2 point1, Vec2 point2)
         {
-            return Math.Abs(point1.X - point2.X) + Math.Abs(point1.Y - point2.Y);
+            return (int) Math.Abs(point1.X - point2.X) + (int) Math.Abs(point1.Y - point2.Y);
         }
     }
 }

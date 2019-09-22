@@ -9,6 +9,6 @@ namespace WireForm
 {
     public abstract class CircuitConnector
     {
-        public abstract Point StartPoint { get; set; }
+        public abstract Vec2 StartPoint { get; set; }
     }
 }

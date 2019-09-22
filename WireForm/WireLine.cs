@@ -10,8 +10,8 @@ namespace WireForm
 {
     public class WireLine : CircuitConnector
     {
-        public override Point StartPoint { get; set; }
-        public Point EndPoint { get; set; }
+        public override Vec2 StartPoint { get; set; }
+        public Vec2 EndPoint { get; set; }
 
         [JsonIgnore]
         public bool XPriority { get; set; }
@@ -21,7 +21,7 @@ namespace WireForm
         /// </summary>
         public WireData Data { get; set; }
 
-        public WireLine(Point start, Point end, bool XPriority)
+        public WireLine(Vec2 start, Vec2 end, bool XPriority)
         {
             StartPoint = start;
             EndPoint = end;
@@ -29,7 +29,7 @@ namespace WireForm
             Data = new WireData(1);
         }
 
-        public void Validate(List<WireLine> wires, Dictionary<Point, List<CircuitConnector>> connections)
+        public void Validate(List<WireLine> wires, Dictionary<Vec2, List<CircuitConnector>> connections)
         {
             wires.Remove(this);
             bool fullyContained = false;
@@ -166,7 +166,7 @@ namespace WireForm
                     //Else
 
                     //Create a match case
-                    Point temp = StartPoint;
+                    Vec2 temp = StartPoint;
                     StartPoint = wires[i].StartPoint;
                     if (checkMatchCases(connections, wires, i))
                     {
@@ -178,7 +178,7 @@ namespace WireForm
                 if (EndPoint.IsContainedIn(wires[i]))
                 {
                     //Create a match case
-                    Point temp = EndPoint;
+                    Vec2 temp = EndPoint;
                     EndPoint = wires[i].EndPoint;
                     if (checkMatchCases(connections, wires, i))
                     {
@@ -227,7 +227,7 @@ namespace WireForm
             AddConnections(wires[wires.Count - 1], connections);
         }
 
-        private bool checkMatchCases(Dictionary<Point, List<CircuitConnector>> connections, List<WireLine> wires, int i)
+        private bool checkMatchCases(Dictionary<Vec2, List<CircuitConnector>> connections, List<WireLine> wires, int i)
         {
             if (wires[i].StartPoint == StartPoint)
             {
@@ -253,7 +253,7 @@ namespace WireForm
         /// <param name="chkThis">Point on this wire that may or may not be equal to chkThat</param>
         /// <param name="eqThat">Point on taret wire that is equal to eqThis</param>
         /// <param name="chkThat">Point on target wire that may or may not be equal to chkThis</param>
-        private bool runCases(Point eqThis, Point chkThis, Point eqThat, Point chkThat, Dictionary<Point, List<CircuitConnector>> connections, List<WireLine> wires, int i)
+        private bool runCases(Vec2 eqThis, Vec2 chkThis, Vec2 eqThat, Vec2 chkThat, Dictionary<Vec2, List<CircuitConnector>> connections, List<WireLine> wires, int i)
         {
             //Wires are the same
             if (chkThat == chkThis)
@@ -297,7 +297,7 @@ namespace WireForm
         /// <summary>
         /// Add wire to connections
         /// </summary>
-        public static void AddConnections(WireLine wire, Dictionary<Point, List<CircuitConnector>> connections)
+        public static void AddConnections(WireLine wire, Dictionary<Vec2, List<CircuitConnector>> connections)
         {
             if (!connections.ContainsKey(wire.StartPoint))
             {
@@ -315,45 +315,45 @@ namespace WireForm
         /// <summary>
         /// Remove wire from connections
         /// </summary>
-        public static void RemoveConnections(WireLine wire, Dictionary<Point, List<CircuitConnector>> connections)
+        public static void RemoveConnections(WireLine wire, Dictionary<Vec2, List<CircuitConnector>> connections)
         {
             connections[wire.StartPoint].Remove(wire);
             connections[wire.EndPoint].Remove(wire);
         }
 
-        public static void RemovePointFromWire(Point point, Dictionary<Point, List<CircuitConnector>> connections, List<WireLine> wires, int i)
+        public static void RemovePointFromWire(Vec2 point, Dictionary<Vec2, List<CircuitConnector>> connections, List<WireLine> wires, int i)
         {
             RemoveConnections(wires[i], connections);
-            Point initialStart = wires[i].StartPoint;
-            Point initialEnd = wires[i].EndPoint;
+            Vec2 initialStart = wires[i].StartPoint;
+            Vec2 initialEnd = wires[i].EndPoint;
 
-            Point startsEnd;
-            Point endsStart;
+            Vec2 startsEnd;
+            Vec2 endsStart;
             var xpri = wires[i].XPriority;
             if (xpri)
             {
                 if(wires[i].StartPoint.X > wires[i].EndPoint.X)
                 {
-                    startsEnd = point.Plus(new Point( 1, 0));
-                    endsStart = point.Plus(new Point(-1, 0));
+                    startsEnd = point.Plus(new Vec2( 1, 0));
+                    endsStart = point.Plus(new Vec2(-1, 0));
                 }
                 else
                 {
-                    startsEnd = point.Plus(new Point(-1, 0));
-                    endsStart = point.Plus(new Point( 1, 0));
+                    startsEnd = point.Plus(new Vec2(-1, 0));
+                    endsStart = point.Plus(new Vec2( 1, 0));
                 }
             }
             else
             {
                 if (wires[i].StartPoint.Y > wires[i].EndPoint.Y)
                 {
-                    startsEnd = point.Plus(new Point(0,  1));
-                    endsStart = point.Plus(new Point(0, -1));
+                    startsEnd = point.Plus(new Vec2(0,  1));
+                    endsStart = point.Plus(new Vec2(0, -1));
                 }
                 else
                 {
-                    startsEnd = point.Plus(new Point(0, -1));
-                    endsStart = point.Plus(new Point(0,  1));
+                    startsEnd = point.Plus(new Vec2(0, -1));
+                    endsStart = point.Plus(new Vec2(0,  1));
                 }
             }
 
