@@ -10,9 +10,11 @@ namespace WireForm.Gates
     public class BitSource : Gate
     {
         public BitSource(Point Position, Dictionary<Point, List<CircuitConnector>> connections) 
-            : base(Position, new GatePin[] { new GatePin(null, Point.Empty, BitValue.One) }, 0, connections)
+            : base(Position, 0, connections)
         {
-            
+            Inputs = new GatePin[0];
+            Outputs = new GatePin[] { new GatePin(this, Point.Empty, BitValue.One) };
+            connections.AddConnection(Outputs[0]);
         }
 
         protected override void draw(Graphics gfx)
@@ -20,7 +22,7 @@ namespace WireForm.Gates
             Painter.DrawGate(gfx, Position, Color.Green);
         }
 
-        protected override void compute(BitValue[] inputs)
+        protected override void compute()
         {
             Outputs[0].Value = BitValue.One;
         }

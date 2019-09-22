@@ -15,9 +15,14 @@ namespace WireForm
         WireLine currentLine = new WireLine(Point.Empty, Point.Empty, false);
         WireLine secondaryCurrentLine;
 
-        Tool tool = Tool.Painter;
+        Tool tool { get; set; }
 
-        public bool MouseDown(List<WireLine> wires, FlowPropogator propogator, Point position, MouseButtons button)
+        public InputHandler()
+        {
+            tool = Tool.Painter;
+        }
+
+        public bool MouseDown(FlowPropogator propogator, Point position, MouseButtons button)
         {
             bool toRefresh = false;
             Point mousePoint = position.Plus(25).Times(1 / 50f);
@@ -32,18 +37,18 @@ namespace WireForm
 
 
                     //Register Line to draw
-                    wires.Add(secondaryCurrentLine);
-                    wires.Add(currentLine);
+                    propogator.wires.Add(secondaryCurrentLine);
+                    propogator.wires.Add(currentLine);
                     toRefresh = true;
                 }
                 else if (button == MouseButtons.Right)
                 {
                     mouseRightDown = true;
-                    for (int i = 0; i < wires.Count; i++)
+                    for (int i = 0; i < propogator.wires.Count; i++)
                     {
-                        if (mousePoint.IsContainedIn(wires[i]))
+                        if (mousePoint.IsContainedIn(propogator.wires[i]))
                         {
-                            WireLine.RemovePointFromWire(mousePoint, propogator.Connections, wires, i);
+                            WireLine.RemovePointFromWire(mousePoint, propogator.Connections, propogator.wires, i);
 
                             i = -1;
                         }
@@ -59,7 +64,7 @@ namespace WireForm
             return toRefresh;
         } 
 
-        public void MouseUp(List<WireLine> wires, FlowPropogator propogator)
+        public void MouseUp(FlowPropogator propogator)
         {
             if (tool == Tool.Painter)
             {
@@ -72,10 +77,10 @@ namespace WireForm
                 mouseLeftDown = false;
                 //If line is pointing to itself, delete
 
-                wires.Remove(secondaryCurrentLine);
-                currentLine.Validate(wires, propogator.Connections);
-                wires.Add(secondaryCurrentLine);
-                secondaryCurrentLine.Validate(wires, propogator.Connections);
+                propogator.wires.Remove(secondaryCurrentLine);
+                currentLine.Validate(propogator.wires, propogator.Connections);
+                propogator.wires.Add(secondaryCurrentLine);
+                secondaryCurrentLine.Validate(propogator.wires, propogator.Connections);
             }
             else if (tool == Tool.GateController)
             {
@@ -83,7 +88,7 @@ namespace WireForm
             }
         }
 
-        public bool MouseMove(Point position, List<WireLine> wires, FlowPropogator propogator)
+        public bool MouseMove(Point position, FlowPropogator propogator)
         {
             //Refresh if updated
             bool toRefresh = false;
@@ -95,7 +100,7 @@ namespace WireForm
             {
                 if (mouseLeftDown)
                 {
-                    toRefresh = newLocation != currentLine.EndPoint;
+                    toRefresh = newLocation != secondaryCurrentLine.EndPoint;
                     currentLine.EndPoint = newLocation;
 
                     //Define how curvature is drawn
@@ -131,11 +136,11 @@ namespace WireForm
                     toRefresh = newLocation != currentLine.EndPoint;
                     if (toRefresh)
                     {
-                        for (int i = 0; i < wires.Count; i++)
+                        for (int i = 0; i < propogator.wires.Count; i++)
                         {
-                            if (newLocation.IsContainedIn(wires[i]))
+                            if (newLocation.IsContainedIn(propogator.wires[i]))
                             {
-                                WireLine.RemovePointFromWire(newLocation, propogator.Connections, wires, i);
+                                WireLine.RemovePointFromWire(newLocation, propogator.Connections, propogator.wires, i);
 
                                 i = -1;
                             }
@@ -151,7 +156,7 @@ namespace WireForm
             return toRefresh;
         }
     }
-    enum Tool
+    public enum Tool
     {
         Painter,
         GateController

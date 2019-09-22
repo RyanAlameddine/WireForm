@@ -18,8 +18,7 @@ namespace WireForm
         Painter painter = new Painter();
         InputHandler handler = new InputHandler();
         FlowPropogator propogator = new FlowPropogator();
-        List<WireLine> wires = new List<WireLine>();
-        List<Gate> gates = new List<Gate>();
+        
 
         public Form1()
         {
@@ -28,26 +27,27 @@ namespace WireForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            gates.Add(new BitSource(new Point(3, 3), propogator.Connections));
+            propogator.gates.Add(new BitSource(new Point(3, 3), propogator.Connections));
+            propogator.gates.Add(new NotGate  (new Point(5, 5), propogator.Connections));
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = handler.MouseDown(wires, propogator, e.Location, e.Button);
+            bool toRefresh = handler.MouseDown(propogator, e.Location, e.Button);
 
             if (toRefresh) Refresh();
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            handler.MouseUp(wires, propogator);
+            handler.MouseUp(propogator);
 
             Refresh();
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = handler.MouseMove(e.Location, wires, propogator);
+            bool toRefresh = handler.MouseMove(e.Location, propogator);
 
             if(toRefresh) Refresh();
         }
@@ -57,17 +57,21 @@ namespace WireForm
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Queue<Gate> sources = new Queue<Gate>();
-            foreach(Gate gate in gates)
+            foreach(Gate gate in propogator.gates)
             {
                 if(gate.InputCount == 0)
                 {
                     sources.Enqueue(gate);
                 }
+            }
+            propogator.Propogate(sources);
+
+            foreach (Gate gate in propogator.gates)
+            {
                 gate.Draw(e.Graphics);
             }
-            propogator.Propogate(sources, wires);
 
-            foreach (WireLine wireLine in wires) {
+            foreach (WireLine wireLine in propogator.wires) {
                 painter.DrawWireLine(e.Graphics, wireLine);
             }
 
@@ -84,16 +88,17 @@ namespace WireForm
         {
             if(e.KeyChar == 's')
             {
-                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), wires);
+                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), propogator.wires);
             }
             if(e.KeyChar == 'l')
             {
-                SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "lines.json")), out var connects, out wires);
+                SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "lines.json")), out var connects, out var wires);
                 propogator.Connections = connects;
+                propogator.wires = wires;
             }
             if(e.KeyChar == 'c')
             {
-                wires.Clear();
+                propogator.wires.Clear();
                 propogator.Connections.Clear();
             }
             Refresh();

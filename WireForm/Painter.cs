@@ -33,16 +33,16 @@ namespace WireForm
             switch (value)
             {
                 case BitValue.Error:
-                    graphics.DrawLine(new Pen(Color.Red, 4), start, end);
+                    graphics.DrawLine(new Pen(Color.DarkRed, 4), start, end);
                     break;
                 case BitValue.Nothing:
                     graphics.DrawLine(new Pen(Color.DimGray, 4), start, end);
                     break;
                 case BitValue.One:
-                    graphics.DrawLine(new Pen(Color.Blue, 4), start, end);
+                    graphics.DrawLine(new Pen(Color.MediumBlue, 4), start, end);
                     break;
                 case BitValue.Zero:
-                    graphics.DrawLine(new Pen(Color.DarkBlue, 4), start, end);
+                    graphics.DrawLine(new Pen(Color.Navy, 4), start, end);
                     break;
             }
         }
@@ -52,10 +52,24 @@ namespace WireForm
             position = position.Times(50);
             graphics.DrawRectangle(new Pen(color, 5), position.X - 10, position.Y - 10, 20, 20);
         }
-        public static void DrawPin(Graphics graphics, Point position, Color color)
+        public static void DrawPin(Graphics graphics, Point position, BitValue value)
         {
             position = position.Times(50);
-            graphics.DrawEllipse(new Pen(color, 5), position.X - 5, position.Y - 5, 10, 10);
+            switch (value)
+            {
+                case BitValue.Error:
+                    graphics.DrawEllipse(new Pen(Color.DarkRed, 5), position.X - 5, position.Y - 5, 10, 10);
+                    break;
+                case BitValue.Nothing:
+                    graphics.DrawEllipse(new Pen(Color.DimGray, 5), position.X - 5, position.Y - 5, 10, 10);
+                    break;
+                case BitValue.One:
+                    graphics.DrawEllipse(new Pen(Color.MediumBlue, 5), position.X - 5, position.Y - 5, 10, 10);
+                    break;
+                case BitValue.Zero:
+                    graphics.DrawEllipse(new Pen(Color.Navy, 5), position.X - 5, position.Y - 5, 10, 10);
+                    break;
+            }
         }
     }
 }

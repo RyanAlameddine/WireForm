@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WireForm.Gates;
@@ -10,26 +11,33 @@ namespace WireForm
     public class FlowPropogator
     {
         public Dictionary<Point, List<CircuitConnector>> Connections { get; set; }
+        public List<WireLine> wires { get; set; }
+        public List<Gate> gates { get; set; }
         public FlowPropogator()
         {
             Connections = new Dictionary<Point, List<CircuitConnector>>();
+            wires = new List<WireLine>();
+            gates = new List<Gate>();
         }
 
         /// <summary>
         /// Computes each source and propogates down wires from sources
+        /// After doing that, it visits each unvisited gate and propogates down wires from their outputs
         /// </summary>
-        public void Propogate(Queue<Gate> sources, List<WireLine> wires)
+        public void Propogate(Queue<Gate> sources)
         {
             if(sources == null || sources.Count == 0)
             {
                 return;
             }
 
+            bool exhausted = false;
+
             HashSet<WireLine> visitedWires = new HashSet<WireLine>();
             HashSet<Gate> visitedGates = new HashSet<Gate>();
             for (var source = sources.Peek(); sources.Count > 0; )
             {
-                sources.Dequeue();
+                source = sources.Dequeue();
 
                 if (visitedGates.Contains(source))
                 {
@@ -37,26 +45,44 @@ namespace WireForm
                 }
                 visitedGates.Add(source);
 
-                //Compute and Proopogate
-                source.Compute(null);
+                //Compute and Propogate
+                source.Compute();
                 foreach (var output in source.Outputs)
                 {
                     List<Gate> changedGates = new List<Gate>();
-                    PropogateWire(visitedWires, changedGates, MathHelper.Plus(output.StartPoint, source.Position), output.Value);
+                    PropogateWire(visitedWires, changedGates, output.StartPoint, output.Value);
                     foreach(Gate gate in changedGates)
                     {
                         sources.Enqueue(gate);
                     }
                 }
-            }
 
-            foreach(WireLine wireLine in wires)
-            {
-                if (!visitedWires.Contains(wireLine))
+                if(sources.Count == 0 && !exhausted)
                 {
-                    wireLine.Data.bitValue = BitValue.Nothing;
+                    exhausted = true;
+                    foreach (WireLine wireLine in wires)
+                    {
+                        if (!visitedWires.Contains(wireLine))
+                        {
+                            wireLine.Data.bitValue = BitValue.Nothing;
+                        }
+                    }
+
+                    foreach (Gate gate in gates)
+                    {
+                        if (!visitedGates.Contains(gate))
+                        {
+                            foreach(GatePin input in gate.Inputs)
+                            {
+                                input.Value = BitValue.Nothing;
+                            }
+                            sources.Enqueue(gate);
+                        }
+                    }
                 }
             }
+
+            
         }
 
         void PropogateWire(HashSet<WireLine> visitedWires, List<Gate> changedGates, Point position, BitValue value)
@@ -96,7 +122,14 @@ namespace WireForm
                 GatePin pin = connector as GatePin;
                 if (pin != null)
                 {
-                    changedGates.Add(pin.Parent);
+                    if(pin.Parent.Inputs != null)
+                    {
+                        if (pin.Parent.Inputs.Contains(pin))
+                        {
+                            pin.Value = value;
+                            changedGates.Add(pin.Parent);
+                        }
+                    }
 
                     continue;
                 }

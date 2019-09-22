@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,13 +10,29 @@ namespace WireForm.Gates
 {
     public class GatePin : CircuitConnector
     {
+        [JsonIgnore]
         public override Point StartPoint { get; set; }
+        Point localPoint;
+        public Point LocalPoint
+        {
+            get
+            {
+                return localPoint;
+            }
+            set
+            {
+                localPoint = value;
+                StartPoint = MathHelper.Plus(value, Parent.Position);
+            }
+        }
+        [JsonIgnore]
         public BitValue Value { get; set; }
         public Gate Parent { get; set; }
-        public GatePin(Gate Parent, Point Start, BitValue value)
+        public GatePin(Gate Parent, Point LocalStart, BitValue value)
         {
-            this.StartPoint = Start;
             this.Parent = Parent;
+
+            this.LocalPoint = LocalStart;
             this.Value = Value;
         }
     }
