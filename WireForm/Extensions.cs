@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WireForm.Circuitry;
+using WireForm.MathUtils;
 
 namespace WireForm
 {
@@ -18,6 +17,20 @@ namespace WireForm
             connections[connector.StartPoint].Add(connector);
         }
 
-        
+        public static Color BitColor(this BitValue value)
+        {
+            switch (value)
+            {
+                case BitValue.Error:
+                    return Color.DarkRed;
+                case BitValue.Nothing:
+                    return Color.DimGray;
+                case BitValue.One:
+                    return Color.Blue;
+                case BitValue.Zero:
+                    return Color.DarkBlue;
+            }
+            throw new NullReferenceException();
+        }
     }
 }

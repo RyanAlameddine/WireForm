@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WireForm.Gates;
+using WireForm.Circuitry;
+using WireForm.Circuitry.Gates;
+using WireForm.Circuitry.Gates.Utilities;
+using WireForm.GraphicsUtils;
+using WireForm.MathUtils;
 
 namespace WireForm
 {
@@ -27,15 +25,14 @@ namespace WireForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            propogator.gates.Add(new BitSource(new Vec2(3, 3), propogator.Connections));
-            propogator.gates[propogator.gates.Count - 1].AddConnections(propogator.Connections);
-            propogator.gates.Add(new NotGate  (new Vec2(5, 5), propogator.Connections));
-            propogator.gates[propogator.gates.Count - 1].AddConnections(propogator.Connections);
+            toolBox.SelectedIndex = 0;
+            gateBox.DataSource = Enum.GetValues(typeof(Gates));
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = handler.MouseDown(propogator, (Vec2) e.Location, e.Button);
+            Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
+            bool toRefresh = handler.MouseDown(propogator, (Vec2) e.Location, e.Button, gate);
 
             if (toRefresh) Refresh();
         }
@@ -54,8 +51,6 @@ namespace WireForm
             if(toRefresh) Refresh();
         }
 
-
-        Point temp = new Point(1, 1);
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Queue<Gate> sources = new Queue<Gate>();
@@ -72,6 +67,7 @@ namespace WireForm
             {
                 gate.Draw(e.Graphics);
             }
+            if(handler.currentGate != null) handler.currentGate.Draw(e.Graphics);
 
             foreach (WireLine wireLine in propogator.wires) {
                 painter.DrawWireLine(e.Graphics, wireLine);
@@ -81,7 +77,7 @@ namespace WireForm
             {
                 for(int y = 0; y < 10; y++)
                 {
-                    e.Graphics.DrawRectangle(new Pen(Color.Gray, 1), new Rectangle(new Point(x * 50, y * 50), new Size(1, 1)));
+                    e.Graphics._DrawRectangle(Color.Gray, 1, x, y, .02f, .02f);
                 }
             }
         }
@@ -100,12 +96,33 @@ namespace WireForm
             if(e.KeyChar == 'c')
             {
                 propogator = new FlowPropogator();
-                //propogator.wires.Clear();
-                //propogator.Connections.Clear();
-                //propogator.gates.Clear();
+            }
+            if(e.KeyChar == '+' || e.KeyChar == '=')
+            {
+                GraphicsManager.SizeScale *= 1.1f;
+            }
+            if(e.KeyChar == '-')
+            {
+                GraphicsManager.SizeScale *= .9f;
             }
             Refresh();
         }
 
+        private void Form1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            float delta = e.Delta/40;
+            GraphicsManager.SizeScale += delta;
+            if(GraphicsManager.SizeScale > 70)
+            {
+                GraphicsManager.SizeScale = 70;
+            }
+            Refresh();
+        }
+
+        private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            handler.tool = (Tool)toolBox.SelectedIndex;
+            gateBox.Visible = handler.tool == Tool.GateController;
+        }
     }
 }

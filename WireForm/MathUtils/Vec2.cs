@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WireForm
+namespace WireForm.MathUtils
 {
     public struct Vec2 : IEquatable<Vec2>
     {
@@ -26,6 +26,8 @@ namespace WireForm
         }
 
         #region mathematical
+
+        //Vector to Vector
         public static Vec2 operator +(Vec2 a, Vec2 b)
         {
             return new Vec2(a.X + b.X, a.Y + b.Y);
@@ -36,6 +38,18 @@ namespace WireForm
             return new Vec2(a.X - b.X, a.Y - b.Y);
         }
 
+        //Vector to float
+        public static Vec2 operator *(Vec2 a, float b)
+        {
+            return new Vec2(a.X * b, a.Y * b);
+        }
+        public static Vec2 operator +(Vec2 a, float b)
+        {
+            return new Vec2(a.X + b, a.Y + b);
+        }
+        #endregion
+
+        //Casting
         public static explicit operator Point(Vec2 vec)
         {
             return new Point((int)vec.X, (int)vec.Y);
@@ -45,7 +59,6 @@ namespace WireForm
         {
             return new Vec2(pnt.X, pnt.Y);
         }
-        #endregion
 
         #region logical
         public bool Equals(Vec2 other)
@@ -81,6 +94,7 @@ namespace WireForm
         {
             return !a.Equals(b);
         }
+
 
         #endregion
 

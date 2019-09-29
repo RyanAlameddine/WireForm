@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WireForm.Circuitry.Gates.Utilities;
+using WireForm.GraphicsUtils;
+using WireForm.MathUtils;
 
-namespace WireForm.Gates
+namespace WireForm.Circuitry.Gates
 {
     public class BitSource : Gate
     {
-        public BitSource(Vec2 Position, Dictionary<Vec2, List<CircuitConnector>> connections) 
+        public BitSource(Vec2 Position) 
             : base(Position)
         {
             Inputs = new GatePin[0];
@@ -18,7 +17,8 @@ namespace WireForm.Gates
 
         protected override void draw(Graphics gfx)
         {
-            Painter.DrawGate(gfx, Position, Color.Green);
+            gfx._DrawRectangle(Color.Green, 10, Position.X - .4f, Position.Y - .4f, .8f, .8f);
+
         }
 
         protected override void compute()

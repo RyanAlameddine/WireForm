@@ -1,13 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WireForm.MathUtils;
 
-namespace WireForm.Gates
+namespace WireForm.Circuitry.Gates.Utilities
 {
     public class GatePin : CircuitConnector
     {
@@ -43,6 +38,11 @@ namespace WireForm.Gates
 
             this.LocalPoint = LocalStart;
             this.Value = Value;
+        }
+
+        public void RefreshLocation()
+        {
+            StartPoint = localPoint + Parent.Position;
         }
     }
 }

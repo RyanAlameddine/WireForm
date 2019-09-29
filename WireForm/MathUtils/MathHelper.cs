@@ -4,8 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WireForm.Circuitry;
 
-namespace WireForm
+namespace WireForm.MathUtils
 {
     public static class MathHelper
     {
@@ -23,6 +24,17 @@ namespace WireForm
         {
             return new Vec2(point1.X + point2.X, point1.Y + point2.Y);
         }
+
+        public static Vec2 ToInts(this Vec2 point)
+        {
+            return new Vec2((int)point.X, (int)point.Y);
+        }
+
+        public static Vec2 Round(this Vec2 point)
+        {
+            return new Vec2((float) Math.Round(point.X), (float) Math.Round(point.Y));
+        }
+
 
         public static bool IsContainedIn(this Vec2 point, WireLine line)
         {

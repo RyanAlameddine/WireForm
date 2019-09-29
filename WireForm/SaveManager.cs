@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WireForm.Gates;
+using WireForm.Circuitry;
+using WireForm.Circuitry.Gates;
+using WireForm.Circuitry.Gates.Utilities;
+using WireForm.MathUtils;
 
 namespace WireForm
 {

@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WireForm.Gates;
+using WireForm.Circuitry.Gates;
+using WireForm.Circuitry.Gates.Utilities;
+using WireForm.MathUtils;
 
-namespace WireForm
+namespace WireForm.Circuitry
 {
     public class FlowPropogator
     {
@@ -36,16 +35,25 @@ namespace WireForm
             bool exhausted = false;
 
             HashSet<WireLine> visitedWires = new HashSet<WireLine>();
-            HashSet<Gate> visitedGates = new HashSet<Gate>();
+            /// Gate and the amount of times it has been 'visited' (how many times an input has been updated)
+            Dictionary<Gate, int> visitedGates = new Dictionary<Gate, int>();
             for (var source = sources.Peek(); sources.Count > 0; )
             {
                 source = sources.Dequeue();
 
-                if (visitedGates.Contains(source))
+                if (visitedGates.ContainsKey(source))
                 {
-                    continue;
+                    //THIS CHECK MIGHT NEED TO BE CHANGED
+                    if (visitedGates[source] >= source.Inputs.Length)
+                    {
+                        continue;
+                    }
+                    visitedGates[source]++;
                 }
-                visitedGates.Add(source);
+                else
+                {
+                    visitedGates.Add(source, 1);
+                }
 
                 //Compute and Propogate
                 source.Compute();
@@ -59,6 +67,7 @@ namespace WireForm
                     }
                 }
 
+                //Check for 'error' wires and 'nothing' wires
                 if(sources.Count == 0 && !exhausted)
                 {
                     exhausted = true;
@@ -72,7 +81,7 @@ namespace WireForm
 
                     foreach (Gate gate in gates)
                     {
-                        if (!visitedGates.Contains(gate))
+                        if (!visitedGates.ContainsKey(gate) || visitedGates[gate] < gate.Inputs.Length)
                         {
                             foreach(GatePin input in gate.Inputs)
                             {

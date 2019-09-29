@@ -1,12 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WireForm.Circuitry.Gates.Utilities;
+using WireForm.GraphicsUtils;
+using WireForm.MathUtils;
 
-namespace WireForm.Gates
+namespace WireForm.Circuitry.Gates
 {
     public abstract class Gate
     {
@@ -49,6 +47,19 @@ namespace WireForm.Gates
         public void Compute()
         {
             compute();
+        }
+
+        public void RefreshLocation()
+        {
+            foreach (GatePin pin in Inputs)
+            {
+                pin.RefreshLocation();
+            }
+
+            foreach (GatePin pin in Outputs)
+            {
+                pin.RefreshLocation();
+            }
         }
     }
 }

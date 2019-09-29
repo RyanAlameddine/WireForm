@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using WireForm.Circuitry;
+using WireForm.Circuitry.Gates;
+using WireForm.Circuitry.Gates.Utilities;
+using WireForm.GraphicsUtils;
+using WireForm.MathUtils;
 
 namespace WireForm
 {
@@ -15,26 +14,36 @@ namespace WireForm
         WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
         WireLine secondaryCurrentLine;
 
-        Tool tool { get; set; }
+        public Gate currentGate { get; set; }
+
+        public Tool tool { get; set; }
 
         public InputHandler()
         {
-            tool = Tool.Painter;
+            tool = Tool.WirePainter;
         }
 
-        public bool MouseDown(FlowPropogator propogator, Vec2 position, MouseButtons button)
+        public bool MouseDown(FlowPropogator propogator, Vec2 position, MouseButtons button, Gates gate)
         {
             bool toRefresh = false;
-            Vec2 mousePoint = position.Plus(25).Times(1 / 50f);
-            if (tool == Tool.Painter)
+            Vec2 mousePoint = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+
+            if (button == MouseButtons.Left)
+            {
+                mouseLeftDown = true;
+            }
+            else if (button == MouseButtons.Right)
+            {
+                mouseRightDown = true;
+            }
+            
+            if (tool == Tool.WirePainter)
             {
                 if (button == MouseButtons.Left)
                 {
                     //Create Line
                     currentLine = new WireLine(mousePoint, mousePoint, true);
                     secondaryCurrentLine = new WireLine(mousePoint, mousePoint, false);
-                    mouseLeftDown = true;
-
 
                     //Register Line to draw
                     propogator.wires.Add(secondaryCurrentLine);
@@ -43,7 +52,6 @@ namespace WireForm
                 }
                 else if (button == MouseButtons.Right)
                 {
-                    mouseRightDown = true;
                     for (int i = 0; i < propogator.wires.Count; i++)
                     {
                         if (mousePoint.IsContainedIn(propogator.wires[i]))
@@ -58,15 +66,20 @@ namespace WireForm
             }
             else if(tool == Tool.GateController)
             {
-
+                if (mouseLeftDown)
+                {
+                    currentGate = newGate(gate, position);
+                    toRefresh = true;
+                }
             }
 
             return toRefresh;
-        } 
+        }
 
         public void MouseUp(FlowPropogator propogator)
         {
-            if (tool == Tool.Painter)
+
+            if (tool == Tool.WirePainter)
             {
                 mouseRightDown = false;
                 if (!mouseLeftDown)
@@ -84,7 +97,14 @@ namespace WireForm
             }
             else if (tool == Tool.GateController)
             {
+                if (mouseLeftDown)
+                {
+                    mouseLeftDown = false;
 
+                    propogator.gates.Add(currentGate);
+                    currentGate.RefreshLocation();
+                    currentGate.AddConnections(propogator.Connections);
+                }
             }
         }
 
@@ -94,14 +114,14 @@ namespace WireForm
             bool toRefresh = false;
 
             //Update End point
-            Vec2 newLocation = position.Plus(25).Times(1 / 50f);
+            Vec2 mousePoint = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
 
-            if (tool == Tool.Painter)
+            if (tool == Tool.WirePainter)
             {
                 if (mouseLeftDown)
                 {
-                    toRefresh = newLocation != secondaryCurrentLine.EndPoint;
-                    currentLine.EndPoint = newLocation;
+                    toRefresh = mousePoint != secondaryCurrentLine.EndPoint;
+                    currentLine.EndPoint = mousePoint;
 
                     //Define how curvature is drawn
                     if (currentLine.StartPoint.X == currentLine.EndPoint.X)
@@ -133,14 +153,14 @@ namespace WireForm
 
                 if (mouseRightDown)
                 {
-                    toRefresh = newLocation != currentLine.EndPoint;
+                    toRefresh = mousePoint != currentLine.EndPoint;
                     if (toRefresh)
                     {
                         for (int i = 0; i < propogator.wires.Count; i++)
                         {
-                            if (newLocation.IsContainedIn(propogator.wires[i]))
+                            if (mousePoint.IsContainedIn(propogator.wires[i]))
                             {
-                                WireLine.RemovePointFromWire(newLocation, propogator.Connections, propogator.wires, i);
+                                WireLine.RemovePointFromWire(mousePoint, propogator.Connections, propogator.wires, i);
 
                                 i = -1;
                             }
@@ -150,15 +170,38 @@ namespace WireForm
             }
             else if (tool == Tool.GateController)
             {
-
+                if (mouseLeftDown)
+                {
+                    if(mousePoint != currentGate.Position)
+                    {
+                        toRefresh = true;
+                    }
+                    currentGate.Position = mousePoint;
+                    currentGate.RefreshLocation();
+                }
             }
 
             return toRefresh;
         }
+
+
+        private Gate newGate(Gates gate, Vec2 Position)
+        {
+            switch (gate)
+            {
+                case Gates.BitSource:
+                    return new BitSource(Position);
+                case Gates.AndGate:
+                    return new AndGate(Position);
+                case Gates.NotGate:
+                    return new NotGate(Position);
+            }
+            throw new System.Exception("Gate doesn't exists");
+        }
     }
     public enum Tool
     {
-        Painter,
+        WirePainter,
         GateController
     }
 }
