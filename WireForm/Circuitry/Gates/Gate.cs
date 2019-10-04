@@ -3,6 +3,7 @@ using System.Drawing;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
+using WireForm.MathUtils.Collision;
 
 namespace WireForm.Circuitry.Gates
 {
@@ -12,11 +13,16 @@ namespace WireForm.Circuitry.Gates
         public GatePin[] Outputs { get; set; }
         public GatePin[] Inputs { get; set; }
 
+        public HitBox GateCollider { get; set; }
+
         public Gate(Vec2 Position)
         {
             this.Position = Position;
         }
 
+        /// <summary>
+        /// Adds gate pins in Inputs and Outputs to connections
+        /// </summary>
         public void AddConnections(Dictionary<Vec2, List<CircuitConnector>> connections)
         {
             foreach (GatePin input in Inputs)
@@ -49,6 +55,9 @@ namespace WireForm.Circuitry.Gates
             compute();
         }
 
+        /// <summary>
+        /// Refreshes the absolute position of the pins in Inputs and Outputs relative to the changed position of the Gate
+        /// </summary>
         public void RefreshLocation()
         {
             foreach (GatePin pin in Inputs)

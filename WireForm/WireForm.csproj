@@ -67,6 +67,7 @@
     <Compile Include="Circuitry\Gates\NotGate.cs" />
     <Compile Include="GraphicsUtils\GraphicsManager.cs" />
     <Compile Include="InputHandler.cs" />
+    <Compile Include="MathUtils\Collision\HitBox.cs" />
     <Compile Include="MathUtils\MathHelper.cs" />
     <Compile Include="GraphicsUtils\Painter.cs" />
     <Compile Include="Program.cs" />
