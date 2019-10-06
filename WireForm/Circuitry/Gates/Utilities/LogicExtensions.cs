@@ -30,16 +30,36 @@ namespace WireForm.Circuitry.Gates.Utilities
                 case BitValue.Error:
                     return BitValue.Error;
             }
-            throw new Exception("shouldnt happen");
+            throw new Exception("how tf did this happen");
         }
 
         public static BitValue And(this BitValue value1, BitValue value2)
         {
-            if(value1.isUndefined() || value2.isUndefined())
+            if(value1.isUndefined() || value2.isUndefined()) return BitValue.Error;
+
+            if (value1 == value2 && value1 == BitValue.One)
             {
-                return BitValue.Error;
+                return BitValue.One;
             }
-            if(value1 == value2 && value1 == BitValue.One)
+            return BitValue.Zero;
+        }
+
+        public static BitValue Or(this BitValue value1, BitValue value2)
+        {
+            if (value1.isUndefined() || value2.isUndefined()) return BitValue.Error;
+
+            if (value2 == BitValue.One || value1 == BitValue.One)
+            {
+                return BitValue.One;
+            }
+            return BitValue.Zero;
+        }
+
+        public static BitValue Xor(this BitValue value1, BitValue value2)
+        {
+            if (value1.isUndefined() || value2.isUndefined()) return BitValue.Error;
+
+            if (value1 != value2 && (value2 == BitValue.One || value1 == BitValue.One))
             {
                 return BitValue.One;
             }

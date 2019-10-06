@@ -10,6 +10,8 @@ namespace WireForm.Circuitry.Gates.Utilities
     {
         AndGate,
         BitSource,
-        NotGate
+        NotGate,
+        OrGate,
+        XorGate
     }
 }

@@ -9,7 +9,7 @@ using WireForm.MathUtils;
 
 namespace WireForm.GraphicsUtils
 {
-    class Painter
+    public class Painter
     {
 
         public void DrawWireLine(Graphics gfx, WireLine wireLine)

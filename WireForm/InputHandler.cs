@@ -78,7 +78,6 @@ namespace WireForm
 
         public void MouseUp(FlowPropogator propogator)
         {
-
             if (tool == Tool.WirePainter)
             {
                 mouseRightDown = false;
@@ -102,8 +101,9 @@ namespace WireForm
                     mouseLeftDown = false;
 
                     propogator.gates.Add(currentGate);
-                    currentGate.RefreshLocation();
+                    //currentGate.RefreshLocation();
                     currentGate.AddConnections(propogator.Connections);
+                    currentGate = null;
                 }
             }
         }
@@ -177,7 +177,7 @@ namespace WireForm
                         toRefresh = true;
                     }
                     currentGate.Position = mousePoint;
-                    currentGate.RefreshLocation();
+                    //currentGate.RefreshLocation();
                 }
             }
 
@@ -195,6 +195,10 @@ namespace WireForm
                     return new AndGate(Position);
                 case Gates.NotGate:
                     return new NotGate(Position);
+                case Gates.OrGate:
+                    return new OrGate(Position);
+                case Gates.XorGate:
+                    return new XorGate(Position);
             }
             throw new System.Exception("Gate doesn't exists");
         }

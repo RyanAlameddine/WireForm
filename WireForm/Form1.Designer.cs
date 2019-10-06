@@ -30,6 +30,8 @@
         {
             this.toolBox = new System.Windows.Forms.ComboBox();
             this.gateBox = new System.Windows.Forms.ComboBox();
+            this.debugger1 = new System.Windows.Forms.TextBox();
+            this.debugger2 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // toolBox
@@ -55,13 +57,34 @@
             this.gateBox.TabIndex = 1;
             this.gateBox.Visible = false;
             // 
+            // debugger1
+            // 
+            this.debugger1.Location = new System.Drawing.Point(688, 383);
+            this.debugger1.Name = "debugger1";
+            this.debugger1.Size = new System.Drawing.Size(100, 20);
+            this.debugger1.TabIndex = 2;
+            this.debugger1.Text = "0";
+            this.debugger1.TextChanged += new System.EventHandler(this.debugger1_TextChanged);
+            // 
+            // debugger2
+            // 
+            this.debugger2.Location = new System.Drawing.Point(688, 409);
+            this.debugger2.Name = "debugger2";
+            this.debugger2.Size = new System.Drawing.Size(100, 20);
+            this.debugger2.TabIndex = 3;
+            this.debugger2.Text = "0";
+            this.debugger2.TextChanged += new System.EventHandler(this.debugger2_TextChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.debugger2);
+            this.Controls.Add(this.debugger1);
             this.Controls.Add(this.gateBox);
             this.Controls.Add(this.toolBox);
+            this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -72,6 +95,7 @@
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseWheel);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -79,6 +103,8 @@
 
         private System.Windows.Forms.ComboBox toolBox;
         private System.Windows.Forms.ComboBox gateBox;
+        private System.Windows.Forms.TextBox debugger1;
+        private System.Windows.Forms.TextBox debugger2;
     }
 }
 

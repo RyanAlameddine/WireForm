@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
@@ -9,14 +11,34 @@ namespace WireForm.Circuitry.Gates
 {
     public abstract class Gate
     {
-        public Vec2 Position { get; set; }
+        [JsonIgnore]
+        private Vec2 position;
+        public Vec2 Position 
+        { 
+            get
+            {
+                return position;
+            }
+            set
+            {
+                Vec2 offset = value - position;
+                position = value;
+                HitBox.X += offset.X;
+                HitBox.Y += offset.Y;
+
+                RefreshPins();
+            }
+        }
+
         public GatePin[] Outputs { get; set; }
         public GatePin[] Inputs { get; set; }
 
-        public HitBox GateCollider { get; set; }
+        [JsonIgnore]
+        public BoxCollider HitBox { get; set; }
 
-        public Gate(Vec2 Position)
+        public Gate(Vec2 Position, BoxCollider HitBox)
         {
+            this.HitBox = HitBox;
             this.Position = Position;
         }
 
@@ -58,16 +80,29 @@ namespace WireForm.Circuitry.Gates
         /// <summary>
         /// Refreshes the absolute position of the pins in Inputs and Outputs relative to the changed position of the Gate
         /// </summary>
-        public void RefreshLocation()
+        private void RefreshPins()
         {
-            foreach (GatePin pin in Inputs)
+            if (Inputs == null)
             {
-                pin.RefreshLocation();
+                Debug.WriteLine("Pin Inputs null when refreshing");
             }
-
-            foreach (GatePin pin in Outputs)
+            else
             {
-                pin.RefreshLocation();
+                foreach (GatePin pin in Inputs)
+                {
+                    pin.RefreshLocation();
+                }
+            }
+            if (Outputs == null)
+            {
+                Debug.WriteLine("Pin Outputs null when refreshing");
+            }
+            else
+            {
+                foreach (GatePin pin in Outputs)
+                {
+                    pin.RefreshLocation();
+                }
             }
         }
     }
