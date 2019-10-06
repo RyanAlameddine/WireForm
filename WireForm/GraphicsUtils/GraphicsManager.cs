@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using WireForm.Circuitry;
-using WireForm.Circuitry.Gates;
+using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
+using WireForm.MathUtils.Collision;
 
 namespace WireForm.GraphicsUtils
 {
@@ -28,7 +29,7 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void Paint(Graphics gfx, Painter painter, Gate currentGate, FlowPropogator propogator)
+        public static void PropogateAndPaint(Graphics gfx, Painter painter, Gate currentGate, List<BoxCollider> collisions, List<BoxCollider> selections, FlowPropogator propogator)
         {
             Queue<Gate> sources = new Queue<Gate>();
             foreach (Gate gate in propogator.gates)
@@ -49,6 +50,11 @@ namespace WireForm.GraphicsUtils
             foreach (WireLine wireLine in propogator.wires)
             {
                 painter.DrawWireLine(gfx, wireLine);
+            }
+
+            foreach (BoxCollider collision in collisions)
+            {
+                gfx._FillRectangle(Color.FromArgb(128, 255, 0, 0), collision.X, collision.Y, collision.Width, collision.Height);
             }
 
             for (int x = 0; x < 10; x++)
@@ -96,6 +102,11 @@ namespace WireForm.GraphicsUtils
         public static void _DrawRectangle(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height)
         {
             gfx.DrawRectangle(new Pen(color, penWidth * scale / 50f), x * scale, y * scale, width * scale, height * scale);
+        }
+
+        public static void _FillRectangle(this Graphics gfx, Color color, float x, float y, float width, float height)
+        {
+            gfx.FillRectangle(new Pen(color, 1).Brush, x * scale, y * scale, width * scale, height * scale);
         }
     }
 }

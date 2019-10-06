@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Gates
+namespace WireForm.Circuitry.Gates.Utilities
 {
     public abstract class Gate
     {
         [JsonIgnore]
         private Vec2 position;
-        public Vec2 Position 
-        { 
+        public Vec2 Position
+        {
             get
             {
                 return position;
@@ -61,7 +60,10 @@ namespace WireForm.Circuitry.Gates
         public void Draw(Graphics gfx)
         {
             draw(gfx);
-            foreach(var output in Outputs)
+
+            //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
+
+            foreach (var output in Outputs)
             {
                 Painter.DrawPin(gfx, output.StartPoint, output.Value);
             }

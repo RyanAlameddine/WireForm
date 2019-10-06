@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using WireForm.Circuitry;
-using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 

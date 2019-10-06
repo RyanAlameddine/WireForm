@@ -10,7 +10,7 @@ namespace WireForm.Circuitry.Gates
     class XorGate : Gate
     {
         public XorGate(Vec2 Position)
-            : base(Position, new BoxCollider(-3, -1, 4, 2))
+            : base(Position, new BoxCollider(-3, -1.5f, 4, 3))
         {
             Inputs = new GatePin[] {
                 new GatePin(this, new Vec2(-3, -1), BitValue.Nothing),
@@ -36,8 +36,6 @@ namespace WireForm.Circuitry.Gates
 
             gfx._DrawArcC(Color.Black, 10, Position.X - 2.3f, Position.Y + 2, 8f, 7, 270, 60);
             gfx._DrawArcC(Color.Black, 10, Position.X - 2.3f, Position.Y - 2, 8f, 7, 90, -60);
-
-            gfx._DrawRectangle(Color.Red, 10, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace WireForm.Circuitry.Gates
     class NotGate : Gate
     {
         public NotGate(Vec2 Position)
-            : base(Position, new BoxCollider(-2, 0, 3, 0))
+            : base(Position, new BoxCollider(-2, -.5f, 2, 1))
         {
             Inputs = new GatePin[] {
                 new GatePin(this, new Vec2(-2, 0), BitValue.Nothing)

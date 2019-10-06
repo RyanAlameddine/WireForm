@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 

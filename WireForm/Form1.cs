@@ -16,7 +16,6 @@ namespace WireForm
         Painter painter = new Painter();
         InputHandler inputHandler = new InputHandler();
         FlowPropogator propogator = new FlowPropogator();
-        
 
         public Form1()
         {
@@ -53,7 +52,7 @@ namespace WireForm
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsManager.Paint(e.Graphics, painter, inputHandler.currentGate, propogator);
+            GraphicsManager.PropogateAndPaint(e.Graphics, painter, inputHandler.currentGate, inputHandler.intersectionBoxes, inputHandler.selections, propogator);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)

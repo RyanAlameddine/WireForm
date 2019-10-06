@@ -32,15 +32,20 @@ namespace WireForm.MathUtils.Collision
 
         public bool Intersects(BoxCollider other)
         {
-            BoxCollider intersectedRect = GetIntersection(other);
-            if(intersectedRect == BoxCollider.Zero)
+            return Intersects(other, out _);
+        }
+
+        public bool Intersects(BoxCollider other, out BoxCollider intersection)
+        {
+            intersection = GetIntersection(other);
+            if (intersection == null)
             {
                 return false;
             }
             return true;
         }
 
-        public BoxCollider GetIntersection(BoxCollider other)
+        private BoxCollider GetIntersection(BoxCollider other)
         {
             float x1 = Math.Max(this.X, other.X);
             float x2 = Math.Min(this.X + this.Width, other.X + other.Width);
@@ -52,17 +57,25 @@ namespace WireForm.MathUtils.Collision
                 return new BoxCollider(x1, y1, x2 - x1, y2 - y1);
             }
 
-            return BoxCollider.Zero;
+            return null;
         }
 
         public static bool operator ==(BoxCollider h1, BoxCollider h2)
         {
+            if (h1 is null)
+            {
+                return h2 is null;
+            }
+            if(h2 is null)
+            {
+                return false;
+            }
             return h1.Equals(h2);
         }
 
         public static bool operator !=(BoxCollider h1, BoxCollider h2)
         {
-            return !h1.Equals(h2);
+            return !(h1 == h2);
         }
 
         public bool Equals(BoxCollider other)

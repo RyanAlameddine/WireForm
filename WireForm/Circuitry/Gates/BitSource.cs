@@ -10,7 +10,7 @@ namespace WireForm.Circuitry.Gates
     public class BitSource : Gate
     {
         public BitSource(Vec2 Position) 
-            : base(Position, new BoxCollider(0, 0, 0, 0))
+            : base(Position, new BoxCollider(-.5f, -.5f, 1, 1))
         {
             Inputs = new GatePin[0];
             Outputs = new GatePin[] { new GatePin(this, new Vec2(), BitValue.One) };

@@ -10,7 +10,7 @@ namespace WireForm.Circuitry.Gates
     class AndGate : Gate
     {
         public AndGate(Vec2 Position)
-            : base(Position, new BoxCollider(-2, -1, 3, 2))
+            : base(Position, new BoxCollider(-2, -1.5f, 3, 3))
         {
             Inputs = new GatePin[] {
                 new GatePin(this, new Vec2(-2, -1), BitValue.Nothing),

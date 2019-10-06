@@ -36,6 +36,7 @@
             // 
             // toolBox
             // 
+            this.toolBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.toolBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolBox.FormattingEnabled = true;
             this.toolBox.Items.AddRange(new object[] {
@@ -49,6 +50,7 @@
             // 
             // gateBox
             // 
+            this.gateBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gateBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.gateBox.FormattingEnabled = true;
             this.gateBox.Location = new System.Drawing.Point(667, 39);
@@ -59,6 +61,7 @@
             // 
             // debugger1
             // 
+            this.debugger1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.debugger1.Location = new System.Drawing.Point(688, 383);
             this.debugger1.Name = "debugger1";
             this.debugger1.Size = new System.Drawing.Size(100, 20);
@@ -68,6 +71,7 @@
             // 
             // debugger2
             // 
+            this.debugger2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.debugger2.Location = new System.Drawing.Point(688, 409);
             this.debugger2.Name = "debugger2";
             this.debugger2.Size = new System.Drawing.Size(100, 20);

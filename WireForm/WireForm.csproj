@@ -61,7 +61,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Circuitry\Gates\BitSource.cs" />
-    <Compile Include="Circuitry\Gates\Gate.cs" />
+    <Compile Include="Circuitry\Gates\Utilities\Gate.cs" />
     <Compile Include="Circuitry\Gates\Utilities\GateEnum.cs" />
     <Compile Include="Circuitry\Gates\Utilities\GatePin.cs" />
     <Compile Include="Circuitry\Gates\Utilities\LogicExtensions.cs" />
