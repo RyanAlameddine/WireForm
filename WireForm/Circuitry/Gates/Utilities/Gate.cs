@@ -12,6 +12,9 @@ namespace WireForm.Circuitry.Gates.Utilities
     {
         [JsonIgnore]
         private Vec2 position;
+        /// <summary>
+        /// Position of the center of the Gate
+        /// </summary>
         public Vec2 Position
         {
             get
@@ -62,6 +65,7 @@ namespace WireForm.Circuitry.Gates.Utilities
             draw(gfx);
 
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
+            gfx._DrawEllipseC(Color.Black, 3, Position.X, Position.Y, .01f, .01f);
 
             foreach (var output in Outputs)
             {

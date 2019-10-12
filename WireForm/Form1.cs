@@ -20,6 +20,11 @@ namespace WireForm
         public Form1()
         {
             InitializeComponent();
+            this.SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint |
+                ControlStyles.DoubleBuffer,
+                true);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -30,8 +35,7 @@ namespace WireForm
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            bool toRefresh = inputHandler.MouseDown(propogator, (Vec2) e.Location, e.Button, gate);
+            bool toRefresh = inputHandler.MouseDown(propogator, (Vec2) e.Location, e.Button, null);
 
             if (toRefresh) Refresh();
         }
@@ -52,7 +56,7 @@ namespace WireForm
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsManager.PropogateAndPaint(e.Graphics, painter, inputHandler.currentGate, inputHandler.intersectionBoxes, inputHandler.selections, propogator);
+            GraphicsManager.PropogateAndPaint(e.Graphics, painter, inputHandler.currentGate, inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox,  propogator);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -96,7 +100,35 @@ namespace WireForm
         {
             inputHandler.tool = (Tool)toolBox.SelectedIndex;
             gateBox.Visible = inputHandler.tool == Tool.GateController;
+            gatePicBox.Visible = inputHandler.tool == Tool.GateController;
         }
+
+        private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gatePicBox.Refresh();
+        }
+
+        private void GatePicBox_Paint(object sender, PaintEventArgs e)
+        {
+            Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
+            Gate newGate = inputHandler.NewGate(gate, new Vec2(4, 2.5f));
+            var temp = GraphicsManager.SizeScale;
+            GraphicsManager.SizeScale = 15;
+            newGate.Draw(e.Graphics);
+
+            GraphicsManager.SizeScale = temp;
+        }
+
+        private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            //gatePicBox.Visible = false;
+            Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
+            inputHandler.MouseDown(propogator, (Vec2)e.Location, e.Button, gate);
+            Refresh();
+        }
+
+
+
 
         public static string debug1Value = "0";
         public static string debug2Value = "0";
@@ -118,5 +150,6 @@ namespace WireForm
                 Refresh();
             }
         }
+
     }
 }

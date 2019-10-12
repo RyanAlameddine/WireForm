@@ -60,6 +60,25 @@ namespace WireForm.MathUtils.Collision
             return null;
         }
 
+        /// <summary>
+        /// Returns a BoxCollider that contains the same area but all values for width and height are positive
+        /// </summary>
+        public BoxCollider GetNormalized()
+        {
+            BoxCollider newBox = new BoxCollider(X, Y, Width, Height);
+            if (newBox.Width < 0)
+            {
+                newBox.X += newBox.Width;
+                newBox.Width *= -1;
+            }
+            if (newBox.Height < 0)
+            {
+                newBox.Y += newBox.Height;
+                newBox.Height *= -1;
+            }
+            return newBox;
+        }
+
         public static bool operator ==(BoxCollider h1, BoxCollider h2)
         {
             if (h1 is null)

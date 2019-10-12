@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Gates.Utilities;
@@ -29,7 +30,9 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void PropogateAndPaint(Graphics gfx, Painter painter, Gate currentGate, List<BoxCollider> collisions, List<BoxCollider> selections, FlowPropogator propogator)
+        public static void PropogateAndPaint(Graphics gfx, Painter painter, 
+            Gate currentGate, List<BoxCollider> collisions, List<Gate> selections, BoxCollider mouseBox,
+            FlowPropogator propogator)
         {
             Queue<Gate> sources = new Queue<Gate>();
             foreach (Gate gate in propogator.gates)
@@ -57,6 +60,24 @@ namespace WireForm.GraphicsUtils
                 gfx._FillRectangle(Color.FromArgb(128, 255, 0, 0), collision.X, collision.Y, collision.Width, collision.Height);
             }
 
+            foreach (Gate selectedGate in selections)
+            {
+                BoxCollider selection = selectedGate.HitBox;
+                gfx._DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selection.X, selection.Y, selection.Width, selection.Height);
+                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X, selection.Y, .5f, .5f);
+                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X + selection.Width, selection.Y, .5f, .5f);
+                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X, selection.Y + selection.Height, .5f, .5f);
+                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X + selection.Width, selection.Y + selection.Height, .5f, .5f);
+            }
+
+            if (mouseBox != null)
+            {
+                BoxCollider newBox = mouseBox.GetNormalized();
+                gfx._DrawRectangle(Color.FromArgb(255, 0, 0, 255), 3, newBox.X, newBox.Y, newBox.Width, newBox.Height);
+                gfx._FillRectangle(Color.FromArgb(64, 128, 128, 255), newBox.X, newBox.Y, newBox.Width, newBox.Height);
+
+            }
+
             for (int x = 0; x < 10; x++)
             {
                 for (int y = 0; y < 10; y++)
@@ -81,9 +102,6 @@ namespace WireForm.GraphicsUtils
             gfx.DrawArc(new Pen(color, penWidth * scale / 50f), x * scale, y * scale, width * scale, height * scale, startAngle, sweepAngle);
         }
 
-        /// <summary>
-        /// Draws Arc from circle with the CENTER of the circle at (x, y)
-        /// </summary>
         public static void _DrawArcC(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height, float startAngle, float sweepAngle)
         {
             gfx.DrawArc(new Pen(color, penWidth * scale / 50f), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale, startAngle, sweepAngle);
@@ -94,9 +112,19 @@ namespace WireForm.GraphicsUtils
             gfx.DrawEllipse(new Pen(color, penWidth * scale / 50f), x * scale, y * scale, width * scale, height * scale);
         }
 
+        public static void _DrawEllipseC(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height)
+        {
+            gfx.DrawEllipse(new Pen(color, penWidth * scale / 50f), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
+        }
+
         public static void _FillEllipse(this Graphics gfx, Color color, float x, float y, float width, float height)
         {
             gfx.FillEllipse(new Pen(color, 1).Brush, x * scale, y * scale, width * scale, height * scale);
+        }
+
+        public static void _FillEllipseC(this Graphics gfx, Color color, float x, float y, float width, float height)
+        {
+            gfx.FillEllipse(new Pen(color, 1).Brush, (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
         }
 
         public static void _DrawRectangle(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height)

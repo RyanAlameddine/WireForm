@@ -10,14 +10,14 @@ namespace WireForm.Circuitry.Gates
     class NotGate : Gate
     {
         public NotGate(Vec2 Position)
-            : base(Position, new BoxCollider(-2, -.5f, 2, 1))
+            : base(Position, new BoxCollider(-1, -.5f, 2, 1))
         {
             Inputs = new GatePin[] {
-                new GatePin(this, new Vec2(-2, 0), BitValue.Nothing)
+                new GatePin(this, new Vec2(-1, 0), BitValue.Nothing)
             };
 
             Outputs = new GatePin[] {
-                new GatePin(this, new Vec2(), BitValue.Error)
+                new GatePin(this, new Vec2(1, 0), BitValue.Error)
             };
         }
 
@@ -28,10 +28,10 @@ namespace WireForm.Circuitry.Gates
 
         protected override void draw(Graphics gfx)
         {
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-2, .75f), Position + new Vec2(-2, -.75f));
+            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-1, .75f), Position + new Vec2(-1, -.75f));
 
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-2, .75f), Position + new Vec2());
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-2, -.75f), Position + new Vec2());
+            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-1, .75f), Position + new Vec2(1, 0));
+            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-1, -.75f), Position + new Vec2(1, 0));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Gates;
@@ -16,10 +17,29 @@ namespace WireForm
         WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
         WireLine secondaryCurrentLine;
 
+        /// <summary>
+        /// Gate held by mouse
+        /// </summary>
         public Gate currentGate { get; set; }
-        public List<BoxCollider> intersectionBoxes = new List<BoxCollider>();
-        public List<BoxCollider> selections = new List<BoxCollider>();
 
+        /// <summary>
+        /// Intersections of the currentGate with gates already on the board
+        /// </summary>
+        public List<BoxCollider> intersectionBoxes = new List<BoxCollider>();
+
+        /// <summary>
+        /// Gates which have been selected
+        /// </summary>
+        public List<Gate> selections = new List<Gate>();
+
+        /// <summary>
+        /// Mouse selection box
+        /// </summary>
+        public BoxCollider mouseBox = null;
+
+        /// <summary>
+        /// Tool selected (linked to dropdown on Form1)
+        /// </summary>
         public Tool tool { get; set; }
 
         public InputHandler()
@@ -27,10 +47,13 @@ namespace WireForm
             tool = Tool.WirePainter;
         }
 
-        public bool MouseDown(FlowPropogator propogator, Vec2 position, MouseButtons button, Gates gate)
+        public bool MouseDown(FlowPropogator propogator, Vec2 position, MouseButtons button, Gates? gate)
         {
             bool toRefresh = false;
-            Vec2 mousePoint = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+            ///Position of the mouse in local coordinates rounded to the nearest grid point
+            Vec2 mousePointGridded = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+            ///Position of the mouse in local coordinates unrounded
+            Vec2 mousePointAbsolute = position * (1 / GraphicsManager.SizeScale);
 
             if (button == MouseButtons.Left)
             {
@@ -41,14 +64,14 @@ namespace WireForm
                 mouseRightDown = true;
             }
             
-            //Tool - WirePainter
+            ///Tool - WirePainter
             if (tool == Tool.WirePainter)
             {
                 if (button == MouseButtons.Left)
                 {
                     //Create Line
-                    currentLine = new WireLine(mousePoint, mousePoint, true);
-                    secondaryCurrentLine = new WireLine(mousePoint, mousePoint, false);
+                    currentLine = new WireLine(mousePointGridded, mousePointGridded, true);
+                    secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false);
 
                     //Register Line to draw
                     propogator.wires.Add(secondaryCurrentLine);
@@ -60,9 +83,9 @@ namespace WireForm
                     //Erase Lines
                     for (int i = 0; i < propogator.wires.Count; i++)
                     {
-                        if (mousePoint.IsContainedIn(propogator.wires[i]))
+                        if (mousePointGridded.IsContainedIn(propogator.wires[i]))
                         {
-                            WireLine.RemovePointFromWire(mousePoint, propogator.Connections, propogator.wires, i);
+                            WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
 
                             i = -1;
                         }
@@ -70,18 +93,46 @@ namespace WireForm
                     toRefresh = true;
                 }
             }
-            //Tool - GateController
+            ///Tool - GateController
             else if (tool == Tool.GateController)
             {
-                //Create Gate
                 if (mouseLeftDown)
                 {
-                    if(GetIntersections(new BoxCollider(mousePoint.X, mousePoint.Y, 0, 0), propogator, out _, true))
-
-                    currentGate = newGate(gate, mousePoint);
-                    if (GetIntersections(currentGate.HitBox, propogator, out var intersectBoxes))
+                    //Already holding gate
+                    if(currentGate != null)
                     {
-                        intersectionBoxes = intersectBoxes;
+
+                    }
+                    //Create new Gate
+                    else if(gate != null)
+                    {
+                        selections.Clear();
+                        currentGate = NewGate((Gates) gate, mousePointGridded);
+                        selections.Add(currentGate);
+                        if (GetIntersections(currentGate.HitBox, propogator, out var intersectBoxes, out _))
+                        {
+                            intersectionBoxes = intersectBoxes;
+                        }
+                    }
+                    //Select gate with mouse
+                    else if (GetIntersections(new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0), propogator, out _, out var gates, false))
+                    {
+                        //In the undefined case of multiple hits from a single mouse click, only deal with the first
+                        Gate clickedGate = gates[0];
+
+                        if (!selections.Contains(clickedGate))
+                        {
+                            selections.Clear();
+                            selections.Add(clickedGate);
+                        }
+
+                        currentGate = clickedGate;
+                    }
+                    //Draw selection box
+                    else
+                    {
+                        selections.Clear();
+                        mouseBox = new BoxCollider(mousePointAbsolute.X, mousePointAbsolute.Y, 0, 0);
                     }
                     toRefresh = true;
                 }
@@ -113,21 +164,27 @@ namespace WireForm
             //Tool - GateController
             else if (tool == Tool.GateController)
             {
-                
                 if (mouseLeftDown)
                 {
-                    //Validate Gate
                     mouseLeftDown = false;
-
-                    if (GetIntersections(currentGate.HitBox, propogator, out var intersections))
+                    if(currentGate == null)
                     {
+                        mouseBox = null;
+                    }
+                    //Gate location invalid
+                    else if (GetIntersections(currentGate.HitBox, propogator, out var intersections, out _))
+                    {
+
+                        selections.Clear();
                         intersectionBoxes.Clear();
                         currentGate = null;
                         return;
                     }
+                    //Gate location valid
                     else
                     {
                         propogator.gates.Add(currentGate);
+                        selections.Clear();
 
                         currentGate.AddConnections(propogator.Connections);
                         currentGate = null;
@@ -141,8 +198,11 @@ namespace WireForm
             //Refresh if updated
             bool toRefresh = false;
 
-            //Update End point
-            Vec2 mousePoint = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+            ///Position of the mouse in local coordinates rounded to the nearest grid point
+            Vec2 mousePointGridded = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+            ///Position of the mouse in local coordinates unrounded
+            Vec2 mousePointAbsolute = position * (1 / GraphicsManager.SizeScale);
+
 
             //Tool - WirePainter
             if (tool == Tool.WirePainter)
@@ -150,8 +210,8 @@ namespace WireForm
                 if (mouseLeftDown)
                 {
                     //Update WireLine
-                    toRefresh = mousePoint != secondaryCurrentLine.EndPoint;
-                    currentLine.EndPoint = mousePoint;
+                    toRefresh = mousePointGridded != secondaryCurrentLine.EndPoint;
+                    currentLine.EndPoint = mousePointGridded;
 
                     //Define how curvature is drawn
                     if (currentLine.StartPoint.X == currentLine.EndPoint.X)
@@ -183,14 +243,14 @@ namespace WireForm
                 if (mouseRightDown)
                 {
                     //Remove wires
-                    toRefresh = mousePoint != currentLine.EndPoint;
+                    toRefresh = mousePointGridded != currentLine.EndPoint;
                     if (toRefresh)
                     {
                         for (int i = 0; i < propogator.wires.Count; i++)
                         {
-                            if (mousePoint.IsContainedIn(propogator.wires[i]))
+                            if (mousePointGridded.IsContainedIn(propogator.wires[i]))
                             {
-                                WireLine.RemovePointFromWire(mousePoint, propogator.Connections, propogator.wires, i);
+                                WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
 
                                 i = -1;
                             }
@@ -201,13 +261,25 @@ namespace WireForm
             //Tool - GateController
             else if (tool == Tool.GateController)
             {
-                //Move current Gate
                 if (mouseLeftDown)
                 {
-                    if (mousePoint != currentGate.Position)
+                    //Drag mouse box
+                    if(currentGate == null)
+                    {
+                        mouseBox.Width = mousePointAbsolute.X - mouseBox.X;
+                        mouseBox.Height = mousePointAbsolute.Y - mouseBox.Y;
+
+                        //Find all selections
+                        GetIntersections(mouseBox.GetNormalized(), propogator, out _, out var gates);
+                        selections = gates;
+
+                        toRefresh = true;
+                    }
+                    //Move current Gate
+                    else if (mousePointGridded != currentGate.Position)
                     {
                         toRefresh = true;
-                        currentGate.Position = mousePoint;
+                        currentGate.Position = mousePointGridded;
 
                         if (GetIntersections(currentGate.HitBox, propogator, out var intersections, out _))
                         {
@@ -251,7 +323,7 @@ namespace WireForm
             return true;
         }
 
-        private Gate newGate(Gates gate, Vec2 Position)
+        public Gate NewGate(Gates gate, Vec2 Position)
         {
             switch (gate)
             {
