@@ -12,12 +12,7 @@ namespace WireForm.MathUtils
         public float X { get; set; }
         public float Y { get; set; }
 
-        public Vec2 Zero {
-            get
-            {
-                return new Vec2(0, 0);
-            }
-        }
+        public static Vec2 Zero => new Vec2(0, 0);
 
         public Vec2(float X, float Y)
         {

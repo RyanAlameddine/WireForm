@@ -30,8 +30,8 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void PropogateAndPaint(Graphics gfx, Painter painter, 
-            Gate currentGate, List<BoxCollider> collisions, List<Gate> selections, BoxCollider mouseBox,
+        public static void PropogateAndPaint(Graphics gfx, Painter painter,
+            HashSet<BoxCollider> collisions, HashSet<Gate> selections, BoxCollider mouseBox,
             FlowPropogator propogator)
         {
             Queue<Gate> sources = new Queue<Gate>();
@@ -48,7 +48,6 @@ namespace WireForm.GraphicsUtils
             {
                 gate.Draw(gfx);
             }
-            if (currentGate != null) currentGate.Draw(gfx);
 
             foreach (WireLine wireLine in propogator.wires)
             {
@@ -62,12 +61,22 @@ namespace WireForm.GraphicsUtils
 
             foreach (Gate selectedGate in selections)
             {
+                selectedGate.Draw(gfx);
+
                 BoxCollider selection = selectedGate.HitBox;
                 gfx._DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selection.X, selection.Y, selection.Width, selection.Height);
                 gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X, selection.Y, .5f, .5f);
                 gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X + selection.Width, selection.Y, .5f, .5f);
                 gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X, selection.Y + selection.Height, .5f, .5f);
                 gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X + selection.Width, selection.Y + selection.Height, .5f, .5f);
+            }
+            
+            foreach(var key in propogator.Connections.Keys)
+            {
+                foreach(var value in propogator.Connections[key])
+                {
+                    gfx._DrawEllipseC(Color.FromArgb(255, 0, 128, 128), 5, key.X, key.Y, .5f, .5f);
+                }
             }
 
             if (mouseBox != null)

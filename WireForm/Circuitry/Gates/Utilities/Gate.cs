@@ -59,6 +59,21 @@ namespace WireForm.Circuitry.Gates.Utilities
             }
         }
 
+        /// <summary>
+        /// Removes gate pins in Inputs and Outputs from connections
+        /// </summary>
+        public void RemoveConnections(Dictionary<Vec2, List<CircuitConnector>> connections)
+        {
+            foreach (GatePin input in Inputs)
+            {
+                connections.RemoveConnection(input);
+            }
+            foreach (GatePin output in Outputs)
+            {
+                connections.RemoveConnection(output);
+            }
+        }
+
         protected abstract void draw(Graphics gfx);
         public void Draw(Graphics gfx)
         {

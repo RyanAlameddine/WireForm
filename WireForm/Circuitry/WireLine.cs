@@ -47,6 +47,12 @@ namespace WireForm.Circuitry
                             wires.Add(wire2);
                             wires[wires.Count - 1].Validate(wires, connections);
                         }
+                        else
+                        {
+                            //Refresh wire by tapping on it
+                            RemoveConnections(wires[i], connections);
+                            wires[i].Validate(wires, connections);
+                        }
                         return;
                     }
                 }

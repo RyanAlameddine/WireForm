@@ -17,6 +17,19 @@ namespace WireForm
             connections[connector.StartPoint].Add(connector);
         }
 
+        public static void RemoveConnection(this Dictionary<Vec2, List<CircuitConnector>> connections, CircuitConnector connector)
+        {
+            connections[connector.StartPoint].Remove(connector);
+        }
+
+        public static void AddRange<T>(this HashSet<T> set1, HashSet<T> set2)
+        {
+            foreach(var t in set2)
+            {
+                set1.Add(t);
+            }
+        }
+
         public static Color BitColor(this BitValue value)
         {
             switch (value)

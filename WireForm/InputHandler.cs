@@ -12,25 +12,11 @@ namespace WireForm
 {
     public class InputHandler
     {
-        bool mouseLeftDown = false;
-        bool mouseRightDown = false;
-        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
-        WireLine secondaryCurrentLine;
 
         /// <summary>
-        /// Gate held by mouse
+        /// Tool selected (linked to dropdown on Form1)
         /// </summary>
-        public Gate currentGate { get; set; }
-
-        /// <summary>
-        /// Intersections of the currentGate with gates already on the board
-        /// </summary>
-        public List<BoxCollider> intersectionBoxes = new List<BoxCollider>();
-
-        /// <summary>
-        /// Gates which have been selected
-        /// </summary>
-        public List<Gate> selections = new List<Gate>();
+        public Tool tool { get; set; }
 
         /// <summary>
         /// Mouse selection box
@@ -38,17 +24,52 @@ namespace WireForm
         public BoxCollider mouseBox = null;
 
         /// <summary>
-        /// Tool selected (linked to dropdown on Form1)
+        /// Intersections of the currentGate with gates already on the board
         /// </summary>
-        public Tool tool { get; set; }
+        public HashSet<BoxCollider> intersectionBoxes = new HashSet<BoxCollider>();
+
+
+        /// <summary>
+        /// Gates which have been selected
+        /// </summary>
+        public HashSet<Gate> selections = new HashSet<Gate>();
+        /// <summary>
+        /// Gates which have already been selected, but are being added onto by a mouse drag with additiveSelection=true
+        /// </summary>
+        private HashSet<Gate> preSelections = new HashSet<Gate>();
+        /// <summary>
+        /// Gate held by mouse
+        /// </summary>
+        private Gate currentGate;
+        /// <summary>
+        /// Original position of current gate held by mouse. Will be null if the gate was just created
+        /// </summary>
+        private Vec2? OGPosition = null;
+        /// <summary>
+        /// true if the gate has been moved during this drag session
+        /// </summary>
+        private bool gateMoved = false;
+        private bool additiveSelection = false;
+
+        bool mouseLeftDown = false;
+        bool mouseRightDown = false;
+
+        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
+        WireLine secondaryCurrentLine;
 
         public InputHandler()
         {
             tool = Tool.WirePainter;
         }
 
-        public bool MouseDown(FlowPropogator propogator, Vec2 position, MouseButtons button, Gates? gate)
+
+        /// <param name="position">Mouse location</param>
+        /// <param name="additiveSelection">Should selection operations clear the selection list before adding more. This bool is usually synonomous to whether or not the shift key is pressed</param>
+        /// <param name="gate">The gate to be created from this click</param>
+        /// <returns></returns>
+        public bool MouseDown(FlowPropogator propogator, Vec2 position, MouseButtons button, bool additiveSelection, Gates? gate)
         {
+            this.additiveSelection = additiveSelection;
             bool toRefresh = false;
             ///Position of the mouse in local coordinates rounded to the nearest grid point
             Vec2 mousePointGridded = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
@@ -78,7 +99,7 @@ namespace WireForm
                     propogator.wires.Add(currentLine);
                     toRefresh = true;
                 }
-                else if (button == MouseButtons.Right)
+                else if (!mouseLeftDown && button == MouseButtons.Right)
                 {
                     //Erase Lines
                     for (int i = 0; i < propogator.wires.Count; i++)
@@ -98,8 +119,9 @@ namespace WireForm
             {
                 if (mouseLeftDown)
                 {
+                    gateMoved = false;
                     //Already holding gate
-                    if(currentGate != null)
+                    if (currentGate != null)
                     {
 
                     }
@@ -118,12 +140,31 @@ namespace WireForm
                     else if (GetIntersections(new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0), propogator, out _, out var gates, false))
                     {
                         //In the undefined case of multiple hits from a single mouse click, only deal with the first
-                        Gate clickedGate = gates[0];
+                        Gate clickedGate = null;
+                        foreach (var v in gates)
+                        {
+                            clickedGate = v;
+                        }
+
+                        OGPosition = clickedGate.Position;
 
                         if (!selections.Contains(clickedGate))
                         {
-                            selections.Clear();
+                            if (!additiveSelection)
+                            {
+                                selections.Clear();
+                            }
                             selections.Add(clickedGate);
+                        } else if (additiveSelection)
+                        {
+                            selections.Remove(clickedGate);
+                            return true;
+                        }
+
+                        foreach(var selection in selections)
+                        {
+                            propogator.gates.Remove(selection);
+                            selection.RemoveConnections(propogator.Connections);
                         }
 
                         currentGate = clickedGate;
@@ -131,7 +172,18 @@ namespace WireForm
                     //Draw selection box
                     else
                     {
-                        selections.Clear();
+                        if (!additiveSelection)
+                        {
+                            selections.Clear();
+                        }
+                        else
+                        {
+                            preSelections.Clear();
+                            foreach(var selection in selections)
+                            {
+                                preSelections.Add(selection);
+                            }
+                        }
                         mouseBox = new BoxCollider(mousePointAbsolute.X, mousePointAbsolute.Y, 0, 0);
                     }
                     toRefresh = true;
@@ -164,30 +216,81 @@ namespace WireForm
             //Tool - GateController
             else if (tool == Tool.GateController)
             {
+                mouseRightDown = false;
                 if (mouseLeftDown)
                 {
                     mouseLeftDown = false;
-                    if(currentGate == null)
+                    //Controlling mouse box
+                    if (currentGate == null)
                     {
                         mouseBox = null;
                     }
-                    //Gate location invalid
-                    else if (GetIntersections(currentGate.HitBox, propogator, out var intersections, out _))
-                    {
-
-                        selections.Clear();
-                        intersectionBoxes.Clear();
-                        currentGate = null;
-                        return;
-                    }
-                    //Gate location valid
+                    //Controlling gates
                     else
                     {
-                        propogator.gates.Add(currentGate);
-                        selections.Clear();
+                        bool intersected = GetIntersections(currentGate.HitBox, propogator, out _, out _);
+                        if (!intersected)
+                        {
+                            foreach(var selection in selections)
+                            {
+                                if(GetIntersections(selection.HitBox, propogator, out _, out _))
+                                {
+                                    intersected = true;
+                                }
+                            }
+                        }
 
-                        currentGate.AddConnections(propogator.Connections);
-                        currentGate = null;
+                        //Gate location invalid
+                        if (intersected)
+                        {
+                            //New gate - delete gate
+                            if (OGPosition == null)
+                            {
+                                selections.Clear();
+                                intersectionBoxes.Clear();
+                                currentGate = null;
+                            }
+                            else
+                            {
+                                //Pre-existing gate - move gates back to how they were originally
+
+                                Vec2 toOffset = currentGate.Position - (Vec2)OGPosition;
+
+                                foreach (var selection in selections)
+                                {
+                                    selection.Position -= toOffset;
+
+                                    propogator.gates.Add(selection);
+                                    selection.AddConnections(propogator.Connections);
+
+                                }
+
+                                OGPosition = null;
+
+                                intersectionBoxes.Clear();
+                                currentGate = null;
+                            }
+                        }
+                        //Gate location valid
+                        else
+                        { 
+                            foreach (var selection in selections)
+                            {
+                                propogator.gates.Add(selection);
+                                selection.AddConnections(propogator.Connections);
+                            }
+                            if (!gateMoved && !additiveSelection)
+                            {
+                                selections.Clear();
+                                selections.Add(currentGate);
+                            }
+
+                            //selections.Clear();
+                            OGPosition = null;
+
+                            currentGate = null;
+                        }
+                        gateMoved = false;
                     }
                 }
             }
@@ -240,7 +343,7 @@ namespace WireForm
                         currentLine.EndPoint = currentLineNewEnd;
                     }
                 }
-                if (mouseRightDown)
+                else if (mouseRightDown)
                 {
                     //Remove wires
                     toRefresh = mousePointGridded != currentLine.EndPoint;
@@ -266,12 +369,17 @@ namespace WireForm
                     //Drag mouse box
                     if(currentGate == null)
                     {
+                        if (mouseBox == null) return false;
                         mouseBox.Width = mousePointAbsolute.X - mouseBox.X;
                         mouseBox.Height = mousePointAbsolute.Y - mouseBox.Y;
 
                         //Find all selections
                         GetIntersections(mouseBox.GetNormalized(), propogator, out _, out var gates);
                         selections = gates;
+                        if(additiveSelection)
+                        {
+                            selections.AddRange(preSelections);
+                        }
 
                         toRefresh = true;
                     }
@@ -279,15 +387,22 @@ namespace WireForm
                     else if (mousePointGridded != currentGate.Position)
                     {
                         toRefresh = true;
-                        currentGate.Position = mousePointGridded;
 
-                        if (GetIntersections(currentGate.HitBox, propogator, out var intersections, out _))
+                        Vec2 offset = mousePointGridded - currentGate.Position;
+
+                        //Offset selections by mouse movement and draw intersection boxes
+                        if (offset != Vec2.Zero)
                         {
-                            intersectionBoxes = intersections;
-                        }
-                        else
-                        {
+                            gateMoved = true;
                             intersectionBoxes.Clear();
+                            foreach (var selection in selections)
+                            {
+                                selection.Position += offset;
+                                if (GetIntersections(selection.HitBox, propogator, out var intersects, out _))
+                                {
+                                    intersectionBoxes.AddRange(intersects);
+                                }
+                            }
                         }
                     }
                 }
@@ -301,10 +416,10 @@ namespace WireForm
         /// </summary>
         /// <param name="intersectBoxes">The rectangles for the intersections</param>
         /// <returns>Did the BoxCollider intersect with anything</returns>
-        private bool GetIntersections(BoxCollider hitBox, FlowPropogator propogator, out List<BoxCollider> intersectBoxes, out List<Gate> intersectedGates, bool only2D = true)
+        private bool GetIntersections(BoxCollider hitBox, FlowPropogator propogator, out HashSet<BoxCollider> intersectBoxes, out HashSet<Gate> intersectedGates, bool only2D = true)
         {
-            intersectBoxes = new List<BoxCollider>();
-            intersectedGates = new List<Gate>();
+            intersectBoxes = new HashSet<BoxCollider>();
+            intersectedGates = new HashSet<Gate>();
             foreach(Gate gate in propogator.gates)
             {
                 BoxCollider collider = gate.HitBox;

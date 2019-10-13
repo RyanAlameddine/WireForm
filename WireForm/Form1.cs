@@ -35,7 +35,7 @@ namespace WireForm
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseDown(propogator, (Vec2) e.Location, e.Button, null);
+            bool toRefresh = inputHandler.MouseDown(propogator, (Vec2) e.Location, e.Button, ModifierKeys.HasFlag(Keys.Shift), null);
 
             if (toRefresh) Refresh();
         }
@@ -56,7 +56,7 @@ namespace WireForm
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsManager.PropogateAndPaint(e.Graphics, painter, inputHandler.currentGate, inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox,  propogator);
+            GraphicsManager.PropogateAndPaint(e.Graphics, painter, inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox,  propogator);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -101,6 +101,9 @@ namespace WireForm
             inputHandler.tool = (Tool)toolBox.SelectedIndex;
             gateBox.Visible = inputHandler.tool == Tool.GateController;
             gatePicBox.Visible = inputHandler.tool == Tool.GateController;
+
+            inputHandler.selections.Clear();
+            Refresh();
         }
 
         private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -121,14 +124,10 @@ namespace WireForm
 
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
-            //gatePicBox.Visible = false;
             Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            inputHandler.MouseDown(propogator, (Vec2)e.Location, e.Button, gate);
+            inputHandler.MouseDown(propogator, (Vec2)e.Location, e.Button, false, gate);
             Refresh();
         }
-
-
-
 
         public static string debug1Value = "0";
         public static string debug2Value = "0";
@@ -143,7 +142,6 @@ namespace WireForm
 
         private void debugger2_TextChanged(object sender, EventArgs e)
         {
-
             if (debugger2.Text != "")
             {
                 debug2Value = debugger2.Text;
