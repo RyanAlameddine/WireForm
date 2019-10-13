@@ -30,8 +30,8 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void PropogateAndPaint(Graphics gfx, Painter painter,
-            HashSet<BoxCollider> collisions, HashSet<Gate> selections, BoxCollider mouseBox,
+        public static void PropogateAndPaint(Graphics gfx, Painter painter, Vec2 viewportSize,
+            HashSet<BoxCollider> collisions, HashSet<Gate> selections, BoxCollider mouseBox, HashSet<BoxCollider> resetBoxes,
             FlowPropogator propogator)
         {
             Queue<Gate> sources = new Queue<Gate>();
@@ -51,7 +51,7 @@ namespace WireForm.GraphicsUtils
 
             foreach (WireLine wireLine in propogator.wires)
             {
-                painter.DrawWireLine(gfx, wireLine);
+                painter.DrawWireLine(gfx, propogator, wireLine);
             }
 
             foreach (BoxCollider collision in collisions)
@@ -75,7 +75,10 @@ namespace WireForm.GraphicsUtils
             {
                 foreach(var value in propogator.Connections[key])
                 {
-                    gfx._DrawEllipseC(Color.FromArgb(255, 0, 128, 128), 5, key.X, key.Y, .5f, .5f);
+                    if (value is GatePin)
+                    {
+                        gfx._DrawEllipseC(Color.FromArgb(255, 0, 128, 128), 5, key.X, key.Y, .5f, .5f);
+                    }
                 }
             }
 
@@ -87,11 +90,19 @@ namespace WireForm.GraphicsUtils
 
             }
 
-            for (int x = 0; x < 10; x++)
+            if (collisions.Count > 0)
             {
-                for (int y = 0; y < 10; y++)
+                foreach (var resetBox in resetBoxes)
                 {
-                    gfx._DrawRectangle(Color.Gray, 1, x, y, .02f, .02f);
+                    gfx._FillRectangle(Color.FromArgb(64, 128, 128, 255), resetBox.X, resetBox.Y, resetBox.Width, resetBox.Height);
+                }
+            }
+
+            for (int x = 0; x * SizeScale < viewportSize.X; x++)
+            {
+                for (int y = 0; y * SizeScale < viewportSize.Y; y++)
+                {
+                    gfx._FillRectangleC(Color.Gray, x, y, .02f, .02f);
                 }
             }
         }
@@ -144,6 +155,11 @@ namespace WireForm.GraphicsUtils
         public static void _FillRectangle(this Graphics gfx, Color color, float x, float y, float width, float height)
         {
             gfx.FillRectangle(new Pen(color, 1).Brush, x * scale, y * scale, width * scale, height * scale);
+        }
+
+        public static void _FillRectangleC(this Graphics gfx, Color color, float x, float y, float width, float height)
+        {
+            gfx.FillRectangle(new Pen(color, 1).Brush, (x - width/2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
         }
     }
 }

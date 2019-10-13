@@ -56,7 +56,7 @@ namespace WireForm
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsManager.PropogateAndPaint(e.Graphics, painter, inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox,  propogator);
+            GraphicsManager.PropogateAndPaint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, propogator);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)

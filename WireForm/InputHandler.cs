@@ -46,6 +46,10 @@ namespace WireForm
         /// </summary>
         private Vec2? OGPosition = null;
         /// <summary>
+        /// Original hitbox of the selected gates being moved by the mouse. Only used for drawing
+        /// </summary>
+        public HashSet<BoxCollider> resetBoxes = new HashSet<BoxCollider>();
+        /// <summary>
         /// true if the gate has been moved during this drag session
         /// </summary>
         private bool gateMoved = false;
@@ -147,6 +151,7 @@ namespace WireForm
                         }
 
                         OGPosition = clickedGate.Position;
+                        resetBoxes.Clear();
 
                         if (!selections.Contains(clickedGate))
                         {
@@ -163,6 +168,7 @@ namespace WireForm
 
                         foreach(var selection in selections)
                         {
+                            resetBoxes.Add(selection.HitBox.Copy());
                             propogator.gates.Remove(selection);
                             selection.RemoveConnections(propogator.Connections);
                         }
@@ -266,6 +272,7 @@ namespace WireForm
                                 }
 
                                 OGPosition = null;
+                                resetBoxes.Clear();
 
                                 intersectionBoxes.Clear();
                                 currentGate = null;
@@ -285,8 +292,8 @@ namespace WireForm
                                 selections.Add(currentGate);
                             }
 
-                            //selections.Clear();
                             OGPosition = null;
+                            resetBoxes.Clear();
 
                             currentGate = null;
                         }
@@ -420,10 +427,10 @@ namespace WireForm
         {
             intersectBoxes = new HashSet<BoxCollider>();
             intersectedGates = new HashSet<Gate>();
-            foreach(Gate gate in propogator.gates)
+            foreach (Gate gate in propogator.gates)
             {
                 BoxCollider collider = gate.HitBox;
-                if(hitBox.Intersects(collider, out var intersection))
+                if (hitBox.Intersects(collider, out var intersection))
                 {
                     if (only2D && (intersection.Width == 0 || intersection.Height == 0)) continue;
                     intersectedGates.Add(gate);
@@ -431,7 +438,18 @@ namespace WireForm
                 }
             }
 
-            if(intersectBoxes.Count == 0)
+            foreach (WireLine wire in propogator.wires)
+            {
+                BoxCollider collider = gate.HitBox;
+                if (hitBox.Intersects(collider, out var intersection))
+                {
+                    if (only2D && (intersection.Width == 0 || intersection.Height == 0)) continue;
+                    intersectedGates.Add(gate);
+                    intersectBoxes.Add(intersection);
+                }
+            }
+
+            if (intersectBoxes.Count == 0)
             {
                 return false;
             }

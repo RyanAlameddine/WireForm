@@ -127,5 +127,10 @@ namespace WireForm.MathUtils.Collision
             hashCode = hashCode * -1521134295 + Height.GetHashCode();
             return hashCode;
         }
+
+        public BoxCollider Copy()
+        {
+            return new BoxCollider(X, Y, Width, Height);
+        }
     }
 }

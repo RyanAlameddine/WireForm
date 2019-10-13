@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using WireForm.MathUtils;
+using WireForm.MathUtils.Collision;
 
 namespace WireForm.Circuitry
 {
@@ -8,6 +9,14 @@ namespace WireForm.Circuitry
     {
         public override Vec2 StartPoint { get; set; }
         public Vec2 EndPoint { get; set; }
+
+        public BoxCollider Collider
+        {
+            get
+            {
+                return new BoxCollider(StartPoint.X, StartPoint.Y, EndPoint.X - StartPoint.X, EndPoint.Y - StartPoint.Y).GetNormalized();
+            }
+        }
 
         [JsonIgnore]
         public bool XPriority { get; set; }
