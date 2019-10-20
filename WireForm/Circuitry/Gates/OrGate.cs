@@ -30,10 +30,15 @@ namespace WireForm.Circuitry.Gates
         protected override void draw(Graphics gfx)
         {
 
-            gfx._DrawArcC(Color.Black, 10, Position.X - 3.5f - .75f, Position.Y, 5, 5, 321, 78);
+            gfx._DrawArcC(Color.Black, 10, StartPoint.X - 3.5f - .75f, StartPoint.Y, 5, 5, 321, 78);
             
-            gfx._DrawArcC(Color.Black, 10, Position.X - 2.3f, Position.Y + 2, 8f, 7, 270, 60);
-            gfx._DrawArcC(Color.Black, 10, Position.X - 2.3f, Position.Y - 2, 8f, 7, 90, -60);
+            gfx._DrawArcC(Color.Black, 10, StartPoint.X - 2.3f, StartPoint.Y + 2, 8f, 7, 270, 60);
+            gfx._DrawArcC(Color.Black, 10, StartPoint.X - 2.3f, StartPoint.Y - 2, 8f, 7, 90, -60);
+        }
+
+        public override CircuitObject Copy()
+        {
+            return new OrGate(StartPoint);
         }
     }
 }

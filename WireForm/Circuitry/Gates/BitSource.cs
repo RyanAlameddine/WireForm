@@ -18,13 +18,18 @@ namespace WireForm.Circuitry.Gates
 
         protected override void draw(Graphics gfx)
         {
-            gfx._DrawRectangle(Color.Green, 10, Position.X - .4f, Position.Y - .4f, .8f, .8f);
+            gfx._DrawRectangle(Color.Green, 10, StartPoint.X - .4f, StartPoint.Y - .4f, .8f, .8f);
 
         }
 
         protected override void compute()
         {
             Outputs[0].Value = BitValue.One;
+        }
+
+        public override CircuitObject Copy()
+        {
+            return new BitSource(StartPoint);
         }
     }
 }

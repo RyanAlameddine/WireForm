@@ -15,7 +15,7 @@ namespace WireForm
     {
         Painter painter = new Painter();
         InputHandler inputHandler = new InputHandler();
-        FlowPropogator propogator = new FlowPropogator();
+        BoardState state = new BoardState();
 
         public Form1()
         {
@@ -35,44 +35,40 @@ namespace WireForm
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseDown(propogator, (Vec2) e.Location, e.Button, ModifierKeys.HasFlag(Keys.Shift), null);
+            bool toRefresh = inputHandler.MouseDown(state, (Vec2) e.Location, e.Button, ModifierKeys.HasFlag(Keys.Shift), null);
 
             if (toRefresh) Refresh();
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            inputHandler.MouseUp(propogator);
+            inputHandler.MouseUp(state);
 
             Refresh();
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, propogator);
+            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, state);
 
             if(toRefresh) Refresh();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsManager.PropogateAndPaint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, propogator);
+            GraphicsManager.PropogateAndPaint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, state);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(e.KeyChar == 's')
             {
-                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), propogator);
+                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), state);
             }
             if(e.KeyChar == 'l')
             {
                 SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "lines.json")), out var prop);
-                propogator = prop;
-            }
-            if(e.KeyChar == 'c')
-            {
-                propogator = new FlowPropogator();
+                state = prop;
             }
             if(e.KeyChar == '+' || e.KeyChar == '=')
             {
@@ -83,6 +79,14 @@ namespace WireForm
                 GraphicsManager.SizeScale *= .9f;
             }
             Refresh();
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(inputHandler.KeyDown(state, e))
+            {
+                Refresh();
+            }
         }
 
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
@@ -125,7 +129,7 @@ namespace WireForm
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
             Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            inputHandler.MouseDown(propogator, (Vec2)e.Location, e.Button, false, gate);
+            inputHandler.MouseDown(state, (Vec2)e.Location, e.Button, false, gate);
             Refresh();
         }
 
@@ -148,6 +152,5 @@ namespace WireForm
                 Refresh();
             }
         }
-
     }
 }

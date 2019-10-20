@@ -13,16 +13,20 @@ namespace WireForm.GraphicsUtils
     public class Painter
     {
 
-        public void DrawWireLine(Graphics gfx, FlowPropogator propogator, WireLine wireLine)
+        public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine)
         {
             Color bitColor = wireLine.Data.bitValue.BitColor();
-            gfx._DrawLine(bitColor, 10, wireLine.StartPoint, wireLine.EndPoint);
+            DrawWireLine(gfx, propogator, wireLine, bitColor);
+        }
+        public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine, Color color)
+        {
+            gfx._DrawLine(color, 10, wireLine.StartPoint, wireLine.EndPoint);
 
-            DrawPoint(gfx, propogator, wireLine.StartPoint, bitColor);
-            DrawPoint(gfx, propogator, wireLine.EndPoint, bitColor);
+            DrawPoint(gfx, propogator, wireLine.StartPoint, color);
+            DrawPoint(gfx, propogator, wireLine.EndPoint, color);
         }
 
-        public void DrawPoint(Graphics gfx, FlowPropogator propogator, Vec2 point, Color bitColor)
+        public void DrawPoint(Graphics gfx, BoardState propogator, Vec2 point, Color bitColor)
         {
 
             gfx._FillRectangleC(bitColor, point.X, point.Y, 1/5f, 1/5f);
@@ -31,22 +35,22 @@ namespace WireForm.GraphicsUtils
             ///    The point has an amount of connections greater than or less than 2
             ///    The point is attached to a gatePin
             bool draw = true;
-            if (propogator.Connections.ContainsKey(point))
-            {
-                var connections = propogator.Connections[point];
-                draw = connections.Count != 2;
-                if (!draw)
-                {
-                    foreach (var connection in connections)
-                    {
-                        if (connection is GatePin)
-                        {
-                            draw = true;
-                            break;
-                        }
-                    }
-                }
-            }
+            //if (propogator.Connections.ContainsKey(point))
+            //{
+            //    var connections = propogator.Connections[point];
+            //    draw = connections.Count != 2;
+            //    if (!draw)
+            //    {
+            //        foreach (var connection in connections)
+            //        {
+            //            if (connection is GatePin)
+            //            {
+            //                draw = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
 
             if (draw)
             {

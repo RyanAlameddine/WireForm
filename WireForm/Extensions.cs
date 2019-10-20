@@ -8,18 +8,18 @@ namespace WireForm
 {
     public static class Extensions
     {
-        public static void AddConnection(this Dictionary<Vec2, List<CircuitConnector>> connections, CircuitConnector connector)
+        public static void AddConnection(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject circuitObject)
         {
-            if (!connections.ContainsKey(connector.StartPoint))
+            if (!connections.ContainsKey(circuitObject.StartPoint))
             {
-                connections.Add(connector.StartPoint, new List<CircuitConnector>());
+                connections.Add(circuitObject.StartPoint, new List<BoardObject>());
             }
-            connections[connector.StartPoint].Add(connector);
+            connections[circuitObject.StartPoint].Add(circuitObject);
         }
 
-        public static void RemoveConnection(this Dictionary<Vec2, List<CircuitConnector>> connections, CircuitConnector connector)
+        public static void RemoveConnection(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject circuitObject)
         {
-            connections[connector.StartPoint].Remove(connector);
+            connections[circuitObject.StartPoint].Remove(circuitObject);
         }
 
         public static void AddRange<T>(this HashSet<T> set1, HashSet<T> set2)

@@ -49,11 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Circuitry\CircuitConnector.cs" />
+    <Compile Include="Circuitry\BoardObject.cs" />
+    <Compile Include="Circuitry\FlowPropagator.cs" />
+    <Compile Include="Circuitry\CircuitObject.cs" />
+    <Compile Include="Circuitry\CircuitObjectOperations\IDeletable.cs" />
     <Compile Include="Circuitry\Gates\XorGate.cs" />
     <Compile Include="Circuitry\Gates\OrGate.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Circuitry\FlowPropogator.cs" />
+    <Compile Include="Circuitry\BoardState.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +81,7 @@
     <Compile Include="MathUtils\Vec2.cs" />
     <Compile Include="Circuitry\WireData.cs" />
     <Compile Include="Circuitry\WireLine.cs" />
+    <Compile Include="StateHistoryManager.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

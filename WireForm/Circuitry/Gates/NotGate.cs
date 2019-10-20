@@ -28,10 +28,15 @@ namespace WireForm.Circuitry.Gates
 
         protected override void draw(Graphics gfx)
         {
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-1, .75f), Position + new Vec2(-1, -.75f));
+            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-1, .75f), StartPoint + new Vec2(-1, -.75f));
 
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-1, .75f), Position + new Vec2(1, 0));
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-1, -.75f), Position + new Vec2(1, 0));
+            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-1, .75f), StartPoint + new Vec2(1, 0));
+            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-1, -.75f), StartPoint + new Vec2(1, 0));
+        }
+
+        public override CircuitObject Copy()
+        {
+            return new NotGate(StartPoint);
         }
     }
 }

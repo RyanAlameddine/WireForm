@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
 using WireForm.MathUtils;
+using WireForm.MathUtils.Collision;
 
 namespace WireForm.Circuitry.Gates.Utilities
 {
-    public class GatePin : CircuitConnector
+    public class GatePin : BoardObject
     {
         [JsonIgnore]
         public override Vec2 StartPoint { get; set; }
@@ -25,13 +27,14 @@ namespace WireForm.Circuitry.Gates.Utilities
                     return;
                 }
 
-                StartPoint = MathHelper.Plus(value, Parent.Position);
+                StartPoint = MathHelper.Plus(value, Parent.StartPoint);
 
             }
         }
         [JsonIgnore]
         public BitValue Value { get; set; }
         public Gate Parent { get; set; }
+
         public GatePin(Gate Parent, Vec2 LocalStart, BitValue value)
         {
             this.Parent = Parent;
@@ -42,7 +45,7 @@ namespace WireForm.Circuitry.Gates.Utilities
 
         public void RefreshLocation()
         {
-            StartPoint = localPoint + Parent.Position;
+            StartPoint = localPoint + Parent.StartPoint;
         }
     }
 }

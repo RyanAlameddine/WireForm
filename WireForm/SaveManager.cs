@@ -10,7 +10,7 @@ namespace WireForm
 {
     public class SaveManager
     {
-        public static void Save(string path, FlowPropogator propogator)
+        public static void Save(string path, BoardState propogator)
         {
             string output = JsonConvert.SerializeObject(propogator, Formatting.Indented,
                 new JsonSerializerSettings()
@@ -22,22 +22,22 @@ namespace WireForm
             File.WriteAllText(path, output);
         }
         
-        public static void Load(string json, out FlowPropogator propogator)
+        public static void Load(string json, out BoardState propogator)
         {
-            propogator = JsonConvert.DeserializeObject<FlowPropogator>(json, 
+            propogator = JsonConvert.DeserializeObject<BoardState>(json, 
                 new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.Auto
                 });
-            propogator.Connections = new Dictionary<Vec2, List<CircuitConnector>>();
+            propogator.Connections = new Dictionary<Vec2, List<BoardObject>>();
             for (int i = 0; i < propogator.wires.Count; i++)
             {
                 if (propogator.wires[i].StartPoint.Y == propogator.wires[i].EndPoint.Y)
                 {
                     propogator.wires[i] = new WireLine(propogator.wires[i].StartPoint, propogator.wires[i].EndPoint, true);
                 }
-                WireLine.AddConnections(propogator.wires[i], propogator.Connections);
+                propogator.wires[i].AddConnections(propogator.Connections);
             }
 
             foreach(Gate gate in propogator.gates)

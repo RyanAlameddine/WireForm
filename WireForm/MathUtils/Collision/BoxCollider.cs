@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WireForm.Circuitry;
+using WireForm.Circuitry.Gates.Utilities;
 
 namespace WireForm.MathUtils.Collision
 {
@@ -131,6 +133,46 @@ namespace WireForm.MathUtils.Collision
         public BoxCollider Copy()
         {
             return new BoxCollider(X, Y, Width, Height);
+        }
+
+        /// <summary>
+        /// Gets all the Gate intersections a certain BoxCollider hits. If only2D == true, ignores all intersections which are not two-dimensional
+        /// </summary>
+        /// <param name="intersectBoxes">The rectangles for the intersections</param>
+        /// <returns>Did the BoxCollider intersect with anything</returns>
+        public bool GetIntersections(BoardState propogator, bool hitWires, out HashSet<BoxCollider> intersectBoxes, out HashSet<CircuitObject> intersectedcircuitObjects, bool only2D = true)
+        {
+            intersectBoxes = new HashSet<BoxCollider>();
+            intersectedcircuitObjects = new HashSet<CircuitObject>();
+            foreach (Gate gate in propogator.gates)
+            {
+                BoxCollider collider = gate.HitBox;
+                if (Intersects(collider, out var intersection))
+                {
+                    if (only2D && (intersection.Width == 0 || intersection.Height == 0)) continue;
+                    intersectedcircuitObjects.Add(gate);
+                    intersectBoxes.Add(intersection);
+                }
+            }
+
+            if (hitWires)
+            {
+                foreach (WireLine wire in propogator.wires)
+                {
+                    BoxCollider collider = wire.HitBox;
+                    if (Intersects(collider, out var intersection))
+                    {
+                        intersectedcircuitObjects.Add(wire);
+                        intersectBoxes.Add(intersection);
+                    }
+                }
+            }
+
+            if (intersectBoxes.Count == 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

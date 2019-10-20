@@ -29,11 +29,16 @@ namespace WireForm.Circuitry.Gates
 
         protected override void draw(Graphics gfx)
         {
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-2, 1.5f), Position + new Vec2(-2, -1.5f));
+            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-2, 1.5f), StartPoint + new Vec2(-2, -1.5f));
 
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-2, 1.5f), Position + new Vec2(-.5f + .1f, 1.5f));
-            gfx._DrawLine(Color.Black, 10, Position + new Vec2(-2, -1.5f), Position + new Vec2(-.5f + .1f, -1.5f));
-            gfx._DrawArc(Color.Black, 10, Position.X - 2f, Position.Y - 1.5f, 3f, 3f, 270, 180);
+            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-2, 1.5f), StartPoint + new Vec2(-.5f + .1f, 1.5f));
+            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-2, -1.5f), StartPoint + new Vec2(-.5f + .1f, -1.5f));
+            gfx._DrawArc(Color.Black, 10, StartPoint.X - 2f, StartPoint.Y - 1.5f, 3f, 3f, 270, 180);
+        }
+
+        public override CircuitObject Copy()
+        {
+            return new AndGate(StartPoint);
         }
     }
 }

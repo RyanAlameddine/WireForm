@@ -87,7 +87,7 @@
             this.gatePicBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gatePicBox.BackColor = System.Drawing.Color.White;
             this.gatePicBox.Location = new System.Drawing.Point(667, 62);
-            this.gatePicBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gatePicBox.Margin = new System.Windows.Forms.Padding(2);
             this.gatePicBox.Name = "gatePicBox";
             this.gatePicBox.Size = new System.Drawing.Size(120, 83);
             this.gatePicBox.TabIndex = 5;
@@ -110,6 +110,7 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);

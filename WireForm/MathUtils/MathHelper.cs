@@ -76,7 +76,7 @@ namespace WireForm.MathUtils
 
         public static bool OnLine(WireLine line1, WireLine line2)
         {
-            if((line1.XPriority && line2.XPriority && line1.StartPoint.Y == line2.StartPoint.Y) || (!line1.XPriority && !line2.XPriority && line1.StartPoint.X == line2.StartPoint.X))
+            if((line1.IsHorizontal && line2.IsHorizontal && line1.StartPoint.Y == line2.StartPoint.Y) || (!line1.IsHorizontal && !line2.IsHorizontal && line1.StartPoint.X == line2.StartPoint.X))
             {
                 return true;
             }

@@ -31,27 +31,27 @@ namespace WireForm.GraphicsUtils
         }
 
         public static void PropogateAndPaint(Graphics gfx, Painter painter, Vec2 viewportSize,
-            HashSet<BoxCollider> collisions, HashSet<Gate> selections, BoxCollider mouseBox, HashSet<BoxCollider> resetBoxes,
-            FlowPropogator propogator)
+            HashSet<BoxCollider> collisions, HashSet<CircuitObject> selections, BoxCollider mouseBox, HashSet<BoxCollider> resetBoxes,
+            BoardState state)
         {
             Queue<Gate> sources = new Queue<Gate>();
-            foreach (Gate gate in propogator.gates)
+            foreach (Gate gate in state.gates)
             {
                 if (gate.Inputs.Length == 0)
                 {
                     sources.Enqueue(gate);
                 }
             }
-            propogator.Propogate(sources);
+            FlowPropagator.Propogate(state, sources);
 
-            foreach (Gate gate in propogator.gates)
+            foreach (Gate gate in state.gates)
             {
                 gate.Draw(gfx);
             }
 
-            foreach (WireLine wireLine in propogator.wires)
+            foreach (WireLine wireLine in state.wires)
             {
-                painter.DrawWireLine(gfx, propogator, wireLine);
+                painter.DrawWireLine(gfx, state, wireLine);
             }
 
             foreach (BoxCollider collision in collisions)
@@ -59,21 +59,33 @@ namespace WireForm.GraphicsUtils
                 gfx._FillRectangle(Color.FromArgb(128, 255, 0, 0), collision.X, collision.Y, collision.Width, collision.Height);
             }
 
-            foreach (Gate selectedGate in selections)
+            foreach (CircuitObject selection in selections)
             {
-                selectedGate.Draw(gfx);
+                Gate asGate = selection as Gate;
+                WireLine asWire = selection as WireLine;
+                if(asGate != null) 
+                { 
+                    asGate.Draw(gfx);
+                    BoxCollider selectionBox = selection.HitBox;
 
-                BoxCollider selection = selectedGate.HitBox;
-                gfx._DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selection.X, selection.Y, selection.Width, selection.Height);
-                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X, selection.Y, .5f, .5f);
-                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X + selection.Width, selection.Y, .5f, .5f);
-                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X, selection.Y + selection.Height, .5f, .5f);
-                gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selection.X + selection.Width, selection.Y + selection.Height, .5f, .5f);
+                    gfx._DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.X, selectionBox.Y, selectionBox.Width, selectionBox.Height);
+                    gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selectionBox.X, selectionBox.Y, .4f, .4f);
+                    gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selectionBox.X + selectionBox.Width, selectionBox.Y, .4f, .4f);
+                    gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selectionBox.X, selectionBox.Y + selectionBox.Height, .4f, .4f);
+                    gfx._DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selectionBox.X + selectionBox.Width, selectionBox.Y + selectionBox.Height, .4f, .4f);
+                }
+                if(asWire != null)
+                {
+                    BoxCollider selectionBox = selection.HitBox;
+
+                    gfx._DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.X, selectionBox.Y, selectionBox.Width, selectionBox.Height);
+                    painter.DrawWireLine(gfx, state, asWire, Color.FromArgb(255, 0, 128, 128)); 
+                }
             }
             
-            foreach(var key in propogator.Connections.Keys)
+            foreach(var key in state.Connections.Keys)
             {
-                foreach(var value in propogator.Connections[key])
+                foreach(var value in state.Connections[key])
                 {
                     if (value is GatePin)
                     {
