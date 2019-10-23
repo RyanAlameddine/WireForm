@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace WireForm.Circuitry
                 return;
             }
 
+            Debug.WriteLine("Propogate");
+
             bool exhausted = false;
 
             HashSet<WireLine> visitedWires = new HashSet<WireLine>();
@@ -33,7 +36,7 @@ namespace WireForm.Circuitry
                 if (visitedGates.ContainsKey(source))
                 {
                     //THIS CHECK MIGHT NEED TO BE CHANGED
-                    if (visitedGates[source] >= source.Inputs.Length)
+                    if (visitedGates[source] > source.Inputs.Length)
                     {
                         continue;
                     }

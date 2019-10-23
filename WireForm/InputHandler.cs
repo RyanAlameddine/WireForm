@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using WireForm.Circuitry;
+using WireForm.Circuitry.CircuitObjectActions;
 using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
@@ -73,7 +75,7 @@ namespace WireForm
         /// <param name="additiveSelection">Should selection operations clear the selection list before adding more. This bool is usually synonomous to whether or not the shift key is pressed</param>
         /// <param name="gate">The gate to be created from this click</param>
         /// <returns></returns>
-        public bool MouseDown(BoardState propogator, Vec2 position, MouseButtons button, bool additiveSelection, Gates? gate)
+        public bool MouseDown(BoardState state, Vec2 position, Form1 form, MouseButtons button, ContextMenuStrip gateMenu, bool additiveSelection, Gates? gate)
         {
             this.additiveSelection = additiveSelection;
             bool toRefresh = false;
@@ -103,19 +105,19 @@ namespace WireForm
                     secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false);
 
                     //Register Line to draw
-                    propogator.wires.Add(secondaryCurrentLine);
-                    propogator.wires.Add(currentLine);
+                    state.wires.Add(secondaryCurrentLine);
+                    state.wires.Add(currentLine);
                     toRefresh = true;
                 }
                 else if (!mouseLeftDown && button == MouseButtons.Right)
                 {
                     //Erase Lines
-                    for (int i = 0; i < propogator.wires.Count; i++)
+                    for (int i = 0; i < state.wires.Count; i++)
                     {
-                        if (mousePointGridded.IsContainedIn(propogator.wires[i]))
+                        if (mousePointGridded.IsContainedIn(state.wires[i]))
                         {
-                            WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
-
+                            WireLine.RemovePointFromWire(mousePointGridded, state.Connections, state.wires, i);
+                            
                             i = -1;
                         }
                     }
@@ -139,13 +141,13 @@ namespace WireForm
                         selections.Clear();
                         currentcircuitObject = NewGate((Gates) gate, mousePointGridded);
                         selections.Add(currentcircuitObject);
-                        if (currentcircuitObject.HitBox.GetIntersections(propogator, true, out var intersectBoxes, out _))
+                        if (currentcircuitObject.HitBox.GetIntersections(state, true, out var intersectBoxes, out _))
                         {
                             intersectionBoxes = intersectBoxes;
                         }
                     }
                     //Select circuitcircuitObject with mouse
-                    else if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(propogator, true, out _, out var gates, false))
+                    else if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var gates, false))
                     {
                         //In the undefined case of multiple hits from a single mouse click, only deal with the first
                         CircuitObject clickedcircuitObject = null;
@@ -162,7 +164,6 @@ namespace WireForm
                             if (!additiveSelection)
                             {
                                 selections.Clear();
-                                OGPosition = null;
                             }
                             selections.Add(clickedcircuitObject);
                         } else if (additiveSelection)
@@ -179,17 +180,17 @@ namespace WireForm
                             WireLine asWire = selection as WireLine;
                             if(asGate != null)
                             {
-                                propogator.gates.Remove(asGate);
+                                state.gates.Remove(asGate);
                             }
                             else if(asWire != null)
                             {
-                                propogator.wires.Remove(asWire);
+                                state.wires.Remove(asWire);
                             }
                             else
                             {
                                 throw new NotImplementedException();
                             }
-                            selection.RemoveConnections(propogator.Connections);
+                            selection.RemoveConnections(state.Connections);
                         }
 
                         currentcircuitObject = clickedcircuitObject;
@@ -213,6 +214,38 @@ namespace WireForm
                         mouseBox = new BoxCollider(mousePointAbsolute.X, mousePointAbsolute.Y, 0, 0);
                     }
                     toRefresh = true;
+                }
+                else if (mouseRightDown)
+                {
+                    if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var circuitObjects, false))
+                    {
+                        CircuitObject clickedcircuitObject = null;
+                        foreach (var v in circuitObjects)
+                        {
+                            clickedcircuitObject = v;
+                        }
+
+                        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, state);
+
+
+                        gateMenu.Items.Clear();
+                        for (int i = 0; i < actions.Count; i++)
+                        {
+                            var action = actions[i];
+                            if (action.attribute.RequireRefresh)
+                            {
+                                action.action += (object sender, EventArgs e) =>
+                                {
+                                    RefreshSelections(state);
+                                    form.Refresh();
+                                };
+                            }
+                            gateMenu.Items.Add(action.attribute.Name, null, action.action);
+                        }
+                        gateMenu.Show(form, (Point) position);
+                        //RefreshSelections(state);
+                        toRefresh = true;
+                    }
                 }
             }
 
@@ -257,7 +290,7 @@ namespace WireForm
                         bool intersected = false;
                         foreach(var selection in selections)
                         {
-                            if(selection.HitBox.GetIntersections(propogator, false, out _, out _))
+                            if(!(selection is WireLine) && selection.HitBox.GetIntersections(propogator, false, out _, out _))
                             {
                                 intersected = true;
                             }
@@ -327,11 +360,9 @@ namespace WireForm
                                 else if (asWire != null)
                                 {
                                     List<WireLine> newWires = asWire.Validate(propogator.wires, propogator.Connections);
-                                    if (!propogator.wires.Contains(asWire))
-                                    {
-                                        toAdd.AddRange(newWires);
-                                        toRemove.Add(asWire);
-                                    }
+                                    toAdd.AddRange(newWires);
+                                    toRemove.Add(asWire);
+                                    
                                 }
                                 else
                                 {
@@ -339,15 +370,16 @@ namespace WireForm
                                 }
 
                             }
-                            foreach(var x in toRemove)
+
+                            foreach (var x in toRemove)
                             {
                                 selections.Remove(x);
                             }
-                            foreach(var x in toAdd)
+                            foreach (var x in toAdd)
                             {
-                                //propogator.wires.Remove(x);
                                 selections.Add(x);
                             }
+                            
 
                             if (!circuitObjectMoved && !additiveSelection)
                             {
@@ -424,7 +456,7 @@ namespace WireForm
                             if (mousePointGridded.IsContainedIn(propogator.wires[i]))
                             {
                                 WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
-
+                                
                                 i = -1;
                             }
                         }
@@ -469,14 +501,16 @@ namespace WireForm
                             {
                                 selection.StartPoint += offset;
                                 WireLine asWire = selection as WireLine;
-                                if(asWire != null)
+                                if (asWire != null)
                                 {
                                     asWire.EndPoint += offset;
                                 }
-
-                                if (selection.HitBox.GetIntersections(propogator, false, out var intersects, out _))
+                                else
                                 {
-                                    intersectionBoxes.AddRange(intersects);
+                                    if (selection.HitBox.GetIntersections(propogator, false, out var intersects, out _))
+                                    {
+                                        intersectionBoxes.AddRange(intersects);
+                                    }
                                 }
                             }
                         }
@@ -487,7 +521,30 @@ namespace WireForm
             return toRefresh;
         }
 
-        //int pasteChain = 0;
+        /// <summary>
+        /// Check through selection list to confirm that everything still exists
+        /// </summary>
+        public void RefreshSelections(BoardState state)
+        {
+            selections.RemoveWhere((x) =>
+            {
+                var gate = x as Gate;
+                var wire = x as WireLine;
+                if (wire != null)
+                {
+                    return !state.wires.Contains(wire);
+                }
+                else if (gate != null)
+                {
+                    return !state.gates.Contains(gate);
+                }
+                else
+                {
+                    throw new Exception("Invalid object selected");
+                }
+            });
+        }
+
         public bool KeyDown(BoardState propogator, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)

@@ -28,8 +28,13 @@ namespace WireForm.Circuitry
                 List<BoardObject> copiedObjects = new List<BoardObject>();
                 foreach(BoardObject obj in pair.Value)
                 {
-                    if//obj is CircuitObject (exception is gatepin
-                    copiedObjects.Add(obj.Copy());
+                    var circuit = obj as CircuitObject;
+                    if(circuit == null)
+                    {
+                        circuit = ((GatePin)obj).Parent;
+                    }
+
+                    copiedObjects.Add(circuit.Copy());
                 }
                 state.Connections.Add(pair.Key, copiedObjects);
             }

@@ -45,7 +45,7 @@ namespace WireForm.Circuitry.Gates.Utilities
                 case BitValue.Zero:
                     return BitValue.One;
                 case BitValue.Nothing:
-                    return BitValue.Error;
+                    return BitValue.Nothing;
                 case BitValue.Error:
                     return BitValue.Error;
             }

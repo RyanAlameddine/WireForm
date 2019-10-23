@@ -144,16 +144,6 @@ namespace WireForm.MathUtils.Collision
         {
             intersectBoxes = new HashSet<BoxCollider>();
             intersectedcircuitObjects = new HashSet<CircuitObject>();
-            foreach (Gate gate in propogator.gates)
-            {
-                BoxCollider collider = gate.HitBox;
-                if (Intersects(collider, out var intersection))
-                {
-                    if (only2D && (intersection.Width == 0 || intersection.Height == 0)) continue;
-                    intersectedcircuitObjects.Add(gate);
-                    intersectBoxes.Add(intersection);
-                }
-            }
 
             if (hitWires)
             {
@@ -165,6 +155,17 @@ namespace WireForm.MathUtils.Collision
                         intersectedcircuitObjects.Add(wire);
                         intersectBoxes.Add(intersection);
                     }
+                }
+            }
+
+            foreach (Gate gate in propogator.gates)
+            {
+                BoxCollider collider = gate.HitBox;
+                if (Intersects(collider, out var intersection))
+                {
+                    if (only2D && (intersection.Width == 0 || intersection.Height == 0)) continue;
+                    intersectedcircuitObjects.Add(gate);
+                    intersectBoxes.Add(intersection);
                 }
             }
 

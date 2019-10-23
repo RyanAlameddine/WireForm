@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using WireForm.Circuitry.CircuitObjectOperations;
+using WireForm.Circuitry.CircuitObjectActions;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
@@ -36,9 +36,7 @@ namespace WireForm.Circuitry
         [JsonIgnore]
         public bool IsHorizontal { get; set; }
 
-        /// <summary>
-        /// Data related to the flow of electricity
-        /// </summary>
+        [JsonIgnore]
         public WireData Data { get; set; }
 
         public WireLine(Vec2 start, Vec2 end, bool IsHorizontal)
@@ -410,6 +408,7 @@ namespace WireForm.Circuitry
             }
         }
 
+        [CircuitAction("Delete", true)]
         public override void Delete(BoardState propogator)
         {
             propogator.wires.Remove(this);

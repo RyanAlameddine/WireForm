@@ -50,9 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Circuitry\BoardObject.cs" />
+    <Compile Include="Circuitry\CircuitObjectActions\CircuitActionAttribute.cs" />
     <Compile Include="Circuitry\FlowPropagator.cs" />
     <Compile Include="Circuitry\CircuitObject.cs" />
-    <Compile Include="Circuitry\CircuitObjectOperations\IDeletable.cs" />
+    <Compile Include="Circuitry\CircuitObjectActions\IDeletable.cs" />
     <Compile Include="Circuitry\Gates\XorGate.cs" />
     <Compile Include="Circuitry\Gates\OrGate.cs" />
     <Compile Include="Extensions.cs" />

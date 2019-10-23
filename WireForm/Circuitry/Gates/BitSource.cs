@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using WireForm.Circuitry.CircuitObjectActions;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
@@ -22,9 +23,16 @@ namespace WireForm.Circuitry.Gates
 
         }
 
+        private BitValue currentValue = BitValue.One;
         protected override void compute()
         {
-            Outputs[0].Value = BitValue.One;
+            Outputs[0].Value = currentValue;
+        }
+
+        [CircuitAction("Toggle", true)]
+        public void Toggle()
+        {
+            currentValue = currentValue.Not();
         }
 
         public override CircuitObject Copy()

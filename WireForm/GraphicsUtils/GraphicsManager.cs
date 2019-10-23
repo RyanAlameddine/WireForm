@@ -30,19 +30,10 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void PropogateAndPaint(Graphics gfx, Painter painter, Vec2 viewportSize,
+        public static void Paint(Graphics gfx, Painter painter, Vec2 viewportSize,
             HashSet<BoxCollider> collisions, HashSet<CircuitObject> selections, BoxCollider mouseBox, HashSet<BoxCollider> resetBoxes,
             BoardState state)
         {
-            Queue<Gate> sources = new Queue<Gate>();
-            foreach (Gate gate in state.gates)
-            {
-                if (gate.Inputs.Length == 0)
-                {
-                    sources.Enqueue(gate);
-                }
-            }
-            FlowPropagator.Propogate(state, sources);
 
             foreach (Gate gate in state.gates)
             {

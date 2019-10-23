@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using WireForm.Circuitry.CircuitObjectActions;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
@@ -127,6 +128,7 @@ namespace WireForm.Circuitry.Gates.Utilities
             }
         }
 
+        [CircuitAction("Delete", true)]
         public override void Delete(BoardState propogator)
         {
             propogator.gates.Remove(this);

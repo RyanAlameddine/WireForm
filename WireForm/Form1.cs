@@ -15,7 +15,7 @@ namespace WireForm
     {
         Painter painter = new Painter();
         InputHandler inputHandler = new InputHandler();
-        BoardState state = new BoardState();
+        StateHistoryManager stateManager = new StateHistoryManager();
 
         public Form1()
         {
@@ -35,40 +35,40 @@ namespace WireForm
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseDown(state, (Vec2) e.Location, e.Button, ModifierKeys.HasFlag(Keys.Shift), null);
+            bool toRefresh = inputHandler.MouseDown(stateManager.CurrentState, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
 
             if (toRefresh) Refresh();
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            inputHandler.MouseUp(state);
+            inputHandler.MouseUp(stateManager.CurrentState);
 
             Refresh();
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, state);
+            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateManager.CurrentState);
 
             if(toRefresh) Refresh();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsManager.PropogateAndPaint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, state);
+            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateManager.CurrentState);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(e.KeyChar == 's')
             {
-                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), state);
+                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), stateManager.CurrentState);
             }
             if(e.KeyChar == 'l')
             {
-                SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "lines.json")), out var prop);
-                state = prop;
+
+                stateManager.Load("lines.json");
             }
             if(e.KeyChar == '+' || e.KeyChar == '=')
             {
@@ -78,12 +78,24 @@ namespace WireForm
             {
                 GraphicsManager.SizeScale *= .9f;
             }
+            if(e.KeyChar == 'p')
+            {
+                Queue<Gate> sources = new Queue<Gate>();
+                foreach (Gate gate in stateManager.CurrentState.gates)
+                {
+                    if (gate.Inputs.Length == 0)
+                    {
+                        sources.Enqueue(gate);
+                    }
+                }
+                FlowPropagator.Propogate(stateManager.CurrentState, sources);
+            }
             Refresh();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(inputHandler.KeyDown(state, e))
+            if(inputHandler.KeyDown(stateManager.CurrentState, e))
             {
                 Refresh();
             }
@@ -129,7 +141,7 @@ namespace WireForm
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
             Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            inputHandler.MouseDown(state, (Vec2)e.Location, e.Button, false, gate);
+            inputHandler.MouseDown(stateManager.CurrentState, (Vec2)e.Location, this, e.Button, GateMenu, false, gate);
             Refresh();
         }
 
@@ -151,6 +163,11 @@ namespace WireForm
                 debug2Value = debugger2.Text;
                 Refresh();
             }
+        }
+
+        private void GateMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            //Refresh();
         }
     }
 }

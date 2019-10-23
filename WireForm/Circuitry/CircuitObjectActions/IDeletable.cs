@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using WireForm.MathUtils;
 
-namespace WireForm.Circuitry.CircuitObjectOperations
+namespace WireForm.Circuitry.CircuitObjectActions
 {
     public interface IDeletable
     {
-        void Delete(BoardState propogator);
+        [CircuitAction("Delete", true)]
+        void Delete(BoardState state);
     }
 }

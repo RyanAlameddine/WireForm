@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using WireForm.Circuitry.CircuitObjectOperations;
+using System.Linq;
+using WireForm.Circuitry.CircuitObjectActions;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
@@ -14,8 +15,10 @@ namespace WireForm.Circuitry
         public abstract BoxCollider HitBox { get; set; }
 
         public abstract void AddConnections(Dictionary<Vec2, List<BoardObject>> connections);
-        public abstract void Delete(BoardState propogator);
+        
         public abstract void RemoveConnections(Dictionary<Vec2, List<BoardObject>> connections);
         public abstract CircuitObject Copy();
+
+        public abstract void Delete(BoardState state);
     }
 }
