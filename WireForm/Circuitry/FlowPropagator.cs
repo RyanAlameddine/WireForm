@@ -26,33 +26,53 @@ namespace WireForm.Circuitry
 
             bool exhausted = false;
 
-            HashSet<WireLine> visitedWires = new HashSet<WireLine>();
-            /// Gate and the amount of times it has been 'visited' (how many times an input has been updated)
+            Stack<WireLine> visitedWires = new Stack<WireLine>();
+            visitedWires.Push(null);
+            visitedWires.Push(null);
+
+            /// Gate and the amount of times it has been 'visited' 
+            /// (how many times an input has been updated)  
+            /// and whether or not it's last visit was a pushover 
+            /// (pushing to back of queue to check again if requirements are fulfilled)
             Dictionary<Gate, int> visitedGates = new Dictionary<Gate, int>();
+
             for (var source = sources.Peek(); sources.Count > 0;)
             {
                 source = sources.Dequeue();
 
+                int visitCount = 1;
                 if (visitedGates.ContainsKey(source))
                 {
-                    //THIS CHECK MIGHT NEED TO BE CHANGED
-                    if (visitedGates[source] > source.Inputs.Length)
-                    {
-                        continue;
-                    }
-                    visitedGates[source]++;
+                    visitCount = ++visitedGates[source];
                 }
                 else
                 {
-                    visitedGates.Add(source, 1);
+                    visitedGates.Add(source, visitCount);
+                        
                 }
+                
+
+                //if(visitCount == source.Inputs.Length)
+                //{
+
+                //}
+                //else if(visitCount > source.Inputs.Length)
+                //{
+                //    //throw new Exception();
+                //}
+                //else
+                //{
+                //    visitedGates[source] = (!visitedGates[source].pushover, visitedGates[source].visited);
+                //    sources.Enqueue(source);
+                //}//ALLOW VISITED WIRES TO BE RE-PROCESSED INSTEAD OF BEING FORCED TO ONLY VISIT ONCE (ERROR IF INFINITE LOOP)
+                
 
                 //Compute and Propogate
                 source.Compute();
                 foreach (var output in source.Outputs)
                 {
                     List<Gate> changedGates = new List<Gate>();
-                    PropogateWire(state, visitedWires, changedGates, output.StartPoint, output.Value);
+                    PropagateWires(state, visitedWires, output.StartPoint, output.Value);
                     foreach (Gate gate in changedGates)
                     {
                         sources.Enqueue(gate);
@@ -73,22 +93,83 @@ namespace WireForm.Circuitry
 
                     foreach (Gate gate in state.gates)
                     {
-                        if (!visitedGates.ContainsKey(gate) || visitedGates[gate] < gate.Inputs.Length)
+                        if (!visitedGates.ContainsKey(gate))
                         {
                             foreach (GatePin input in gate.Inputs)
                             {
                                 input.Value = BitValue.Nothing;
                             }
-                            sources.Enqueue(gate);
+                            foreach (GatePin output in gate.Outputs)
+                            {
+                                output.Value = BitValue.Nothing;
+                            }
                         }
                     }
                 }
             }
-
-
         }
 
-        static void PropogateWire(BoardState state, HashSet<WireLine> visitedWires, List<Gate> changedGates, Vec2 position, BitValue value)
+        static void PropagateWires(BoardState state, Stack<WireLine> visitedWires, Vec2 startPoint, BitValue value)
+        {
+            if (!state.Connections.ContainsKey(startPoint))
+            {
+                return;
+            }
+
+            foreach (BoardObject circuitObject in state.Connections[startPoint])
+            {
+                WireLine wire = circuitObject as WireLine;
+                if (wire != null)
+                {
+                    var topWire = visitedWires.Peek();
+                    if (visitedWires.Contains(wire))
+                    {
+                        continue;
+                    }
+
+                    int stackPointer = visitedWires.Count - 1;
+                    visitedWires.Push(wire);
+                    
+
+                    wire.Data.bitValue = value;
+                    if (wire.StartPoint == startPoint)
+                    {
+                        PropagateWires(state, visitedWires, wire.EndPoint, value);
+                    }
+                    else if (wire.EndPoint == startPoint)
+                    {
+                        PropagateWires(state, visitedWires, wire.StartPoint, value);
+                    }
+                    else
+                    {
+                        throw new Exception("How tf did this happen");
+                    }
+
+                    continue;
+                }
+
+                GatePin pin = circuitObject as GatePin;
+                if (pin != null)
+                {
+                    if (pin.Parent.Inputs != null)
+                    {
+                        if (pin.Parent.Inputs.Contains(pin))
+                        {
+                            pin.Value = value;
+                            //changedGates.Add(pin.Parent);
+                        }
+                    }
+
+                    continue;
+                }
+
+                throw new NotImplementedException();
+
+            }
+        }
+
+
+        static void PropogateWire(BoardState state, Stack<WireLine> visitedWires, List<Gate> changedGates, Vec2 position, BitValue value)
         {
             if (!state.Connections.ContainsKey(position))
             {
@@ -100,11 +181,14 @@ namespace WireForm.Circuitry
                 WireLine wire = circuitObject as WireLine;
                 if (wire != null)
                 {
-                    if (visitedWires.Contains(wire))
+                    var topWire = visitedWires.Peek();
+                    if (topWire == wire)
                     {
                         continue;
                     }
-                    visitedWires.Add(wire);
+
+                    int stackPointer = visitedWires.Count - 1;
+                    visitedWires.Push(wire);
                     wire.Data.bitValue = value;
                     if (wire.StartPoint == position)
                     {
