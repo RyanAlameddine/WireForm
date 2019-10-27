@@ -81,6 +81,11 @@ namespace WireForm.MathUtils
             }
         }
 
+        public override string ToString()
+        {
+            return "{" + X + ", " + Y + "}";
+        }
+
         public static bool operator  ==(Vec2 a, Vec2 b)
         {
             return a.Equals(b);

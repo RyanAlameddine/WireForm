@@ -25,6 +25,24 @@ namespace WireForm
                 ControlStyles.UserPaint |
                 ControlStyles.DoubleBuffer,
                 true);
+
+            PatternStack<int> patternStack = new PatternStack<int>();
+            bool b0 = patternStack.Push(1);
+            bool b1 = patternStack.Push(3);
+            bool b2 = patternStack.Push(2);
+            bool b3 = patternStack.Push(3);
+            bool b4 = patternStack.Push(4);
+            bool b5 = patternStack.Push(3);
+            bool b6 = patternStack.Push(2);
+            bool b7 = patternStack.Push(3);
+            bool b8= patternStack.Push(4);
+            patternStack.Pop();
+            patternStack.Pop(4);
+            bool b9 = patternStack.Push(4);
+            bool b10= patternStack.Push(3);
+            bool b11= patternStack.Push(2);
+            bool b12= patternStack.Push(3);
+            bool b13= patternStack.Push(4);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -56,6 +74,16 @@ namespace WireForm
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            //Queue<Gate> sources = new Queue<Gate>();
+            //foreach (Gate gt in stateManager.CurrentState.gates)
+            //{
+            //    if (gt.Inputs.Length == 0)
+            //    {
+            //        sources.Enqueue(gt);
+            //    }
+            //}
+            //FlowPropagator.Propogate(stateManager.CurrentState, sources);
+
             GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateManager.CurrentState);
         }
 
@@ -129,6 +157,8 @@ namespace WireForm
 
         private void GatePicBox_Paint(object sender, PaintEventArgs e)
         {
+
+
             Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
             Gate newGate = inputHandler.NewGate(gate, new Vec2(4, 2.5f));
             var temp = GraphicsManager.SizeScale;

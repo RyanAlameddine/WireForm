@@ -76,6 +76,7 @@
     <Compile Include="MathUtils\Collision\BoxCollider.cs" />
     <Compile Include="MathUtils\MathHelper.cs" />
     <Compile Include="GraphicsUtils\Painter.cs" />
+    <Compile Include="MathUtils\PatternStack.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveManager.cs" />

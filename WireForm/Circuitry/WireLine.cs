@@ -420,5 +420,10 @@ namespace WireForm.Circuitry
             return new WireLine(StartPoint, EndPoint, IsHorizontal);
         }
 
+        public override string ToString()
+        {
+            return "{" + StartPoint + ", " + EndPoint + "}";
+        }
+
     }
 }
