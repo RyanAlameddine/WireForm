@@ -119,6 +119,11 @@ namespace WireForm.MathUtils
             return false;
         }
 
+        public bool IsEmpty()
+        {
+            return root == null;
+        }
+
         /// <summary>
         /// Adds a new node to the current pattern and revalidates
         /// </summary>

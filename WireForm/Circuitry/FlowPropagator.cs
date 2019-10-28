@@ -26,7 +26,7 @@ namespace WireForm.Circuitry
 
             //bool exhausted = false;
 
-            PatternStack<WireLine> visitedWires = new PatternStack<WireLine>();
+            PatternStack<WireValuePair> visitedWires = new PatternStack<WireValuePair>();
 
             while (sources.Count > 0)
             {
@@ -69,7 +69,7 @@ namespace WireForm.Circuitry
             }
         }
 
-        static void PropagateWires(BoardState state, PatternStack<WireLine> visitedWires, Vec2 startPoint, BitValue value)
+        static void PropagateWires(BoardState state, PatternStack<WireValuePair> visitedWires, Vec2 startPoint, BitValue value)
         {
             if (!state.Connections.ContainsKey(startPoint))
             {
@@ -82,12 +82,12 @@ namespace WireForm.Circuitry
                 WireLine wire = circuitObject as WireLine;
                 if (wire != null)
                 {
-                    if (visitedWires.Peek() == wire)
+                    if (!visitedWires.IsEmpty() && visitedWires.Peek().Wire == wire)
                     {
                         continue;
                     }
                     var index = visitedWires.HeadIndex;
-                    bool patternMatched = visitedWires.Push(wire); F//FIX THIS BECAUSE IF VALUES ARE DIFFERENT WILL NOT RECOGNIZE PATTERN
+                    bool patternMatched = visitedWires.Push(new WireValuePair(wire, value));
                     wire.Data.bitValue = value;
 
                     if (patternMatched)
@@ -98,7 +98,7 @@ namespace WireForm.Circuitry
                         bool allMatch = true;
                         foreach (var node in visitedWires.CurrentPattern)
                         {
-                            if(node.value != matchedNode.Value.value)
+                            if(node.Value != matchedNode.Value.Value)
                             {
                                 allMatch = false;
                                 break;
@@ -115,7 +115,7 @@ namespace WireForm.Circuitry
                         {
                             foreach (var node in visitedWires.CurrentPattern)
                             {
-                                node.line.Data.bitValue = BitValue.Error;
+                                node.Wire.Data.bitValue = BitValue.Error;
                             }
                             return;
                         }
@@ -224,6 +224,38 @@ namespace WireForm.Circuitry
                 throw new NotImplementedException();
 
             }
+        }
+    }
+
+    internal class WireValuePair
+    {
+        public WireLine Wire;
+        public BitValue Value;
+
+        public WireValuePair(WireLine wire, BitValue value)
+        {
+            Wire = wire;
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return Wire.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            WireValuePair pair = obj as WireValuePair;
+            if(pair == null)
+            {
+                return false;
+            }
+            return (Wire.StartPoint == pair.Wire.StartPoint) && (Wire.EndPoint == pair.Wire.EndPoint);
+        }
+
+        public override int GetHashCode()
+        {
+            return 684914040 + EqualityComparer<WireLine>.Default.GetHashCode(Wire);
         }
     }
 }
