@@ -76,6 +76,18 @@ namespace WireForm.Circuitry.Gates.Utilities
             return BitValue.Zero;
         }
 
+        public static BitValue Nor(this BitValue value1, BitValue value2)
+        {
+            if (value1.isNothing() && value2.isNothing()) return BitValue.Nothing;
+            if (value1.isUndefined() || value2.isUndefined()) return BitValue.Error;
+
+            if (value2 == BitValue.One || value1 == BitValue.One)
+            {
+                return BitValue.Zero;
+            }
+            return BitValue.One;
+        }
+
         public static BitValue Xor(this BitValue value1, BitValue value2)
         {
             if (value1.isNothing() && value2.isNothing()) return BitValue.Nothing;

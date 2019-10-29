@@ -48,7 +48,7 @@ namespace WireForm
         private void Form1_Load(object sender, EventArgs e)
         {
             toolBox.SelectedIndex = 0;
-            gateBox.DataSource = Enum.GetValues(typeof(Gates));
+            gateBox.DataSource = Enum.GetValues(GateEnum.GatesEnum);
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -159,8 +159,8 @@ namespace WireForm
         {
 
 
-            Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            Gate newGate = inputHandler.NewGate(gate, new Vec2(4, 2.5f));
+            //Enum.TryParse<GateEnum.GatesEnum>(gateBox.SelectedValue.ToString(), out var gate);
+            Gate newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
             var temp = GraphicsManager.SizeScale;
             GraphicsManager.SizeScale = 15;
             newGate.Draw(e.Graphics);
@@ -170,8 +170,8 @@ namespace WireForm
 
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
-            Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            inputHandler.MouseDown(stateManager.CurrentState, (Vec2)e.Location, this, e.Button, GateMenu, false, gate);
+            //Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
+            inputHandler.MouseDown(stateManager.CurrentState, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
             Refresh();
         }
 

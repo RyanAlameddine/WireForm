@@ -35,22 +35,22 @@ namespace WireForm.GraphicsUtils
             ///    The point has an amount of connections greater than or less than 2
             ///    The point is attached to a gatePin
             bool draw = true;
-            //if (propogator.Connections.ContainsKey(point))
-            //{
-            //    var connections = propogator.Connections[point];
-            //    draw = connections.Count != 2;
-            //    if (!draw)
-            //    {
-            //        foreach (var connection in connections)
-            //        {
-            //            if (connection is GatePin)
-            //            {
-            //                draw = true;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
+            if (propogator.Connections.ContainsKey(point))
+            {
+                var connections = propogator.Connections[point];
+                draw = connections.Count != 2;
+                if (!draw)
+                {
+                    foreach (var connection in connections)
+                    {
+                        if (connection is GatePin)
+                        {
+                            draw = true;
+                            break;
+                        }
+                    }
+                }
+            }
 
             if (draw)
             {
@@ -60,7 +60,7 @@ namespace WireForm.GraphicsUtils
 
         public static void DrawPin(Graphics gfx, Vec2 position, BitValue value)
         {
-            gfx._DrawEllipse(value.BitColor(), 10, position.X - .2f, position.Y - .2f, .4f, .4f);
+            gfx._FillEllipseC(value.BitColor(), position.X, position.Y, .4f, .4f);
         }
     }
 }

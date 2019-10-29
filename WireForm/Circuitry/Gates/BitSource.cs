@@ -20,10 +20,9 @@ namespace WireForm.Circuitry.Gates
         protected override void draw(Graphics gfx)
         {
             gfx._DrawRectangle(Color.Green, 10, StartPoint.X - .4f, StartPoint.Y - .4f, .8f, .8f);
-
         }
 
-        private BitValue currentValue = BitValue.One;
+        public BitValue currentValue = BitValue.One;
         protected override void compute()
         {
             Outputs[0].Value = currentValue;

@@ -78,10 +78,11 @@ namespace WireForm.Circuitry.Gates.Utilities
         protected abstract void draw(Graphics gfx);
         public void Draw(Graphics gfx)
         {
-            draw(gfx);
 
+            draw(gfx);
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
-            gfx._DrawEllipseC(Color.Black, 3, StartPoint.X, StartPoint.Y, .01f, .01f);
+
+            //gfx._DrawEllipseC(Color.Black, 3, StartPoint.X, StartPoint.Y, .01f, .01f);
 
             foreach (var output in Outputs)
             {

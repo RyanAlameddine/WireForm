@@ -31,11 +31,10 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             }
         }
-        [JsonIgnore]
         public BitValue Value { get; set; }
         public Gate Parent { get; set; }
 
-        public GatePin(Gate Parent, Vec2 LocalStart, BitValue value)
+        public GatePin(Gate Parent, Vec2 LocalStart, BitValue Value)
         {
             this.Parent = Parent;
 

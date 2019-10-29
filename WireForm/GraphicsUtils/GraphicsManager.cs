@@ -34,6 +34,7 @@ namespace WireForm.GraphicsUtils
             HashSet<BoxCollider> collisions, HashSet<CircuitObject> selections, BoxCollider mouseBox, HashSet<BoxCollider> resetBoxes,
             BoardState state)
         {
+            
 
             foreach (Gate gate in state.gates)
             {
@@ -74,16 +75,16 @@ namespace WireForm.GraphicsUtils
                 }
             }
             
-            foreach(var key in state.Connections.Keys)
-            {
-                foreach(var value in state.Connections[key])
-                {
-                    if (value is GatePin)
-                    {
-                        gfx._DrawEllipseC(Color.FromArgb(255, 0, 128, 128), 5, key.X, key.Y, .5f, .5f);
-                    }
-                }
-            }
+            //foreach(var key in state.Connections.Keys)
+            //{
+            //    foreach(var value in state.Connections[key])
+            //    {
+            //        if (value is GatePin)
+            //        {
+            //            gfx._DrawEllipseC(Color.FromArgb(255, 0, 128, 128), 5, key.X, key.Y, .5f, .5f);
+            //        }
+            //    }
+            //}
 
             if (mouseBox != null)
             {

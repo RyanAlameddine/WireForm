@@ -75,7 +75,7 @@ namespace WireForm
         /// <param name="additiveSelection">Should selection operations clear the selection list before adding more. This bool is usually synonomous to whether or not the shift key is pressed</param>
         /// <param name="gate">The gate to be created from this click</param>
         /// <returns></returns>
-        public bool MouseDown(BoardState state, Vec2 position, Form1 form, MouseButtons button, ContextMenuStrip gateMenu, bool additiveSelection, Gates? gate)
+        public bool MouseDown(BoardState state, Vec2 position, Form1 form, MouseButtons button, ContextMenuStrip gateMenu, bool additiveSelection, int? gateIndex)
         {
             this.additiveSelection = additiveSelection;
             bool toRefresh = false;
@@ -136,10 +136,10 @@ namespace WireForm
 
                     }
                     //Create new Gate
-                    else if(gate != null)
+                    else if(gateIndex != null)
                     {
                         selections.Clear();
-                        currentcircuitObject = NewGate((Gates) gate, mousePointGridded);
+                        currentcircuitObject = GateEnum.NewGate((int) gateIndex, mousePointGridded);
                         selections.Add(currentcircuitObject);
                         if (currentcircuitObject.HitBox.GetIntersections(state, true, out var intersectBoxes, out _))
                         {
@@ -607,23 +607,7 @@ namespace WireForm
             return false;
         }
 
-        public Gate NewGate(Gates gate, Vec2 Position)
-        {
-            switch (gate)
-            {
-                case Gates.BitSource:
-                    return new BitSource(Position);
-                case Gates.AndGate:
-                    return new AndGate(Position);
-                case Gates.NotGate:
-                    return new NotGate(Position);
-                case Gates.OrGate:
-                    return new OrGate(Position);
-                case Gates.XorGate:
-                    return new XorGate(Position);
-            }
-            throw new System.Exception("Gate doesn't exists");
-        }
+        
     }
     public enum Tool
     {
