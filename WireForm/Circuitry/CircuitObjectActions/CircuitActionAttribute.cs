@@ -17,23 +17,21 @@ namespace WireForm.Circuitry.CircuitObjectActions
     public class CircuitActionAttribute : Attribute
     {
         public string Name { get; private set; }
-        public bool RequireRefresh { get; private set; }
 
         public Keys Hotkey { get; private set; }
-        public CircuitActionAttribute(string Name, bool RequireRefresh)
+        public CircuitActionAttribute(string Name)
         {
             this.Name = Name;
-            this.RequireRefresh = RequireRefresh;
         }
 
-        public CircuitActionAttribute(string Name, bool RequireRefresh, Keys Hotkey)
-            : this(Name, RequireRefresh)
+        public CircuitActionAttribute(string Name, Keys Hotkey)
+            : this(Name)
         {
             this.Hotkey = Hotkey;
         }
 
         /// <param name="target">The target object on which the actions are found and run</param>
-        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(object target, BoardState state)
+        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(object target, BoardState state, Form form)
         {
             var actions = new List<(CircuitActionAttribute attribute, EventHandler action)>();
 
@@ -51,6 +49,10 @@ namespace WireForm.Circuitry.CircuitObjectActions
                     {
                         action = (object sender, EventArgs args) => method.Invoke(target, null);
                     }
+                    action += (object sender, EventArgs e) =>
+                    {
+                        form.Refresh();
+                    };
                     actions.Add((attribute, action));
                 }
             }

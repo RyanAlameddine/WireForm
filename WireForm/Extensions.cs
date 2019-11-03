@@ -32,23 +32,6 @@ namespace WireForm
             }
         }
 
-        public static void RegisterActions(this ContextMenuStrip gateMenu, List<(CircuitActionAttribute attribute, EventHandler action)> actions, Form form)
-        {
-            gateMenu.Items.Clear();
-            for (int i = 0; i < actions.Count; i++)
-            {
-                var action = actions[i];
-                if (action.attribute.RequireRefresh)
-                {
-                    action.action += (object sender, EventArgs e) =>
-                    {
-                        //RefreshSelections(state);
-                        form.Refresh();
-                    };
-                }
-                gateMenu.Items.Add(action.attribute.Name, null, action.action);
-            }
-        }
 
         public static Color BitColor(this BitValue value)
         {

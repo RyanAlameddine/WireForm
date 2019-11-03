@@ -28,7 +28,7 @@ namespace WireForm.Circuitry.Gates
             Outputs[0].Value = currentValue;
         }
 
-        [CircuitAction("Toggle", true)]
+        [CircuitAction("Toggle")]
         public void Toggle()
         {
             currentValue = currentValue.Not();

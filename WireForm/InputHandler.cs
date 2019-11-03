@@ -225,12 +225,17 @@ namespace WireForm
                             clickedcircuitObject = v;
                         }
 
-                        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, state);
+                        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, state, form);
 
 
                         gateMenu.Items.Clear();
                         ///Add refreshing to the actions if necessary
-                        gateMenu.RegisterActions(actions, form);
+                        gateMenu.Items.Clear();
+                        for (int i = 0; i < actions.Count; i++)
+                        {
+                            gateMenu.Items.Add(actions[i].attribute.Name, null, actions[i].action);
+                        }
+
                         gateMenu.Show(form, (Point)position);
                         //RefreshSelections(state);
                         toRefresh = true;
@@ -241,7 +246,7 @@ namespace WireForm
             return toRefresh;
         }
 
-        public void MouseUp(BoardState propogator)
+        public void MouseUp(StateStack stateStack)
         {
             //Tool - WirePainter
             if (tool == Tool.WirePainter)
@@ -255,7 +260,6 @@ namespace WireForm
                 mouseLeftDown = false;
                 
                 //Validate Wires
-
                 propogator.wires.Remove(secondaryCurrentLine);
                 currentLine.Validate(propogator.wires, propogator.Connections);
                 propogator.wires.Add(secondaryCurrentLine);
@@ -513,8 +517,9 @@ namespace WireForm
         /// <summary>
         /// Check through selection list to confirm that everything still exists
         /// </summary>
-        public void RefreshSelections(BoardState state)
+        public bool RefreshSelections(BoardState state)
         {
+            int count = selections.Count;
             selections.RemoveWhere((x) =>
             {
                 var gate = x as Gate;
@@ -532,31 +537,23 @@ namespace WireForm
                     throw new Exception("Invalid object selected");
                 }
             });
+            return count != selections.Count;
         }
 
-        public bool KeyDown(BoardState state, KeyEventArgs e)
+        public bool KeyDown(BoardState state, KeyEventArgs e, Form1 form)
         {
             foreach(CircuitObject selection in selections)
             {
-                var actions = CircuitActionAttribute.GetActions(selection, state);
+                var actions = CircuitActionAttribute.GetActions(selection, state, form);
                 foreach(var action in actions)
                 {
                     if (action.attribute.Hotkey == e.KeyCode)
                     {
-                        action.action.Invoke()
+                        action.action.Invoke(this, null);
                     }
                 }
+                return RefreshSelections(state);
             }
-            //if(e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
-            //{
-            //    foreach(var selection in selections)
-            //    {
-            //        selection.Delete(propogator);
-            //    }
-            //    selections.Clear();
-            //    OGPosition = null;
-            //    return true;
-            //}
             
             
             //Copy-Paste

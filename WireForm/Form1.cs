@@ -15,7 +15,7 @@ namespace WireForm
     {
         Painter painter = new Painter();
         InputHandler inputHandler = new InputHandler();
-        StateHistoryManager stateManager = new StateHistoryManager();
+        StateStack stateManager = new StateStack();
 
         public Form1()
         {
@@ -53,45 +53,35 @@ namespace WireForm
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseDown(stateManager.CurrentState, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
+            bool toRefresh = inputHandler.MouseDown(stateManager, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
 
             if (toRefresh) Refresh();
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            inputHandler.MouseUp(stateManager.CurrentState);
+            inputHandler.MouseUp(stateManager);
 
             Refresh();
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateManager.CurrentState);
+            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateManager);
 
             if(toRefresh) Refresh();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            //Queue<Gate> sources = new Queue<Gate>();
-            //foreach (Gate gt in stateManager.CurrentState.gates)
-            //{
-            //    if (gt.Inputs.Length == 0)
-            //    {
-            //        sources.Enqueue(gt);
-            //    }
-            //}
-            //FlowPropagator.Propogate(stateManager.CurrentState, sources);
-
-            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateManager.CurrentState);
+            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateManager);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(e.KeyChar == 's')
             {
-                SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), "lines.json"), stateManager.CurrentState);
+                stateManager.Save("lines.json");
             }
             if(e.KeyChar == 'l')
             {
@@ -116,14 +106,14 @@ namespace WireForm
                         sources.Enqueue(gate);
                     }
                 }
-                FlowPropagator.Propogate(stateManager.CurrentState, sources);
+                FlowPropagator.Propogate(stateManager, sources);
             }
             Refresh();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(inputHandler.KeyDown(stateManager.CurrentState, e))
+            if(inputHandler.KeyDown(stateManager, e, this))
             {
                 Refresh();
             }
@@ -171,7 +161,7 @@ namespace WireForm
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
             //Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            inputHandler.MouseDown(stateManager.CurrentState, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
+            inputHandler.MouseDown(stateManager, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
             Refresh();
         }
 

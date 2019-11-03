@@ -19,7 +19,7 @@ namespace WireForm.Circuitry
         public abstract void RemoveConnections(Dictionary<Vec2, List<BoardObject>> connections);
         public abstract CircuitObject Copy();
 
-        [CircuitAction("Delete", true, System.Windows.Forms.Keys.Delete)]
+        [CircuitAction("Delete", System.Windows.Forms.Keys.Delete)]
         public abstract void Delete(BoardState state);
     }
 }
