@@ -55,6 +55,7 @@
     <Compile Include="Circuitry\CircuitObjectActions\CircuitActionAttribute.cs" />
     <Compile Include="Circuitry\FlowPropagator.cs" />
     <Compile Include="Circuitry\CircuitObject.cs" />
+    <Compile Include="Circuitry\Gates\NandGate.cs" />
     <Compile Include="Circuitry\Gates\NorGate.cs" />
     <Compile Include="Circuitry\Gates\XorGate.cs" />
     <Compile Include="Circuitry\Gates\OrGate.cs" />
