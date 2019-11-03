@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace WireForm.Circuitry.CircuitObjectActions
 {
@@ -14,12 +16,20 @@ namespace WireForm.Circuitry.CircuitObjectActions
     [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public class CircuitActionAttribute : Attribute
     {
-        public string Name;
-        public bool RequireRefresh;
+        public string Name { get; private set; }
+        public bool RequireRefresh { get; private set; }
+
+        public Keys Hotkey { get; private set; }
         public CircuitActionAttribute(string Name, bool RequireRefresh)
         {
             this.Name = Name;
             this.RequireRefresh = RequireRefresh;
+        }
+
+        public CircuitActionAttribute(string Name, bool RequireRefresh, Keys Hotkey)
+            : this(Name, RequireRefresh)
+        {
+            this.Hotkey = Hotkey;
         }
 
         /// <param name="target">The target object on which the actions are found and run</param>

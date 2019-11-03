@@ -129,7 +129,6 @@ namespace WireForm.Circuitry.Gates.Utilities
             }
         }
 
-        [CircuitAction("Delete", true)]
         public override void Delete(BoardState propogator)
         {
             propogator.gates.Remove(this);

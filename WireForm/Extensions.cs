@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 using WireForm.Circuitry;
+using WireForm.Circuitry.CircuitObjectActions;
 using WireForm.MathUtils;
 
 namespace WireForm
@@ -27,6 +29,24 @@ namespace WireForm
             foreach(var t in set2)
             {
                 set1.Add(t);
+            }
+        }
+
+        public static void RegisterActions(this ContextMenuStrip gateMenu, List<(CircuitActionAttribute attribute, EventHandler action)> actions, Form form)
+        {
+            gateMenu.Items.Clear();
+            for (int i = 0; i < actions.Count; i++)
+            {
+                var action = actions[i];
+                if (action.attribute.RequireRefresh)
+                {
+                    action.action += (object sender, EventArgs e) =>
+                    {
+                        //RefreshSelections(state);
+                        form.Refresh();
+                    };
+                }
+                gateMenu.Items.Add(action.attribute.Name, null, action.action);
             }
         }
 

@@ -6,7 +6,7 @@ using WireForm.MathUtils.Collision;
 
 namespace WireForm.Circuitry
 {
-    public class WireLine : CircuitObject, IDeletable
+    public class WireLine : CircuitObject
     {
         public override Vec2 StartPoint { get; set; }
         public Vec2 EndPoint { get; set; }
@@ -408,7 +408,6 @@ namespace WireForm.Circuitry
             }
         }
 
-        [CircuitAction("Delete", true)]
         public override void Delete(BoardState propogator)
         {
             propogator.wires.Remove(this);

@@ -229,20 +229,9 @@ namespace WireForm
 
 
                         gateMenu.Items.Clear();
-                        for (int i = 0; i < actions.Count; i++)
-                        {
-                            var action = actions[i];
-                            if (action.attribute.RequireRefresh)
-                            {
-                                action.action += (object sender, EventArgs e) =>
-                                {
-                                    RefreshSelections(state);
-                                    form.Refresh();
-                                };
-                            }
-                            gateMenu.Items.Add(action.attribute.Name, null, action.action);
-                        }
-                        gateMenu.Show(form, (Point) position);
+                        ///Add refreshing to the actions if necessary
+                        gateMenu.RegisterActions(actions, form);
+                        gateMenu.Show(form, (Point)position);
                         //RefreshSelections(state);
                         toRefresh = true;
                     }
@@ -545,18 +534,32 @@ namespace WireForm
             });
         }
 
-        public bool KeyDown(BoardState propogator, KeyEventArgs e)
+        public bool KeyDown(BoardState state, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
+            foreach(CircuitObject selection in selections)
             {
-                foreach(var selection in selections)
+                var actions = CircuitActionAttribute.GetActions(selection, state);
+                foreach(var action in actions)
                 {
-                    selection.Delete(propogator);
+                    if (action.attribute.Hotkey == e.KeyCode)
+                    {
+                        action.action.Invoke()
+                    }
                 }
-                selections.Clear();
-                OGPosition = null;
-                return true;
             }
+            //if(e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
+            //{
+            //    foreach(var selection in selections)
+            //    {
+            //        selection.Delete(propogator);
+            //    }
+            //    selections.Clear();
+            //    OGPosition = null;
+            //    return true;
+            //}
+            
+            
+            //Copy-Paste
             if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control)
             {
                 clipBoard.Clear();
@@ -571,7 +574,7 @@ namespace WireForm
                 clipBoard.Clear();
                 foreach (var selection in selections)
                 {
-                    selection.Delete(propogator);
+                    selection.Delete(state);
                     clipBoard.Add(selection.Copy());
                 }
                 selections.Clear();

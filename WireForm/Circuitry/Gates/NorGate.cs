@@ -35,7 +35,7 @@ namespace WireForm.Circuitry.Gates
             gfx._DrawArcC(Color.Black, 10, StartPoint.X - 2.3f, StartPoint.Y + 2, 8f, 7, 270, 60);
             gfx._DrawArcC(Color.Black, 10, StartPoint.X - 2.3f, StartPoint.Y - 2, 8f, 7, 90, -60);
 
-            gfx._DrawEllipseC(Color.Black, 10, StartPoint.X + 1, StartPoint.Y, .1f, .1f);
+            gfx._DrawEllipseC(Color.Black, 10, StartPoint.X + 1, StartPoint.Y, .4f, .4f);
         }
 
         public override CircuitObject Copy()

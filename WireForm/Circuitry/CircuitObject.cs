@@ -10,7 +10,7 @@ namespace WireForm.Circuitry
     /// <summary>
     /// An object which sits on the board and interacts with other objects on the board
     /// </summary>
-    public abstract class CircuitObject : BoardObject, IDeletable
+    public abstract class CircuitObject : BoardObject
     {
         public abstract BoxCollider HitBox { get; set; }
 
@@ -19,6 +19,7 @@ namespace WireForm.Circuitry
         public abstract void RemoveConnections(Dictionary<Vec2, List<BoardObject>> connections);
         public abstract CircuitObject Copy();
 
+        [CircuitAction("Delete", true, System.Windows.Forms.Keys.Delete)]
         public abstract void Delete(BoardState state);
     }
 }
