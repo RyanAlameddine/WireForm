@@ -23,7 +23,7 @@ namespace WireForm.Circuitry.Gates.Utilities
 
                 if(Parent == null)
                 {
-                    Debug.WriteLine("Null parent in gatepin initialization - If this occurs while loading, this is not an error");
+                    //Debug.WriteLine("Null parent in gatepin initialization - If this occurs while loading, this is not an error");
                     return;
                 }
 

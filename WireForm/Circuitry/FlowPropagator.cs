@@ -22,11 +22,8 @@ namespace WireForm.Circuitry
                 return;
             }
 
-            Debug.WriteLine("Propogate");
-
-            //bool exhausted = false;
-
-            PatternStack<WireValuePair> visitedWires = new PatternStack<WireValuePair>();
+            PatternStack<WireValuePair> patternStack = new PatternStack<WireValuePair>();
+            HashSet<WireLine> visitedWires = new HashSet<WireLine>();
 
             while (sources.Count > 0)
             {
@@ -36,40 +33,12 @@ namespace WireForm.Circuitry
                 source.Compute();
                 foreach (var output in source.Outputs)
                 {
-                    PropagateWires(state, visitedWires, output.StartPoint, output.Value);
+                    PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Value);
                 }
-
-                //Check for 'error' wires and 'nothing' wires
-                //if (sources.Count == 0 && !exhausted)
-                //{
-                //    exhausted = true;
-                //    foreach (WireLine wireLine in state.wires)
-                //    {
-                //        if (!visitedWires.Contains(wireLine))
-                //        {
-                //            wireLine.Data.bitValue = BitValue.Nothing;
-                //        }
-                //    }
-
-                //    foreach (Gate gate in state.gates)
-                //    {
-                //        if (!visitedGates.ContainsKey(gate))
-                //        {
-                //            foreach (GatePin input in gate.Inputs)
-                //            {
-                //                input.Value = BitValue.Nothing;
-                //            }
-                //            foreach (GatePin output in gate.Outputs)
-                //            {
-                //                output.Value = BitValue.Nothing;
-                //            }
-                //        }
-                //    }
-                //}
             }
         }
 
-        static void PropagateWires(BoardState state, PatternStack<WireValuePair> visitedWires, Vec2 startPoint, BitValue value)
+        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, Vec2 startPoint, BitValue value)
         {
             if (!state.Connections.ContainsKey(startPoint))
             {
@@ -82,21 +51,22 @@ namespace WireForm.Circuitry
                 WireLine wire = circuitObject as WireLine;
                 if (wire != null)
                 {
-                    if (!visitedWires.IsEmpty() && visitedWires.Peek().Wire == wire)
+                    if (!patternStack.IsEmpty() && patternStack.Peek().Wire == wire)
                     {
                         continue;
                     }
-                    var index = visitedWires.HeadIndex;
-                    bool patternMatched = visitedWires.Push(new WireValuePair(wire, value));
+                    var index = patternStack.HeadIndex;
+                    bool patternMatched = patternStack.Push(new WireValuePair(wire, value));
+                    visitedWires.Add(wire);
                     wire.Data.bitValue = value;
 
                     if (patternMatched)
                     {
-                        Debug.WriteLine("Matched");
+                        //Debug.WriteLine("Matched");
 
-                        var matchedNode = visitedWires.matchedStartNode;
+                        var matchedNode = patternStack.matchedStartNode;
                         bool allMatch = true;
-                        foreach (var node in visitedWires.CurrentPattern)
+                        foreach (var node in patternStack.CurrentPattern)
                         {
                             if(node.Value != matchedNode.Value.Value)
                             {
@@ -113,7 +83,7 @@ namespace WireForm.Circuitry
                         }
                         else
                         {
-                            foreach (var node in visitedWires.CurrentPattern)
+                            foreach (var node in patternStack.CurrentPattern)
                             {
                                 node.Wire.Data.bitValue = BitValue.Error;
                             }
@@ -125,13 +95,13 @@ namespace WireForm.Circuitry
 
                         if (wire.StartPoint == startPoint)
                         {
-                            PropagateWires(state, visitedWires, wire.EndPoint, value);
-                            visitedWires.Pop(visitedWires.HeadIndex - index);
+                            PropagateWires(state, patternStack, visitedWires, wire.EndPoint, value);
+                            patternStack.Pop(patternStack.HeadIndex - index);
                         }
                         else if (wire.EndPoint == startPoint)
                         {
-                            PropagateWires(state, visitedWires, wire.StartPoint, value);
-                            visitedWires.Pop(visitedWires.HeadIndex - index);
+                            PropagateWires(state, patternStack, visitedWires, wire.StartPoint, value);
+                            patternStack.Pop(patternStack.HeadIndex - index);
                         }
                         else
                         {
@@ -154,9 +124,8 @@ namespace WireForm.Circuitry
                             pin.Parent.Compute();
                             foreach (GatePin output in pin.Parent.Outputs)
                             {
-                                PropagateWires(state, visitedWires, output.StartPoint, output.Value);
+                                PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Value);
                             }
-                            //changedGates.Add(pin.Parent);
                         }
                     }
 
@@ -165,6 +134,14 @@ namespace WireForm.Circuitry
 
                 throw new NotImplementedException();
 
+            }
+
+            foreach(WireLine wire in state.wires)
+            {
+                if (!visitedWires.Contains(wire))
+                {
+                    wire.Data.bitValue = BitValue.Nothing;
+                }
             }
         }
 

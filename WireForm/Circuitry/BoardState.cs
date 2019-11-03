@@ -23,30 +23,35 @@ namespace WireForm.Circuitry
         public BoardState Copy()
         {
             BoardState state = new BoardState();
-            foreach (KeyValuePair<Vec2, List<BoardObject>> pair in Connections)
-            {
-                List<BoardObject> copiedObjects = new List<BoardObject>();
-                foreach(BoardObject obj in pair.Value)
-                {
-                    var circuit = obj as CircuitObject;
-                    if(circuit == null)
-                    {
-                        circuit = ((GatePin)obj).Parent;
-                    }
+            //foreach (KeyValuePair<Vec2, List<BoardObject>> pair in Connections)
+            //{
+            //    List<BoardObject> copiedObjects = new List<BoardObject>();
+            //    foreach(BoardObject obj in pair.Value)
+            //    {
+            //        var circuit = obj as CircuitObject;
+            //        if(circuit == null)
+            //        {
+            //            circuit = ((GatePin)obj).Parent;
+            //        }
 
-                    copiedObjects.Add(circuit.Copy());
-                }
-                state.Connections.Add(pair.Key, copiedObjects);
-            }
+            //        copiedObjects.Add(circuit.Copy());
+            //    }
+            //    state.Connections.Add(pair.Key, copiedObjects);
+            //}
 
             foreach (WireLine wire in wires)
             {
-                state.wires.Add((WireLine) wire.Copy());
+                WireLine newWire = (WireLine)wire.Copy();
+                state.wires.Add(newWire);
+                newWire.AddConnections(state.Connections);
+                
             }
 
             foreach (Gate gate in gates)
             {
-                state.gates.Add((Gate) gate.Copy());
+                Gate newGate = (Gate) gate.Copy();
+                state.gates.Add(newGate);
+                newGate.AddConnections(state.Connections);
             }
             return state;
         }

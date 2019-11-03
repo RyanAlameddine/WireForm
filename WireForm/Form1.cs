@@ -15,7 +15,7 @@ namespace WireForm
     {
         Painter painter = new Painter();
         InputHandler inputHandler = new InputHandler();
-        StateStack stateManager = new StateStack();
+        StateStack stateStack = new StateStack();
 
         public Form1()
         {
@@ -26,23 +26,23 @@ namespace WireForm
                 ControlStyles.DoubleBuffer,
                 true);
 
-            PatternStack<int> patternStack = new PatternStack<int>();
-            bool b0 = patternStack.Push(1);
-            bool b1 = patternStack.Push(3);
-            bool b2 = patternStack.Push(2);
-            bool b3 = patternStack.Push(3);
-            bool b4 = patternStack.Push(4);
-            bool b5 = patternStack.Push(3);
-            bool b6 = patternStack.Push(2);
-            bool b7 = patternStack.Push(3);
-            bool b8= patternStack.Push(4);
-            patternStack.Pop();
-            patternStack.Pop(4);
-            bool b9 = patternStack.Push(4);
-            bool b10= patternStack.Push(3);
-            bool b11= patternStack.Push(2);
-            bool b12= patternStack.Push(3);
-            bool b13= patternStack.Push(4);
+            //PatternStack<int> patternStack = new PatternStack<int>();
+            //bool b0 = patternStack.Push(1);
+            //bool b1 = patternStack.Push(3);
+            //bool b2 = patternStack.Push(2);
+            //bool b3 = patternStack.Push(3);
+            //bool b4 = patternStack.Push(4);
+            //bool b5 = patternStack.Push(3);
+            //bool b6 = patternStack.Push(2);
+            //bool b7 = patternStack.Push(3);
+            //bool b8= patternStack.Push(4);
+            //patternStack.Pop();
+            //patternStack.Pop(4);
+            //bool b9 = patternStack.Push(4);
+            //bool b10= patternStack.Push(3);
+            //bool b11= patternStack.Push(2);
+            //bool b12= patternStack.Push(3);
+            //bool b13= patternStack.Push(4);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -53,40 +53,39 @@ namespace WireForm
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseDown(stateManager, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
+            bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
 
             if (toRefresh) Refresh();
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            inputHandler.MouseUp(stateManager);
+            inputHandler.MouseUp(stateStack, e.Button);
 
             Refresh();
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateManager);
+            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateStack.CurrentState);
 
             if(toRefresh) Refresh();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateManager);
+            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateStack.CurrentState);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(e.KeyChar == 's')
             {
-                stateManager.Save("lines.json");
+                stateStack.Save("lines.json");
             }
             if(e.KeyChar == 'l')
             {
-
-                stateManager.Load("lines.json");
+                stateStack.Load("lines.json");
             }
             if(e.KeyChar == '+' || e.KeyChar == '=')
             {
@@ -99,21 +98,21 @@ namespace WireForm
             if(e.KeyChar == 'p')
             {
                 Queue<Gate> sources = new Queue<Gate>();
-                foreach (Gate gate in stateManager.CurrentState.gates)
+                foreach (Gate gate in stateStack.CurrentState.gates)
                 {
                     if (gate.Inputs.Length == 0)
                     {
                         sources.Enqueue(gate);
                     }
                 }
-                FlowPropagator.Propogate(stateManager, sources);
+                FlowPropagator.Propogate(stateStack.CurrentState, sources);
             }
             Refresh();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(inputHandler.KeyDown(stateManager, e, this))
+            if(inputHandler.KeyDown(stateStack, e, this))
             {
                 Refresh();
             }
@@ -161,7 +160,7 @@ namespace WireForm
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
             //Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            inputHandler.MouseDown(stateManager, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
+            inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
             Refresh();
         }
 

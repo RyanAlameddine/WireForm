@@ -28,7 +28,7 @@ namespace WireForm.Circuitry.Gates
             Outputs[0].Value = currentValue;
         }
 
-        [CircuitAction("Toggle")]
+        [CircuitAction("Toggle", System.Windows.Forms.Keys.T)]
         public void Toggle()
         {
             currentValue = currentValue.Not();
@@ -36,7 +36,9 @@ namespace WireForm.Circuitry.Gates
 
         public override CircuitObject Copy()
         {
-            return new BitSource(StartPoint);
+            var gate = new BitSource(StartPoint);
+            gate.currentValue = currentValue;
+            return gate;
         }
     }
 }

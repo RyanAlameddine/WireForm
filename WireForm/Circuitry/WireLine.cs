@@ -348,6 +348,7 @@ namespace WireForm.Circuitry
         public override void RemoveConnections(Dictionary<Vec2, List<BoardObject>> connections)
         {
             connections[StartPoint].Remove(this);
+            //if(connections[StartPoint].)
             connections[EndPoint  ].Remove(this);
         }
 

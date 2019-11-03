@@ -107,7 +107,7 @@ namespace WireForm.Circuitry.Gates.Utilities
         {
             if (Inputs == null)
             {
-                Debug.WriteLine("Pin Inputs null when refreshing");
+                //Debug.WriteLine("Pin Inputs null when refreshing");
             }
             else
             {
@@ -118,7 +118,7 @@ namespace WireForm.Circuitry.Gates.Utilities
             }
             if (Outputs == null)
             {
-                Debug.WriteLine("Pin Outputs null when refreshing");
+                //Debug.WriteLine("Pin Outputs null when refreshing");
             }
             else
             {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WireForm.Circuitry.Gates.Utilities;
 
 namespace WireForm.Circuitry.CircuitObjectActions
 {
@@ -31,7 +32,7 @@ namespace WireForm.Circuitry.CircuitObjectActions
         }
 
         /// <param name="target">The target object on which the actions are found and run</param>
-        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(object target, BoardState state, Form form)
+        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(CircuitObject target, StateStack stateStack, Form form)
         {
             var actions = new List<(CircuitActionAttribute attribute, EventHandler action)>();
 
@@ -41,13 +42,33 @@ namespace WireForm.Circuitry.CircuitObjectActions
                 foreach (var attribute in (CircuitActionAttribute[])method.GetCustomAttributes(typeof(CircuitActionAttribute), true))
                 {
                     EventHandler action;
+
+                    string message = attribute.Name;
+                    if (target is WireLine)
+                    {
+                        message += $" wire at {target.StartPoint}";
+                    }
+                    else if (target is Gate)
+                    {
+                        message += $" {target.GetType().Name} at {target.StartPoint}";
+                    }
+
+                    ///add the methods to the event handler, including a possible parameter (the current state), and registering the change to the stateStack
                     if (method.GetParameters().Length > 0)
                     {
-                        action = (object sender, EventArgs args) => method.Invoke(target, new object[] { state });
+                        action = (object sender, EventArgs args) =>
+                        {
+                            method.Invoke(target, new object[] { stateStack.CurrentState });
+                            stateStack.RegisterChange(stateStack.CurrentState, message);
+                        };
                     }
                     else
                     {
-                        action = (object sender, EventArgs args) => method.Invoke(target, null);
+                        action = (object sender, EventArgs args) =>
+                        {
+                            method.Invoke(target, null);
+                            stateStack.RegisterChange(stateStack.CurrentState, message);
+                        };
                     }
                     action += (object sender, EventArgs e) =>
                     {
