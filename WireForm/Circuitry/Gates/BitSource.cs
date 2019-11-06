@@ -14,7 +14,9 @@ namespace WireForm.Circuitry.Gates
             : base(Position, new BoxCollider(-.5f, -.5f, 1, 1))
         {
             Inputs = new GatePin[0];
-            Outputs = new GatePin[] { new GatePin(this, new Vec2(), BitValue.One) };
+            Outputs = new GatePin[] { 
+                new GatePin(this, new Vec2()) 
+            };
         }
 
         protected override void draw(Graphics gfx)
@@ -25,13 +27,13 @@ namespace WireForm.Circuitry.Gates
         public BitValue currentValue = BitValue.One;
         protected override void compute()
         {
-            Outputs[0].Value = currentValue;
+            Outputs[0].Values[0] = currentValue;
         }
 
         [CircuitAction("Toggle", System.Windows.Forms.Keys.T)]
         public void Toggle()
         {
-            currentValue = currentValue.Not();
+            currentValue = !currentValue;
         }
 
         public override CircuitObject Copy()

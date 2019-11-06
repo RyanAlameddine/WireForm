@@ -33,12 +33,12 @@ namespace WireForm.Circuitry
                 source.Compute();
                 foreach (var output in source.Outputs)
                 {
-                    PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Value);
+                    PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Values);
                 }
             }
         }
 
-        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, Vec2 startPoint, BitValue value)
+        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, Vec2 startPoint, BitValue[] values)
         {
             if (!state.Connections.ContainsKey(startPoint))
             {
@@ -56,9 +56,9 @@ namespace WireForm.Circuitry
                         continue;
                     }
                     var index = patternStack.HeadIndex;
-                    bool patternMatched = patternStack.Push(new WireValuePair(wire, value));
+                    bool patternMatched = patternStack.Push(new WireValuePair(wire, values));
                     visitedWires.Add(wire);
-                    wire.Data.bitValue = value;
+                    wire.Data.BitValues = values;
 
                     if (patternMatched)
                     {
@@ -68,7 +68,7 @@ namespace WireForm.Circuitry
                         bool allMatch = true;
                         foreach (var node in patternStack.CurrentPattern)
                         {
-                            if(node.Value != matchedNode.Value.Value)
+                            if(node.Values != matchedNode.Value.Values)
                             {
                                 allMatch = false;
                                 break;
@@ -85,7 +85,10 @@ namespace WireForm.Circuitry
                         {
                             foreach (var node in patternStack.CurrentPattern)
                             {
-                                node.Wire.Data.bitValue = BitValue.Error;
+                                for (int i = 0; i < node.Wire.Data.BitValues.Length; i++)
+                                {
+                                    node.Wire.Data.BitValues[i] = BitValue.Error;
+                                }
                             }
                             return;
                         }
@@ -95,12 +98,12 @@ namespace WireForm.Circuitry
 
                         if (wire.StartPoint == startPoint)
                         {
-                            PropagateWires(state, patternStack, visitedWires, wire.EndPoint, value);
+                            PropagateWires(state, patternStack, visitedWires, wire.EndPoint, values);
                             patternStack.Pop(patternStack.HeadIndex - index);
                         }
                         else if (wire.EndPoint == startPoint)
                         {
-                            PropagateWires(state, patternStack, visitedWires, wire.StartPoint, value);
+                            PropagateWires(state, patternStack, visitedWires, wire.StartPoint, values);
                             patternStack.Pop(patternStack.HeadIndex - index);
                         }
                         else
@@ -119,12 +122,12 @@ namespace WireForm.Circuitry
                     {
                         if (pin.Parent.Inputs.Contains(pin))
                         {
-                            pin.Value = value;
+                            pin.Values = values;
 
                             pin.Parent.Compute();
                             foreach (GatePin output in pin.Parent.Outputs)
                             {
-                                PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Value);
+                                PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Values);
                             }
                         }
                     }
@@ -140,13 +143,16 @@ namespace WireForm.Circuitry
             {
                 if (!visitedWires.Contains(wire))
                 {
-                    wire.Data.bitValue = BitValue.Nothing;
+                    for(int i = 0; i < wire.Data.BitValues.Length; i++)
+                    {
+                        wire.Data.BitValues[i] = BitValue.Nothing;
+                    }
                 }
             }
         }
 
 
-        static void PropogateWire(BoardState state, Stack<WireLine> visitedWires, List<Gate> changedGates, Vec2 position, BitValue value)
+        static void PropogateWire(BoardState state, Stack<WireLine> visitedWires, List<Gate> changedGates, Vec2 position, BitValue[] value)
         {
             if (!state.Connections.ContainsKey(position))
             {
@@ -166,7 +172,7 @@ namespace WireForm.Circuitry
 
                     int stackPointer = visitedWires.Count - 1;
                     visitedWires.Push(wire);
-                    wire.Data.bitValue = value;
+                    wire.Data.BitValues = value;
                     if (wire.StartPoint == position)
                     {
                         PropogateWire(state, visitedWires, changedGates, wire.EndPoint, value);
@@ -190,7 +196,7 @@ namespace WireForm.Circuitry
                     {
                         if (pin.Parent.Inputs.Contains(pin))
                         {
-                            pin.Value = value;
+                            pin.Values = value;
                             changedGates.Add(pin.Parent);
                         }
                     }
@@ -207,12 +213,12 @@ namespace WireForm.Circuitry
     internal class WireValuePair
     {
         public WireLine Wire;
-        public BitValue Value;
+        public BitValue[] Values;
 
-        public WireValuePair(WireLine wire, BitValue value)
+        public WireValuePair(WireLine wire, BitValue[] values)
         {
             Wire = wire;
-            Value = value;
+            Values = values;
         }
 
         public override string ToString()

@@ -86,11 +86,11 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             foreach (var output in Outputs)
             {
-                Painter.DrawPin(gfx, output.StartPoint, output.Value);
+                Painter.DrawPin(gfx, output.StartPoint, output.Values);
             }
             foreach (var input in Inputs)
             {
-                Painter.DrawPin(gfx, input.StartPoint, input.Value);
+                Painter.DrawPin(gfx, input.StartPoint, input.Values);
             }
         }
 

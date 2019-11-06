@@ -13,18 +13,18 @@ namespace WireForm.Circuitry.Gates
             : base(Position, new BoxCollider(-2, -1.5f, 3, 3))
         {
             Inputs = new GatePin[] {
-                new GatePin(this, new Vec2(-2, -1), BitValue.Nothing),
-                new GatePin(this, new Vec2(-2, 1), BitValue.Nothing)
+                new GatePin(this, new Vec2(-2, -1)),
+                new GatePin(this, new Vec2(-2, 1))
             };
 
             Outputs = new GatePin[] {
-                new GatePin(this, new Vec2(1, 0), BitValue.Error)
+                new GatePin(this, new Vec2(1, 0))
             };
         }
 
         protected override void compute()
         {
-            Outputs[0].Value = Inputs[0].Value.And(Inputs[1].Value);
+            Outputs[0].Values = Inputs[0].Values.And(Inputs[1].Values);
         }
 
         protected override void draw(Graphics gfx)

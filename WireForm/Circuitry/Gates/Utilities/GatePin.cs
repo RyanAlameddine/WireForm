@@ -31,15 +31,15 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             }
         }
-        public BitValue Value { get; set; }
+        public BitValue[] Values { get; set; }
         public Gate Parent { get; set; }
 
-        public GatePin(Gate Parent, Vec2 LocalStart, BitValue Value)
+        public GatePin(Gate Parent, Vec2 LocalStart)
         {
             this.Parent = Parent;
-
             this.LocalPoint = LocalStart;
-            this.Value = Value;
+
+            Values = new BitValue[1];
         }
 
         public void RefreshLocation()

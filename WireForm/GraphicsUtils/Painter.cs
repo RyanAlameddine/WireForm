@@ -15,7 +15,7 @@ namespace WireForm.GraphicsUtils
 
         public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine)
         {
-            Color bitColor = wireLine.Data.bitValue.BitColor();
+            Color bitColor = wireLine.Data.BitValues.BitColor();
             DrawWireLine(gfx, propogator, wireLine, bitColor);
         }
         public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine, Color color)
@@ -58,9 +58,9 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void DrawPin(Graphics gfx, Vec2 position, BitValue value)
+        public static void DrawPin(Graphics gfx, Vec2 position, BitValue[] values)
         {
-            gfx._FillEllipseC(value.BitColor(), position.X, position.Y, .4f, .4f);
+            gfx._FillEllipseC(values.BitColor(), position.X, position.Y, .4f, .4f);
         }
     }
 }

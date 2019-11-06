@@ -32,21 +32,28 @@ namespace WireForm
             }
         }
 
-
-        public static Color BitColor(this BitValue value)
+        public static Color BitColor(this BitValue[] values)
         {
-            switch (value)
+
+            if (values.Length == 1)
             {
-                case BitValue.Error:
-                    return Color.DarkRed;
-                case BitValue.Nothing:
-                    return Color.DimGray;
-                case BitValue.One:
-                    return Color.Blue;
-                case BitValue.Zero:
-                    return Color.DarkBlue;
+                switch (values[0])
+                {
+                    case BitValue.Error:
+                        return Color.DarkRed;
+                    case BitValue.Nothing:
+                        return Color.DimGray;
+                    case BitValue.One:
+                        return Color.Blue;
+                    case BitValue.Zero:
+                        return Color.DarkBlue;
+                }
+                throw new NullReferenceException();
             }
-            throw new NullReferenceException();
+            else
+            {
+                return Color.Black;
+            }
         }
     }
 }
