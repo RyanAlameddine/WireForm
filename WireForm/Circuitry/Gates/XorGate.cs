@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
@@ -24,7 +25,7 @@ namespace WireForm.Circuitry.Gates
 
         protected override void compute()
         {
-            Outputs[0].Values = Inputs[0].Values.Xor(Inputs[1].Values);
+            Outputs[0].Values = Inputs[0].Values ^ Inputs[1].Values;
         }
 
         protected override void draw(Graphics gfx)

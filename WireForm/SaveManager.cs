@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using WireForm.Circuitry;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 
@@ -22,25 +23,25 @@ namespace WireForm
             File.WriteAllText(path, output);
         }
         
-        public static void Load(string json, out BoardState propogator)
+        public static void Load(string json, out BoardState state)
         {
-            propogator = JsonConvert.DeserializeObject<BoardState>(json, 
+            state = JsonConvert.DeserializeObject<BoardState>(json, 
                 new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.Auto
                 });
-            propogator.Connections = new Dictionary<Vec2, List<BoardObject>>();
-            for (int i = 0; i < propogator.wires.Count; i++)
+            state.Connections = new Dictionary<Vec2, List<BoardObject>>();
+            for (int i = 0; i < state.wires.Count; i++)
             {
-                if (propogator.wires[i].StartPoint.Y == propogator.wires[i].EndPoint.Y)
+                if (state.wires[i].StartPoint.Y == state.wires[i].EndPoint.Y)
                 {
-                    propogator.wires[i] = new WireLine(propogator.wires[i].StartPoint, propogator.wires[i].EndPoint, true);
+                    state.wires[i] = new WireLine(state.wires[i].StartPoint, state.wires[i].EndPoint, true, state.wires[i].bitDepth);
                 }
-                propogator.wires[i].AddConnections(propogator.Connections);
+                state.wires[i].AddConnections(state.Connections);
             }
 
-            foreach(Gate gate in propogator.gates)
+            foreach(Gate gate in state.gates)
             {
                 foreach(GatePin input in gate.Inputs)
                 {
@@ -52,7 +53,7 @@ namespace WireForm
                     output.Parent = gate;
                     output.LocalPoint = output.LocalPoint;
                 }
-                gate.AddConnections(propogator.Connections);
+                gate.AddConnections(state.Connections);
             }
         }
     }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using WireForm.Circuitry;
-using WireForm.Circuitry.CircuitObjectActions;
+﻿using System.Collections.Generic;
+using WireForm.Circuitry.Data;
 using WireForm.MathUtils;
 
 namespace WireForm
@@ -22,38 +18,6 @@ namespace WireForm
         public static void RemoveConnection(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject circuitObject)
         {
             connections[circuitObject.StartPoint].Remove(circuitObject);
-        }
-
-        public static void AddRange<T>(this HashSet<T> set1, HashSet<T> set2)
-        {
-            foreach(var t in set2)
-            {
-                set1.Add(t);
-            }
-        }
-
-        public static Color BitColor(this BitValue[] values)
-        {
-
-            if (values.Length == 1)
-            {
-                switch (values[0])
-                {
-                    case BitValue.Error:
-                        return Color.DarkRed;
-                    case BitValue.Nothing:
-                        return Color.DimGray;
-                    case BitValue.One:
-                        return Color.Blue;
-                    case BitValue.Zero:
-                        return Color.DarkBlue;
-                }
-                throw new NullReferenceException();
-            }
-            else
-            {
-                return Color.Black;
-            }
         }
     }
 }

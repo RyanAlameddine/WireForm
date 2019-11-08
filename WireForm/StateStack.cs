@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WireForm.Circuitry;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 
 namespace WireForm
@@ -69,6 +70,7 @@ namespace WireForm
         {
             SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), v)), out currentState);
             currentNode = new StateStackNode(null, null, currentState.Copy(), "Created Board");
+            Propogate();
         }
 
         public void Save(string v)

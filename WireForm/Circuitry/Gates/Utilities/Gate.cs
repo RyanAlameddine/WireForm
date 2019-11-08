@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using WireForm.Circuitry.CircuitObjectActions;
+using WireForm.Circuitry.Data;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;

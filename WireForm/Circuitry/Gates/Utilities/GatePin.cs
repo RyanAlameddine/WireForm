@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
+using WireForm.Circuitry.Data;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
@@ -31,7 +32,7 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             }
         }
-        public BitValue[] Values { get; set; }
+        public BitArray Values { get; set; }
         public Gate Parent { get; set; }
 
         public GatePin(Gate Parent, Vec2 LocalStart)
@@ -39,7 +40,7 @@ namespace WireForm.Circuitry.Gates.Utilities
             this.Parent = Parent;
             this.LocalPoint = LocalStart;
 
-            Values = new BitValue[1];
+            Values = new BitArray(1);
         }
 
         public void RefreshLocation()

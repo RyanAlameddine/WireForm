@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WireForm.MathUtils;
 
-namespace WireForm.Circuitry
+namespace WireForm.Circuitry.Data
 {
     /// <summary>
     /// An object which sits on the circuit board

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WireForm.Circuitry;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 
@@ -15,7 +16,7 @@ namespace WireForm.GraphicsUtils
 
         public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine)
         {
-            Color bitColor = wireLine.Data.BitValues.BitColor();
+            Color bitColor = wireLine.Data.BitColor();
             DrawWireLine(gfx, propogator, wireLine, bitColor);
         }
         public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine, Color color)
@@ -58,7 +59,7 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void DrawPin(Graphics gfx, Vec2 position, BitValue[] values)
+        public static void DrawPin(Graphics gfx, Vec2 position, BitArray values)
         {
             gfx._FillEllipseC(values.BitColor(), position.X, position.Y, .4f, .4f);
         }

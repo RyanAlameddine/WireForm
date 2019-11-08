@@ -1,29 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
-namespace WireForm.Circuitry
+namespace WireForm.Circuitry.Data
 {
-    public class WireData
-    {
-        public BitValue[] BitValues;
-
-        public WireData(int valueCount)
-        {
-            BitValues = new BitValue[valueCount];
-        }
-    }
-
-    //public enum BitValue
-    //{
-    //    Nothing,
-    //    Error,
-    //    Zero,
-    //    One
-    //}
-
     public struct BitValue
     {
         public const int Nothing = 0;
@@ -31,16 +9,17 @@ namespace WireForm.Circuitry
         public const int Zero = 2;
         public const int One = 3;
 
-        public readonly int Selected;
+        public readonly byte Selected;
 
-        private BitValue(int value)
+        [JsonConstructor]
+        private BitValue(byte Selected)
         {
-            Selected = value;
+            this.Selected = Selected;
         }
 
         public static BitValue operator !(BitValue value)
         {
-            if (value == One)  return Zero;
+            if (value == One) return Zero;
             if (value == Zero) return One;
             else return value;
         }
@@ -79,16 +58,16 @@ namespace WireForm.Circuitry
         /// <returns>true if INVALID</returns>
         private static bool CheckInputs(out BitValue returnValue, params BitValue[] values)
         {
-            bool valid   = true;
-            bool error   = false;
-            foreach(BitValue value in values)
+            bool valid = true;
+            bool error = false;
+            foreach (BitValue value in values)
             {
 
                 if (value == Nothing)
                 {
                     valid = false;
                 }
-                else if(value == Error)
+                else if (value == Error)
                 {
                     valid = false;
                     error = true;
@@ -97,7 +76,7 @@ namespace WireForm.Circuitry
 
             if (valid)
             {
-                returnValue = default(BitValue);
+                returnValue = default;
                 return false;
             }
             else if (error)
@@ -115,7 +94,12 @@ namespace WireForm.Circuitry
 
         public static implicit operator BitValue(int value)
         {
-            return new BitValue(value);
+            return new BitValue((byte)value);
+        }
+
+        public static implicit operator BitValue(long value)
+        {
+            return new BitValue((byte)value);
         }
 
         public static bool operator ==(BitValue value, int valueRep)
@@ -137,6 +121,22 @@ namespace WireForm.Circuitry
         public override int GetHashCode()
         {
             return 731004340 + Selected.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            switch (Selected)
+            {
+                case 0:
+                    return "Nothing";
+                case 1:
+                    return "Error";
+                case 2:
+                    return "Zero";
+                case 3:
+                    return "One";
+            }
+            throw new System.Exception();
         }
     }
 }

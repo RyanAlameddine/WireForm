@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 
 namespace WireForm.Circuitry
 {
-    public static class FlowPropagator
+    public 
+        class FlowPropagator
     {
         /// <summary>
         /// Computes each source and propogates down wires from sources
@@ -35,10 +37,20 @@ namespace WireForm.Circuitry
                 {
                     PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Values);
                 }
+                foreach (WireLine wire in state.wires)
+                {
+                    if (!visitedWires.Contains(wire))
+                    {
+                        for (int i = 0; i < wire.Data.BitValues.Length; i++)
+                        {
+                            wire.Data.BitValues[i] = BitValue.Nothing;
+                        }
+                    }
+                }
             }
         }
 
-        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, Vec2 startPoint, BitValue[] values)
+        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, Vec2 startPoint, BitArray values)
         {
             if (!state.Connections.ContainsKey(startPoint))
             {
@@ -58,7 +70,7 @@ namespace WireForm.Circuitry
                     var index = patternStack.HeadIndex;
                     bool patternMatched = patternStack.Push(new WireValuePair(wire, values));
                     visitedWires.Add(wire);
-                    wire.Data.BitValues = values;
+                    wire.Data = values;
 
                     if (patternMatched)
                     {
@@ -85,7 +97,7 @@ namespace WireForm.Circuitry
                         {
                             foreach (var node in patternStack.CurrentPattern)
                             {
-                                for (int i = 0; i < node.Wire.Data.BitValues.Length; i++)
+                                for (int i = 0; i < node.Wire.Data.Length; i++)
                                 {
                                     node.Wire.Data.BitValues[i] = BitValue.Error;
                                 }
@@ -139,83 +151,15 @@ namespace WireForm.Circuitry
 
             }
 
-            foreach(WireLine wire in state.wires)
-            {
-                if (!visitedWires.Contains(wire))
-                {
-                    for(int i = 0; i < wire.Data.BitValues.Length; i++)
-                    {
-                        wire.Data.BitValues[i] = BitValue.Nothing;
-                    }
-                }
-            }
-        }
-
-
-        static void PropogateWire(BoardState state, Stack<WireLine> visitedWires, List<Gate> changedGates, Vec2 position, BitValue[] value)
-        {
-            if (!state.Connections.ContainsKey(position))
-            {
-                return;
-            }
-
-            foreach (BoardObject circuitObject in state.Connections[position])
-            {
-                WireLine wire = circuitObject as WireLine;
-                if (wire != null)
-                {
-                    var topWire = visitedWires.Peek();
-                    if (topWire == wire)
-                    {
-                        continue;
-                    }
-
-                    int stackPointer = visitedWires.Count - 1;
-                    visitedWires.Push(wire);
-                    wire.Data.BitValues = value;
-                    if (wire.StartPoint == position)
-                    {
-                        PropogateWire(state, visitedWires, changedGates, wire.EndPoint, value);
-                    }
-                    else if (wire.EndPoint == position)
-                    {
-                        PropogateWire(state, visitedWires, changedGates, wire.StartPoint, value);
-                    }
-                    else
-                    {
-                        throw new Exception("How tf did this happen");
-                    }
-
-                    continue;
-                }
-
-                GatePin pin = circuitObject as GatePin;
-                if (pin != null)
-                {
-                    if (pin.Parent.Inputs != null)
-                    {
-                        if (pin.Parent.Inputs.Contains(pin))
-                        {
-                            pin.Values = value;
-                            changedGates.Add(pin.Parent);
-                        }
-                    }
-
-                    continue;
-                }
-
-                throw new NotImplementedException();
-
-            }
         }
     }
 
     internal class WireValuePair
     {
         public WireLine Wire;
-        public BitValue[] Values;
+        public BitArray Values;
 
-        public WireValuePair(WireLine wire, BitValue[] values)
+        public WireValuePair(WireLine wire, BitArray values)
         {
             Wire = wire;
             Values = values;

@@ -5,7 +5,7 @@ using System.Linq;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 
-namespace WireForm.Circuitry
+namespace WireForm.Circuitry.Data
 {
     public class BoardState
     {
@@ -44,12 +44,12 @@ namespace WireForm.Circuitry
                 WireLine newWire = (WireLine)wire.Copy();
                 state.wires.Add(newWire);
                 newWire.AddConnections(state.Connections);
-                
+
             }
 
             foreach (Gate gate in gates)
             {
-                Gate newGate = (Gate) gate.Copy();
+                Gate newGate = (Gate)gate.Copy();
                 state.gates.Add(newGate);
                 newGate.AddConnections(state.Connections);
             }

@@ -5,16 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 
-namespace WireForm.Circuitry.CircuitObjectActions
+namespace WireForm.Circuitry
 {
     /// <summary>
     /// Circuit Actions are functions which can be performed on a certain object, often found in the right-click menu.
     /// 
     /// This attribute must be placed on a method which takes in nothing as a paramter, or the current BoardState
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class CircuitActionAttribute : Attribute
     {
         public string Name { get; private set; }
@@ -56,7 +57,7 @@ namespace WireForm.Circuitry.CircuitObjectActions
                     ///add the methods to the event handler, including a possible parameter (the current state), and registering the change to the stateStack
                     if (method.GetParameters().Length > 0)
                     {
-                        action = (object sender, EventArgs args) =>
+                        action = (sender, args) =>
                         {
                             method.Invoke(target, new object[] { stateStack.CurrentState });
                             stateStack.RegisterChange(stateStack.CurrentState, message);
@@ -64,13 +65,13 @@ namespace WireForm.Circuitry.CircuitObjectActions
                     }
                     else
                     {
-                        action = (object sender, EventArgs args) =>
+                        action = (sender, args) =>
                         {
                             method.Invoke(target, null);
                             stateStack.RegisterChange(stateStack.CurrentState, message);
                         };
                     }
-                    action += (object sender, EventArgs e) =>
+                    action += (sender, e) =>
                     {
                         form.Refresh();
                     };

@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using WireForm.Circuitry;
-using WireForm.Circuitry.CircuitObjectActions;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
@@ -64,7 +64,7 @@ namespace WireForm
         bool mouseLeftDown = false;
         bool mouseRightDown = false;
 
-        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
+        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false, 1);
         WireLine secondaryCurrentLine;
 
         public InputHandler()
@@ -103,8 +103,8 @@ namespace WireForm
                 if (button == MouseButtons.Left)
                 {
                     //Create Line
-                    currentLine = new WireLine(mousePointGridded, mousePointGridded, true);
-                    secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false);
+                    currentLine = new WireLine(mousePointGridded, mousePointGridded, true, 1);
+                    secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false, 1);
 
                     //Register Line to draw
                     state.wires.Add(secondaryCurrentLine);
@@ -494,7 +494,7 @@ namespace WireForm
                         selections = gates;
                         if(additiveSelection)
                         {
-                            selections.AddRange(preSelections);
+                            selections.UnionWith(preSelections);
                         }
 
                         toRefresh = true;
@@ -523,7 +523,7 @@ namespace WireForm
                                 {
                                     if (selection.HitBox.GetIntersections(propogator, false, out var intersects, out _))
                                     {
-                                        intersectionBoxes.AddRange(intersects);
+                                        intersectionBoxes.UnionWith(intersects);
                                     }
                                 }
                             }

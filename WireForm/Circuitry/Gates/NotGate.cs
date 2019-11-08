@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
@@ -23,7 +24,7 @@ namespace WireForm.Circuitry.Gates
 
         protected override void compute()
         {
-            Outputs[0].Values = Inputs[0].Values.Not();
+            Outputs[0].Values = !Inputs[0].Values;
         }
 
         protected override void draw(Graphics gfx)
