@@ -132,13 +132,8 @@ namespace WireForm
                 if (mouseLeftDown)
                 {
                     circuitObjectMoved = false;
-                    //Already holding circuit connetor
-                    if (currentcircuitObject != null)
-                    {
-
-                    }
                     //Create new Gate
-                    else if(gateIndex != null)
+                    if(gateIndex != null)
                     {
                         selections.Clear();
                         currentcircuitObject = GateEnum.NewGate((int) gateIndex, mousePointGridded);
@@ -171,6 +166,9 @@ namespace WireForm
                         } else if (additiveSelection)
                         {
                             selections.Remove(clickedcircuitObject);
+                            clickedcircuitObject = null;
+                            currentcircuitObject = null;
+                            OGPosition = null;
                             return true;
                         }
 
@@ -414,6 +412,11 @@ namespace WireForm
 
         public bool MouseMove(Vec2 position, BoardState propogator)
         {
+            if (additiveSelection)
+            {
+                ;
+            }
+
             //Refresh if updated
             bool toRefresh = false;
 
@@ -541,6 +544,7 @@ namespace WireForm
         public bool RefreshSelections(BoardState state)
         {
             int count = selections.Count;
+            bool nullcco = currentcircuitObject == null;
             selections.RemoveWhere((x) =>
             {
                 var gate = x as Gate;
@@ -564,7 +568,7 @@ namespace WireForm
                 {
                     currentcircuitObject = null;
                 }
-                else
+                else if(!nullcco)
                 {
                     currentcircuitObject = selections.First();
                 }
@@ -578,22 +582,27 @@ namespace WireForm
             BoardState state = stateStack.CurrentState;
 
             //object hotkeys
-            foreach(CircuitObject selection in selections)
+            bool hit = false;
+            if (currentcircuitObject == null)
             {
-                var actions = CircuitActionAttribute.GetActions(selection, stateStack, form);
-                foreach(var action in actions)
+                foreach (CircuitObject selection in selections)
                 {
-                    if (action.attribute.Hotkey == e.KeyCode)
+                    var actions = CircuitActionAttribute.GetActions(selection, stateStack, form);
+                    foreach (var action in actions)
                     {
-                        action.action.Invoke(this, null);
-                        
+                        if (action.attribute.Hotkey == e.KeyCode)
+                        {
+                            hit = true;
+                            action.action.Invoke(this, null);
+
+                        }
                     }
                 }
             }
-            bool toRefresh = RefreshSelections(state);
-            
+            bool toRefresh = hit ? RefreshSelections(state) : false;
+
             //Undo-redo
-            if(e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
+            if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
             {
                 stateStack.Reverse();
                 return true;
