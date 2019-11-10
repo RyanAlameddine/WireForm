@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using WireForm.Circuitry;
+using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
@@ -25,24 +27,6 @@ namespace WireForm
                 ControlStyles.UserPaint |
                 ControlStyles.DoubleBuffer,
                 true);
-
-            //PatternStack<int> patternStack = new PatternStack<int>();
-            //bool b0 = patternStack.Push(1);
-            //bool b1 = patternStack.Push(3);
-            //bool b2 = patternStack.Push(2);
-            //bool b3 = patternStack.Push(3);
-            //bool b4 = patternStack.Push(4);
-            //bool b5 = patternStack.Push(3);
-            //bool b6 = patternStack.Push(2);
-            //bool b7 = patternStack.Push(3);
-            //bool b8= patternStack.Push(4);
-            //patternStack.Pop();
-            //patternStack.Pop(4);
-            //bool b9 = patternStack.Push(4);
-            //bool b10= patternStack.Push(3);
-            //bool b11= patternStack.Push(2);
-            //bool b12= patternStack.Push(3);
-            //bool b13= patternStack.Push(4);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -55,7 +39,11 @@ namespace WireForm
         {
             bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
 
-            if (toRefresh) Refresh();
+            if (toRefresh)
+            {
+                SettingsUpdate();
+                Refresh();
+            }
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
@@ -118,6 +106,22 @@ namespace WireForm
             }
         }
 
+
+        HashSet<CircuitObject> oldSelections;
+        private void SettingsUpdate()
+        {
+            if (!inputHandler.selections.Equals(oldSelections))
+            {
+                oldSelections = new HashSet<CircuitObject>(inputHandler.selections);
+                CircuitObjSettingsBox.Items.Clear();
+                
+                foreach(CircuitObject obj in oldSelections)
+                {
+                    foreach
+                }
+            }
+        }
+
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
         {
             float delta = e.Delta/40;
@@ -131,9 +135,10 @@ namespace WireForm
 
         private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            inputHandler.tool = (Tool)toolBox.SelectedIndex;
-            gateBox.Visible = inputHandler.tool == Tool.GateController;
-            gatePicBox.Visible = inputHandler.tool == Tool.GateController;
+            inputHandler.tool = (Tool) toolBox.SelectedIndex;
+            gateBox.Visible               = inputHandler.tool == Tool.GateController;
+            CircuitObjSettingsBox.Visible = inputHandler.tool == Tool.GateController;
+            gatePicBox.Visible            = inputHandler.tool == Tool.GateController;
 
             inputHandler.selections.Clear();
             Refresh();
@@ -146,9 +151,6 @@ namespace WireForm
 
         private void GatePicBox_Paint(object sender, PaintEventArgs e)
         {
-
-
-            //Enum.TryParse<GateEnum.GatesEnum>(gateBox.SelectedValue.ToString(), out var gate);
             Gate newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
             var temp = GraphicsManager.SizeScale;
             GraphicsManager.SizeScale = 15;
@@ -162,31 +164,6 @@ namespace WireForm
             //Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
             inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
             Refresh();
-        }
-
-        public static string debug1Value = "0";
-        public static string debug2Value = "0";
-        private void debugger1_TextChanged(object sender, EventArgs e)
-        {
-            if (debugger1.Text != "")
-            {
-                debug1Value = debugger1.Text;
-            }
-            Refresh();
-        }
-
-        private void debugger2_TextChanged(object sender, EventArgs e)
-        {
-            if (debugger2.Text != "")
-            {
-                debug2Value = debugger2.Text;
-                Refresh();
-            }
-        }
-
-        private void GateMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
-        {
-            //Refresh();
         }
     }
 }
