@@ -36,6 +36,7 @@
             this.alskjdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sdfsdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CircuitObjSettingsBox = new System.Windows.Forms.ListBox();
+            this.CircuitObjSettingsText = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.gatePicBox)).BeginInit();
             this.GateMenu.SuspendLayout();
             this.SuspendLayout();
@@ -48,10 +49,9 @@
             this.toolBox.Items.AddRange(new object[] {
             "Wire Painter",
             "Gate Controller"});
-            this.toolBox.Location = new System.Drawing.Point(1000, 18);
-            this.toolBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.toolBox.Location = new System.Drawing.Point(667, 12);
             this.toolBox.Name = "toolBox";
-            this.toolBox.Size = new System.Drawing.Size(180, 28);
+            this.toolBox.Size = new System.Drawing.Size(121, 21);
             this.toolBox.TabIndex = 0;
             this.toolBox.SelectedIndexChanged += new System.EventHandler(this.toolBox_SelectedIndexChanged);
             // 
@@ -60,10 +60,9 @@
             this.gateBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gateBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.gateBox.FormattingEnabled = true;
-            this.gateBox.Location = new System.Drawing.Point(1000, 60);
-            this.gateBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gateBox.Location = new System.Drawing.Point(667, 39);
             this.gateBox.Name = "gateBox";
-            this.gateBox.Size = new System.Drawing.Size(180, 28);
+            this.gateBox.Size = new System.Drawing.Size(121, 21);
             this.gateBox.TabIndex = 1;
             this.gateBox.Visible = false;
             this.gateBox.SelectedIndexChanged += new System.EventHandler(this.GateBox_SelectedIndexChanged);
@@ -72,9 +71,10 @@
             // 
             this.gatePicBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gatePicBox.BackColor = System.Drawing.Color.Transparent;
-            this.gatePicBox.Location = new System.Drawing.Point(1000, 95);
+            this.gatePicBox.Location = new System.Drawing.Point(667, 62);
+            this.gatePicBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.gatePicBox.Name = "gatePicBox";
-            this.gatePicBox.Size = new System.Drawing.Size(180, 128);
+            this.gatePicBox.Size = new System.Drawing.Size(120, 83);
             this.gatePicBox.TabIndex = 5;
             this.gatePicBox.TabStop = false;
             this.gatePicBox.Paint += new System.Windows.Forms.PaintEventHandler(this.GatePicBox_Paint);
@@ -87,42 +87,54 @@
             this.alskjdfToolStripMenuItem,
             this.sdfsdfToolStripMenuItem});
             this.GateMenu.Name = "contextMenuStrip1";
-            this.GateMenu.Size = new System.Drawing.Size(136, 68);
+            this.GateMenu.Size = new System.Drawing.Size(109, 48);
             // 
             // alskjdfToolStripMenuItem
             // 
             this.alskjdfToolStripMenuItem.Name = "alskjdfToolStripMenuItem";
-            this.alskjdfToolStripMenuItem.Size = new System.Drawing.Size(135, 32);
+            this.alskjdfToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.alskjdfToolStripMenuItem.Text = "alskjdf";
             // 
             // sdfsdfToolStripMenuItem
             // 
             this.sdfsdfToolStripMenuItem.Name = "sdfsdfToolStripMenuItem";
-            this.sdfsdfToolStripMenuItem.Size = new System.Drawing.Size(135, 32);
+            this.sdfsdfToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.sdfsdfToolStripMenuItem.Text = "sdfsdf";
             // 
             // CircuitObjSettingsBox
             // 
             this.CircuitObjSettingsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CircuitObjSettingsBox.FormattingEnabled = true;
-            this.CircuitObjSettingsBox.ItemHeight = 20;
-            this.CircuitObjSettingsBox.Location = new System.Drawing.Point(1000, 229);
+            this.CircuitObjSettingsBox.Location = new System.Drawing.Point(667, 149);
+            this.CircuitObjSettingsBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CircuitObjSettingsBox.Name = "CircuitObjSettingsBox";
-            this.CircuitObjSettingsBox.Size = new System.Drawing.Size(180, 344);
+            this.CircuitObjSettingsBox.Size = new System.Drawing.Size(121, 225);
             this.CircuitObjSettingsBox.TabIndex = 6;
             this.CircuitObjSettingsBox.Visible = false;
+            this.CircuitObjSettingsBox.SelectedIndexChanged += new System.EventHandler(this.CircuitObjSettingsBox_SelectedIndexChanged);
+            // 
+            // CircuitObjSettingsText
+            // 
+            this.CircuitObjSettingsText.Location = new System.Drawing.Point(667, 379);
+            this.CircuitObjSettingsText.Name = "CircuitObjSettingsText";
+            this.CircuitObjSettingsText.Size = new System.Drawing.Size(121, 20);
+            this.CircuitObjSettingsText.TabIndex = 7;
+            this.CircuitObjSettingsText.Visible = false;
+            this.CircuitObjSettingsText.Validating += new System.ComponentModel.CancelEventHandler(this.CircuitObjSettingsText_Validating);
+            this.CircuitObjSettingsText.Validated += new System.EventHandler(this.CircuitObjSettingsText_Validated);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1200, 692);
+            this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.CircuitObjSettingsText);
             this.Controls.Add(this.CircuitObjSettingsBox);
             this.Controls.Add(this.gatePicBox);
             this.Controls.Add(this.gateBox);
             this.Controls.Add(this.toolBox);
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -136,6 +148,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.gatePicBox)).EndInit();
             this.GateMenu.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -148,6 +161,7 @@
         private System.Windows.Forms.ToolStripMenuItem alskjdfToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sdfsdfToolStripMenuItem;
         private System.Windows.Forms.ListBox CircuitObjSettingsBox;
+        private System.Windows.Forms.TextBox CircuitObjSettingsText;
     }
 }
 

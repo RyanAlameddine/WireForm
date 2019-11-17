@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -108,6 +109,7 @@ namespace WireForm
 
 
         HashSet<CircuitObject> oldSelections;
+        List<CircuitProp> circuitProperties;
         private void SettingsUpdate()
         {
             if (!inputHandler.selections.Equals(oldSelections))
@@ -117,7 +119,11 @@ namespace WireForm
                 
                 foreach(CircuitObject obj in oldSelections)
                 {
-                    foreach()
+                    circuitProperties = CircuitPropertyAttribute.GetProperties(obj, stateStack, this);
+                    foreach (var property in circuitProperties)
+                    {
+                        CircuitObjSettingsBox.Items.Add(property.Name);
+                    }
                 }
             }
         }
@@ -136,9 +142,10 @@ namespace WireForm
         private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             inputHandler.tool = (Tool) toolBox.SelectedIndex;
-            gateBox.Visible               = inputHandler.tool == Tool.GateController;
-            CircuitObjSettingsBox.Visible = inputHandler.tool == Tool.GateController;
-            gatePicBox.Visible            = inputHandler.tool == Tool.GateController;
+            gateBox.Visible                = inputHandler.tool == Tool.GateController;
+            CircuitObjSettingsBox.Visible  = inputHandler.tool == Tool.GateController;
+            CircuitObjSettingsText.Visible = inputHandler.tool == Tool.GateController;
+            gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
 
             inputHandler.selections.Clear();
             Refresh();
@@ -164,6 +171,24 @@ namespace WireForm
             //Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
             inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
             Refresh();
+        }
+
+        private void CircuitObjSettingsBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CircuitObjSettingsBox.SelectedIndex == -1) { return; }
+
+            CircuitObjSettingsText.Text = circuitProperties[CircuitObjSettingsBox.SelectedIndex].Get().ToString();
+        }
+
+        private void CircuitObjSettingsText_Validating(object sender, CancelEventArgs e)
+        {
+            Debug.WriteLine("Validating");
+        }
+
+        private void CircuitObjSettingsText_Validated(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Validated");
+            circuitProperties[CircuitObjSettingsBox.SelectedIndex].Set(CircuitObjSettingsText.Text);
         }
     }
 }

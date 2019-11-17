@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
@@ -22,6 +24,20 @@ namespace WireForm.Circuitry.Gates
         protected override void draw(Graphics gfx)
         {
             gfx._DrawRectangle(Color.Green, 10, StartPoint.X - .4f, StartPoint.Y - .4f, .8f, .8f);
+        }
+
+        [JsonIgnore]
+        [CircuitProperty]
+        public int Value
+        {
+            get
+            {
+                return currentValue.Selected;
+            }
+            set
+            {
+                currentValue = value;
+            }
         }
 
         public BitValue currentValue = BitValue.One;

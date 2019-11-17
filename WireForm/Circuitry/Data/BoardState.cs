@@ -23,21 +23,6 @@ namespace WireForm.Circuitry.Data
         public BoardState Copy()
         {
             BoardState state = new BoardState();
-            //foreach (KeyValuePair<Vec2, List<BoardObject>> pair in Connections)
-            //{
-            //    List<BoardObject> copiedObjects = new List<BoardObject>();
-            //    foreach(BoardObject obj in pair.Value)
-            //    {
-            //        var circuit = obj as CircuitObject;
-            //        if(circuit == null)
-            //        {
-            //            circuit = ((GatePin)obj).Parent;
-            //        }
-
-            //        copiedObjects.Add(circuit.Copy());
-            //    }
-            //    state.Connections.Add(pair.Key, copiedObjects);
-            //}
 
             foreach (WireLine wire in wires)
             {
