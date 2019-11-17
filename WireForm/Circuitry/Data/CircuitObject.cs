@@ -11,6 +11,7 @@ namespace WireForm.Circuitry.Data
     /// </summary>
     public abstract class CircuitObject : BoardObject
     {
+
         public abstract BoxCollider HitBox { get; set; }
 
         public abstract void AddConnections(Dictionary<Vec2, List<BoardObject>> connections);

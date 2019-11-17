@@ -117,7 +117,7 @@ namespace WireForm
                 
                 foreach(CircuitObject obj in oldSelections)
                 {
-                    foreach
+                    foreach()
                 }
             }
         }

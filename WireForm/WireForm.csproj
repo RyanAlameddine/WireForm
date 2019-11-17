@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Circuitry\CircuitPropertyAttribute.cs" />
     <Compile Include="Circuitry\Data\BitArray.cs" />
     <Compile Include="Circuitry\Data\BitArrayConverter.cs" />
     <Compile Include="Circuitry\Data\BitValue.cs" />
