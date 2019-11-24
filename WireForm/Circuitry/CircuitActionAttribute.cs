@@ -60,7 +60,7 @@ namespace WireForm.Circuitry
                         action = (sender, args) =>
                         {
                             method.Invoke(target, new object[] { stateStack.CurrentState });
-                            stateStack.RegisterChange(stateStack.CurrentState, message);
+                            stateStack.RegisterChange(message);
                         };
                     }
                     else
@@ -68,7 +68,7 @@ namespace WireForm.Circuitry
                         action = (sender, args) =>
                         {
                             method.Invoke(target, null);
-                            stateStack.RegisterChange(stateStack.CurrentState, message);
+                            stateStack.RegisterChange(message);
                         };
                     }
                     action += (sender, e) =>

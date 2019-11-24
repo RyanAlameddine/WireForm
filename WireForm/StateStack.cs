@@ -32,7 +32,7 @@ namespace WireForm
         /// <summary>
         /// Registers a change to the current board state.
         /// </summary>
-        public void RegisterChange(BoardState state, string message)
+        public void RegisterChange(string message)
         {
             Debug.WriteLine(message);
             currentNode.Next = new StateStackNode(null, currentNode, currentState.Copy(), message);

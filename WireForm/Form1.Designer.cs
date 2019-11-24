@@ -35,8 +35,8 @@
             this.GateMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.alskjdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sdfsdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CircuitObjSettingsBox = new System.Windows.Forms.ListBox();
-            this.CircuitObjSettingsText = new System.Windows.Forms.TextBox();
+            this.SelectionSettings = new System.Windows.Forms.ListBox();
+            this.SelectionSettingValue = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.gatePicBox)).BeginInit();
             this.GateMenu.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +72,7 @@
             this.gatePicBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gatePicBox.BackColor = System.Drawing.Color.Transparent;
             this.gatePicBox.Location = new System.Drawing.Point(667, 62);
-            this.gatePicBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gatePicBox.Margin = new System.Windows.Forms.Padding(2);
             this.gatePicBox.Name = "gatePicBox";
             this.gatePicBox.Size = new System.Drawing.Size(120, 83);
             this.gatePicBox.TabIndex = 5;
@@ -101,27 +101,28 @@
             this.sdfsdfToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.sdfsdfToolStripMenuItem.Text = "sdfsdf";
             // 
-            // CircuitObjSettingsBox
+            // SelectionSettings
             // 
-            this.CircuitObjSettingsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CircuitObjSettingsBox.FormattingEnabled = true;
-            this.CircuitObjSettingsBox.Location = new System.Drawing.Point(667, 149);
-            this.CircuitObjSettingsBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.CircuitObjSettingsBox.Name = "CircuitObjSettingsBox";
-            this.CircuitObjSettingsBox.Size = new System.Drawing.Size(121, 225);
-            this.CircuitObjSettingsBox.TabIndex = 6;
-            this.CircuitObjSettingsBox.Visible = false;
-            this.CircuitObjSettingsBox.SelectedIndexChanged += new System.EventHandler(this.CircuitObjSettingsBox_SelectedIndexChanged);
+            this.SelectionSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SelectionSettings.FormattingEnabled = true;
+            this.SelectionSettings.Location = new System.Drawing.Point(667, 149);
+            this.SelectionSettings.Margin = new System.Windows.Forms.Padding(2);
+            this.SelectionSettings.Name = "SelectionSettings";
+            this.SelectionSettings.Size = new System.Drawing.Size(121, 225);
+            this.SelectionSettings.TabIndex = 6;
+            this.SelectionSettings.Visible = false;
+            this.SelectionSettings.SelectedIndexChanged += new System.EventHandler(this.SelectionSettings_SelectedIndexChanged);
             // 
-            // CircuitObjSettingsText
+            // SelectionSettingValue
             // 
-            this.CircuitObjSettingsText.Location = new System.Drawing.Point(667, 379);
-            this.CircuitObjSettingsText.Name = "CircuitObjSettingsText";
-            this.CircuitObjSettingsText.Size = new System.Drawing.Size(121, 20);
-            this.CircuitObjSettingsText.TabIndex = 7;
-            this.CircuitObjSettingsText.Visible = false;
-            this.CircuitObjSettingsText.Validating += new System.ComponentModel.CancelEventHandler(this.CircuitObjSettingsText_Validating);
-            this.CircuitObjSettingsText.Validated += new System.EventHandler(this.CircuitObjSettingsText_Validated);
+            this.SelectionSettingValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.SelectionSettingValue.FormattingEnabled = true;
+            this.SelectionSettingValue.Location = new System.Drawing.Point(667, 379);
+            this.SelectionSettingValue.Name = "SelectionSettingValue";
+            this.SelectionSettingValue.Size = new System.Drawing.Size(121, 21);
+            this.SelectionSettingValue.TabIndex = 7;
+            this.SelectionSettingValue.Visible = false;
+            this.SelectionSettingValue.SelectedIndexChanged += new System.EventHandler(this.SelectionSettingsValue_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -129,8 +130,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.CircuitObjSettingsText);
-            this.Controls.Add(this.CircuitObjSettingsBox);
+            this.Controls.Add(this.SelectionSettingValue);
+            this.Controls.Add(this.SelectionSettings);
             this.Controls.Add(this.gatePicBox);
             this.Controls.Add(this.gateBox);
             this.Controls.Add(this.toolBox);
@@ -148,7 +149,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.gatePicBox)).EndInit();
             this.GateMenu.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -160,8 +160,8 @@
         private System.Windows.Forms.ContextMenuStrip GateMenu;
         private System.Windows.Forms.ToolStripMenuItem alskjdfToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sdfsdfToolStripMenuItem;
-        private System.Windows.Forms.ListBox CircuitObjSettingsBox;
-        private System.Windows.Forms.TextBox CircuitObjSettingsText;
+        private System.Windows.Forms.ListBox SelectionSettings;
+        private System.Windows.Forms.ComboBox SelectionSettingValue;
     }
 }
 

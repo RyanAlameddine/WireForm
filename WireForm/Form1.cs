@@ -115,14 +115,15 @@ namespace WireForm
             if (!inputHandler.selections.Equals(oldSelections))
             {
                 oldSelections = new HashSet<CircuitObject>(inputHandler.selections);
-                CircuitObjSettingsBox.Items.Clear();
+                SelectionSettings.Items.Clear();
+                SelectionSettingValue.Items.Clear();
                 
                 foreach(CircuitObject obj in oldSelections)
                 {
                     circuitProperties = CircuitPropertyAttribute.GetProperties(obj, stateStack, this);
                     foreach (var property in circuitProperties)
                     {
-                        CircuitObjSettingsBox.Items.Add(property.Name);
+                        SelectionSettings.Items.Add(property.Name);
                     }
                 }
             }
@@ -143,8 +144,8 @@ namespace WireForm
         {
             inputHandler.tool = (Tool) toolBox.SelectedIndex;
             gateBox.Visible                = inputHandler.tool == Tool.GateController;
-            CircuitObjSettingsBox.Visible  = inputHandler.tool == Tool.GateController;
-            CircuitObjSettingsText.Visible = inputHandler.tool == Tool.GateController;
+            SelectionSettings.Visible      = inputHandler.tool == Tool.GateController;
+            SelectionSettingValue.Visible  = inputHandler.tool == Tool.GateController;
             gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
 
             inputHandler.selections.Clear();
@@ -173,22 +174,34 @@ namespace WireForm
             Refresh();
         }
 
-        private void CircuitObjSettingsBox_SelectedIndexChanged(object sender, EventArgs e)
+        int prevSelectedIndex = 0;
+        private void SelectionSettings_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (CircuitObjSettingsBox.SelectedIndex == -1) { return; }
+            SelectionSettingValue.Items.Clear();
+            if (SelectionSettings.SelectedIndex == -1) { return; }
 
-            CircuitObjSettingsText.Text = circuitProperties[CircuitObjSettingsBox.SelectedIndex].Get().ToString();
+            var prop  = circuitProperties[SelectionSettings.SelectedIndex];
+            var value = prop.Get();
+
+            for (int i = 0; i <= prop.valueRange.max - prop.valueRange.min ; i++) 
+            {
+                SelectionSettingValue.Items.Add(prop.valueNames[i]);
+            }
+            prevSelectedIndex = value;
+            SelectionSettingValue.SelectedIndex = value - prop.valueRange.min;
         }
 
-        private void CircuitObjSettingsText_Validating(object sender, CancelEventArgs e)
+        private void SelectionSettingsValue_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("Validating");
+            var prop = circuitProperties[SelectionSettings.SelectedIndex];
+
+            int newVal = SelectionSettingValue.SelectedIndex + prop.valueRange.min;
+            if(newVal == prevSelectedIndex) { return; }
+            prevSelectedIndex = newVal;
+            prop.Set(newVal);
+            stateStack.RegisterChange($"Changed {SelectionSettings.SelectedItem} to {newVal}");
+            Refresh();
         }
 
-        private void CircuitObjSettingsText_Validated(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Validated");
-            circuitProperties[CircuitObjSettingsBox.SelectedIndex].Set(CircuitObjSettingsText.Text);
-        }
     }
 }

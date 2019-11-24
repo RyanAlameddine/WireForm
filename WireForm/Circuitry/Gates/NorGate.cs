@@ -41,7 +41,7 @@ namespace WireForm.Circuitry.Gates
 
         public override CircuitObject Copy()
         {
-            return new OrGate(StartPoint);
+            return new NorGate(StartPoint);
         }
     }
 }

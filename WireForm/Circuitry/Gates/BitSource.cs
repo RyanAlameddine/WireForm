@@ -12,12 +12,12 @@ namespace WireForm.Circuitry.Gates
 {
     public class BitSource : Gate
     {
-        public BitSource(Vec2 Position) 
+        public BitSource(Vec2 Position)
             : base(Position, new BoxCollider(-.5f, -.5f, 1, 1))
         {
             Inputs = new GatePin[0];
-            Outputs = new GatePin[] { 
-                new GatePin(this, new Vec2()) 
+            Outputs = new GatePin[] {
+                new GatePin(this, new Vec2())
             };
         }
 
@@ -26,8 +26,21 @@ namespace WireForm.Circuitry.Gates
             gfx._DrawRectangle(Color.Green, 10, StartPoint.X - .4f, StartPoint.Y - .4f, .8f, .8f);
         }
 
+        protected override void compute()
+        {
+            Outputs[0].Values.Set(0, currentValue);
+        }
+
+        public override CircuitObject Copy()
+        {
+            var gate = new BitSource(StartPoint);
+            gate.currentValue = currentValue;
+            return gate;
+        }
+
+
         [JsonIgnore]
-        [CircuitProperty]
+        [CircuitProperty(2, 3, new[] { "Zero", "One" })]
         public int Value
         {
             get
@@ -41,22 +54,11 @@ namespace WireForm.Circuitry.Gates
         }
 
         public BitValue currentValue = BitValue.One;
-        protected override void compute()
-        {
-            Outputs[0].Values.Set(0, currentValue);
-        }
 
         [CircuitAction("Toggle", System.Windows.Forms.Keys.T)]
         public void Toggle()
         {
             currentValue = !currentValue;
-        }
-
-        public override CircuitObject Copy()
-        {
-            var gate = new BitSource(StartPoint);
-            gate.currentValue = currentValue;
-            return gate;
         }
     }
 }

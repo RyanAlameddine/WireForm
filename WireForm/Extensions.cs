@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using WireForm.Circuitry.Data;
+using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 
 namespace WireForm
@@ -18,6 +19,14 @@ namespace WireForm
         public static void RemoveConnection(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject circuitObject)
         {
             connections[circuitObject.StartPoint].Remove(circuitObject);
+        }
+
+        public static void SetDepth(this GatePin[] pins, int bitDepth)
+        {
+            for(int i = 0; i < pins.Length; i++)
+            {
+                pins[i].Values = new BitArray(bitDepth);
+            }
         }
     }
 }

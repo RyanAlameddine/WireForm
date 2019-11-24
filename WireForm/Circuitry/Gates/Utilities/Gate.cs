@@ -38,6 +38,8 @@ namespace WireForm.Circuitry.Gates.Utilities
         [JsonIgnore]
         public override BoxCollider HitBox { get; set; }
 
+        protected override int BitDepth { get => Inputs[0].Values.Length; set { Inputs.SetDepth(value); Outputs.SetDepth(value); } }
+
         public Gate(Vec2 Position, BoxCollider HitBox)
         {
             this.HitBox = HitBox;
@@ -133,5 +135,10 @@ namespace WireForm.Circuitry.Gates.Utilities
             propogator.gates.Remove(this);
             RemoveConnections(propogator.Connections);
         }
+
+        //public override CircuitObject Copy()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
 }

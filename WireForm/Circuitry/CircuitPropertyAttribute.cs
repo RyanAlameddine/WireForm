@@ -9,17 +9,39 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
+using WireForm.MathUtils;
 
 namespace WireForm.Circuitry
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class CircuitPropertyAttribute : Attribute
     {
-        public Range ValueRange;
+        public (int min, int max) ValueRange;
+        public string[] ValueNames;
 
-        public CircuitPropertyAttribute(Range ValueRange)
+        public CircuitPropertyAttribute(int min, int max)
         {
-            this.ValueRange = ValueRange;
+            this.ValueRange = (min, max);
+            int valueCount = max - min + 1;
+            ValueNames = new string[valueCount];
+            for(int i = 0; i < valueCount; i++)
+            {
+                ValueNames[i] = (i + min).ToString();
+            }
+        }
+        
+        public CircuitPropertyAttribute(int min, int max, string[] ValueNames)
+        {
+            this.ValueRange = (min, max);
+            this.ValueNames = ValueNames;
+            if(ValueRange.max < ValueRange.min)
+            {
+                throw new Exception("Max value range is lower than min value range");
+            }
+            if(ValueNames.Length != ValueRange.max - ValueRange.min + 1)
+            {
+                throw new Exception("ValueRange is not of the same length as specified ValueNames array");
+            }
         }
 
         public static List<CircuitProp> GetProperties(CircuitObject target, StateStack stateStack, Form form)
@@ -31,7 +53,7 @@ namespace WireForm.Circuitry
             {
                 foreach (var attribute in (CircuitPropertyAttribute[])property.GetCustomAttributes(typeof(CircuitPropertyAttribute), true))
                 {
-                    circuitProps.Add(new CircuitProp(property, target, property.Name));
+                    circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, property.Name));
                 }
             }
             return circuitProps;
@@ -42,27 +64,31 @@ namespace WireForm.Circuitry
     {
         private readonly PropertyInfo info;
         private readonly CircuitObject circuitObject;
+        public  readonly (int min, int max) valueRange;
+        public  readonly string[] valueNames;
 
         public readonly string Name;
 
-        public CircuitProp(PropertyInfo info, CircuitObject circuitObject, string Name)
+        public CircuitProp(PropertyInfo info, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, string Name)
         {
             this.info = info;
             this.circuitObject = circuitObject;
+            this.valueRange = valueRange;
+            this.valueNames = valueNames;
             this.Name = Name;
         }
 
-        public object Get()
+        public int Get()
         {
-            return info.GetValue(circuitObject);
+            return (int) info.GetValue(circuitObject);
         }
 
-        public void Set(object value)
+        public void Set(int value)
         {
-            //Type targetType = info.PropertyType;
-
-            //value = Convert.ChangeType(value, targetType);
-
+            if(value < valueRange.min || value > valueRange.max)
+            {
+                throw new Exception("Selected value is not in range");
+            }
             info.SetValue(circuitObject, value);
         }
     }

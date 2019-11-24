@@ -251,19 +251,26 @@ namespace WireForm
             {
                 if (button == MouseButtons.Left)
                 {
+                    if (!mouseLeftDown)
+                    {
+                        return;
+                    }
                     mouseLeftDown = false;
-
                     //Validate Wires
                     state.wires.Remove(secondaryCurrentLine);
                     currentLine.Validate(state.wires, state.Connections);
                     state.wires.Add(secondaryCurrentLine);
                     secondaryCurrentLine.Validate(state.wires, state.Connections);
-                    stateStack.RegisterChange(state, $"Created wire from {currentLine.StartPoint}-{secondaryCurrentLine.EndPoint}");
+                    stateStack.RegisterChange($"Created wire from {currentLine.StartPoint}-{secondaryCurrentLine.EndPoint}");
                 }
                 else if (button == MouseButtons.Right)
                 {
+                    if (!mouseRightDown)
+                    {
+                        return;
+                    }
                     mouseRightDown = false;
-                    stateStack.RegisterChange(state, "Erased wires");
+                    stateStack.RegisterChange("Erased wires");
                 }
             }
             //Tool - GateController
@@ -384,19 +391,27 @@ namespace WireForm
                             if (circuitObjectMoved)
                             {
                                 string message;
-                                if (selections.Count > 0)
+
+                                if (OGPosition == null)
                                 {
-                                    message = "Moved selections";
-                                }
-                                else if (selections.First() is WireLine)
-                                {
-                                    message = $"Moved wire from {OGPosition}-{selections.First().StartPoint}";
+                                    message = $"Created Gate at {selections.First().StartPoint}";
                                 }
                                 else
                                 {
-                                    message = $"Moved gate from {OGPosition}-{selections.First().StartPoint}";
+                                    if (selections.Count > 0)
+                                    {
+                                        message = "Moved selections";
+                                    }
+                                    else if (selections.First() is WireLine)
+                                    {
+                                        message = $"Moved wire from {OGPosition}-{selections.First().StartPoint}";
+                                    }
+                                    else
+                                    {
+                                        message = $"Moved gate from {OGPosition}-{selections.First().StartPoint}";
+                                    }
                                 }
-                                stateStack.RegisterChange(state, message);
+                                stateStack.RegisterChange(message);
                             }
 
                             OGPosition = null;
@@ -605,11 +620,13 @@ namespace WireForm
             if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
             {
                 stateStack.Reverse();
+                selections.Clear();
                 return true;
             }
             else if(e.KeyCode == Keys.Z && e.Modifiers == (Keys.Control | Keys.Shift))
             {
                 stateStack.Advance();
+                selections.Clear();
                 return true;
             }
 

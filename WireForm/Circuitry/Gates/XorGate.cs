@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
