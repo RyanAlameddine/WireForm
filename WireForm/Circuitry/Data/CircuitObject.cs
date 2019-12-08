@@ -23,6 +23,6 @@ namespace WireForm.Circuitry.Data
         public abstract void Delete(BoardState state);
 
         [CircuitProperty(1, 32)]
-        protected abstract int BitDepth { get; set; }
+        public abstract int BitDepth { get; protected set; }
     }
 }

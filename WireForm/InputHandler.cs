@@ -72,6 +72,65 @@ namespace WireForm
             tool = Tool.WirePainter;
         }
 
+        public void Undo(StateStack stateStack)
+        {
+            stateStack.Reverse();
+            selections.Clear();
+        }
+
+        public void Redo(StateStack stateStack)
+        {
+            stateStack.Advance();
+            selections.Clear();
+        }
+
+        public void Copy()
+        {
+            clipBoard.Clear();
+            foreach (var selection in selections)
+            {
+                clipBoard.Add(selection.Copy());
+            }
+        }
+
+        public void Cut(StateStack stateStack)
+        {
+            clipBoard.Clear();
+            foreach (var selection in selections)
+            {
+                selection.Delete(stateStack.CurrentState);
+                clipBoard.Add(selection.Copy());
+            }
+            selections.Clear();
+            OGPosition = null;
+        }
+
+        public void Paste()
+        {
+            mouseLeftDown = true;
+            selections.Clear();
+            OGPosition = null;
+            HashSet<CircuitObject> newClipBoard = new HashSet<CircuitObject>();
+
+            foreach (var obj in clipBoard)
+            {
+                newClipBoard.Add(obj.Copy());
+                selections.Add(obj);
+
+                obj.StartPoint += new Vec2(1, 1);
+
+                WireLine asWire = obj as WireLine;
+                if (asWire != null)
+                {
+                    asWire.EndPoint += new Vec2(1, 1);
+                }
+
+                currentcircuitObject = obj;
+            }
+            clipBoard = newClipBoard;
+        }
+
+
         /// <param name="position">Mouse location</param>
         /// <param name="additiveSelection">Should selection operations clear the selection list before adding more. This bool is usually synonomous to whether or not the shift key is pressed</param>
         /// <param name="gate">The gate to be created from this click</param>
@@ -113,6 +172,7 @@ namespace WireForm
                 }
                 else if (!mouseLeftDown && button == MouseButtons.Right)
                 {
+                    Cursor.Current = Cursors.WaitCursor;
                     //Erase Lines
                     for (int i = 0; i < state.wires.Count; i++)
                     {
@@ -143,7 +203,7 @@ namespace WireForm
                             intersectionBoxes = intersectBoxes;
                         }
                     }
-                    //Select circuitcircuitObject with mouse
+                    //Select circuitObject with mouse
                     else if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var gates, false))
                     {
                         //In the undefined case of multiple hits from a single mouse click, only deal with the first
@@ -267,6 +327,7 @@ namespace WireForm
                 {
                     if (!mouseRightDown)
                     {
+                        Cursor.Current = Cursors.Default;
                         return;
                     }
                     mouseRightDown = false;
@@ -616,73 +677,9 @@ namespace WireForm
             }
             bool toRefresh = hit ? RefreshSelections(state) : false;
 
-            //Undo-redo
-            if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
-            {
-                stateStack.Reverse();
-                selections.Clear();
-                return true;
-            }
-            else if(e.KeyCode == Keys.Z && e.Modifiers == (Keys.Control | Keys.Shift))
-            {
-                stateStack.Advance();
-                selections.Clear();
-                return true;
-            }
-
-
-            //Copy-Paste
-            if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control)
-            {
-                clipBoard.Clear();
-                foreach (var selection in selections)
-                {
-                    clipBoard.Add(selection.Copy());
-                }
-                return true;
-            }
-            if (e.KeyCode == Keys.X && e.Modifiers == Keys.Control)
-            {
-                clipBoard.Clear();
-                foreach (var selection in selections)
-                {
-                    selection.Delete(state);
-                    clipBoard.Add(selection.Copy());
-                }
-                selections.Clear();
-                OGPosition = null;
-                return true;
-            }
-            if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control)
-            {
-                mouseLeftDown = true;
-                selections.Clear();
-                OGPosition = null;
-                HashSet<CircuitObject> newClipBoard = new HashSet<CircuitObject>();
-
-                foreach (var obj in clipBoard)
-                {
-                    newClipBoard.Add(obj.Copy());
-                    selections.Add(obj);
-
-                    obj.StartPoint += new Vec2(1, 1);
-
-                    WireLine asWire = obj as WireLine;
-                    if (asWire != null)
-                    {
-                        asWire.EndPoint += new Vec2(1, 1);
-                    }
-
-                    currentcircuitObject = obj;
-                }
-                clipBoard = newClipBoard;
-                return true;
-            }
 
             return toRefresh;
         }
-
-        
     }
     public enum Tool
     {

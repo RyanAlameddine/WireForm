@@ -14,6 +14,7 @@ using WireForm.MathUtils;
 
 namespace WireForm
 {
+
     public partial class Form1 : Form
     {
         Painter painter = new Painter();
@@ -36,6 +37,7 @@ namespace WireForm
             gateBox.DataSource = Enum.GetValues(GateEnum.GatesEnum);
         }
 
+        #region Input
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
@@ -60,31 +62,17 @@ namespace WireForm
 
             if(toRefresh) Refresh();
         }
-
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateStack.CurrentState);
-        }
-
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(e.KeyChar == 's')
-            {
-                stateStack.Save("lines.json");
-            }
-            if(e.KeyChar == 'l')
-            {
-                stateStack.Load("lines.json");
-            }
-            if(e.KeyChar == '+' || e.KeyChar == '=')
+            if (e.KeyChar == '+' || e.KeyChar == '=')
             {
                 GraphicsManager.SizeScale *= 1.1f;
             }
-            if(e.KeyChar == '-')
+            if (e.KeyChar == '-')
             {
                 GraphicsManager.SizeScale *= .9f;
             }
-            if(e.KeyChar == 'p')
+            if (e.KeyChar == 'p')
             {
                 Queue<Gate> sources = new Queue<Gate>();
                 foreach (Gate gate in stateStack.CurrentState.gates)
@@ -101,13 +89,53 @@ namespace WireForm
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(inputHandler.KeyDown(stateStack, e, this))
+            if (inputHandler.KeyDown(stateStack, e, this))
             {
                 Refresh();
             }
         }
 
+        private void Form1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            float delta = e.Delta / 40;
+            GraphicsManager.SizeScale += delta;
+            if (GraphicsManager.SizeScale > 70)
+            {
+                GraphicsManager.SizeScale = 70;
+            }
+            Refresh();
+        }
 
+        private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
+            Refresh();
+        }
+        #endregion Input
+
+        #region Graphics
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateStack.CurrentState);
+        }
+
+        private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gatePicBox.Refresh();
+        }
+
+        private void GatePicBox_Paint(object sender, PaintEventArgs e)
+        {
+            Gate newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
+            var temp = GraphicsManager.SizeScale;
+            GraphicsManager.SizeScale = 15;
+            newGate.Draw(e.Graphics);
+
+            GraphicsManager.SizeScale = temp;
+        }
+        #endregion Graphics
+
+        #region CircuitProperties
         HashSet<CircuitObject> oldSelections;
         List<CircuitProp> circuitProperties;
         private void SettingsUpdate()
@@ -129,61 +157,16 @@ namespace WireForm
             }
         }
 
-        private void Form1_MouseWheel(object sender, MouseEventArgs e)
-        {
-            float delta = e.Delta/40;
-            GraphicsManager.SizeScale += delta;
-            if(GraphicsManager.SizeScale > 70)
-            {
-                GraphicsManager.SizeScale = 70;
-            }
-            Refresh();
-        }
-
-        private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            inputHandler.tool = (Tool) toolBox.SelectedIndex;
-            gateBox.Visible                = inputHandler.tool == Tool.GateController;
-            SelectionSettings.Visible      = inputHandler.tool == Tool.GateController;
-            SelectionSettingValue.Visible  = inputHandler.tool == Tool.GateController;
-            gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
-
-            inputHandler.selections.Clear();
-            Refresh();
-        }
-
-        private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            gatePicBox.Refresh();
-        }
-
-        private void GatePicBox_Paint(object sender, PaintEventArgs e)
-        {
-            Gate newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
-            var temp = GraphicsManager.SizeScale;
-            GraphicsManager.SizeScale = 15;
-            newGate.Draw(e.Graphics);
-
-            GraphicsManager.SizeScale = temp;
-        }
-
-        private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
-        {
-            //Enum.TryParse<Gates>(gateBox.SelectedValue.ToString(), out var gate);
-            inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
-            Refresh();
-        }
-
         int prevSelectedIndex = 0;
         private void SelectionSettings_SelectedIndexChanged(object sender, EventArgs e)
         {
             SelectionSettingValue.Items.Clear();
             if (SelectionSettings.SelectedIndex == -1) { return; }
 
-            var prop  = circuitProperties[SelectionSettings.SelectedIndex];
+            var prop = circuitProperties[SelectionSettings.SelectedIndex];
             var value = prop.Get();
 
-            for (int i = 0; i <= prop.valueRange.max - prop.valueRange.min ; i++) 
+            for (int i = 0; i <= prop.valueRange.max - prop.valueRange.min; i++)
             {
                 SelectionSettingValue.Items.Add(prop.valueNames[i]);
             }
@@ -196,12 +179,82 @@ namespace WireForm
             var prop = circuitProperties[SelectionSettings.SelectedIndex];
 
             int newVal = SelectionSettingValue.SelectedIndex + prop.valueRange.min;
-            if(newVal == prevSelectedIndex) { return; }
+            if (newVal == prevSelectedIndex) { return; }
             prevSelectedIndex = newVal;
             prop.Set(newVal);
             stateStack.RegisterChange($"Changed {SelectionSettings.SelectedItem} to {newVal}");
             Refresh();
         }
+        #endregion CircuitProperties
+
+        #region FormInput
+        private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            inputHandler.tool = (Tool) toolBox.SelectedIndex;
+            gateBox.Visible                = inputHandler.tool == Tool.GateController;
+            SelectionSettings.Visible      = inputHandler.tool == Tool.GateController;
+            SelectionSettingValue.Visible  = inputHandler.tool == Tool.GateController;
+            gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
+
+            inputHandler.selections.Clear();
+            Refresh();
+        }
+
+        private void newButton_Click(object sender, EventArgs e)
+        {
+            stateStack.Clear();
+        }
+
+        private void openButton_Click(object sender, EventArgs e)
+        {
+            stateStack.Load(openFileDialog);
+        }
+
+        private void save_Click(object sender, EventArgs e)
+        {
+            stateStack.Save(saveFileDialog);
+        }
+
+        private void saveAsButton_Click(object sender, EventArgs e)
+        {
+            stateStack.SaveAs(saveFileDialog);
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void undoButton_Click(object sender, EventArgs e)
+        {
+            inputHandler.Undo(stateStack);
+            Refresh();
+        }
+
+        private void redoButton_Click(object sender, EventArgs e)
+        {
+            inputHandler.Redo(stateStack);
+            Refresh();
+        }
+
+        private void copyButton_Click(object sender, EventArgs e)
+        {
+            inputHandler.Copy();
+        }
+
+        private void cutButton_Click(object sender, EventArgs e)
+        {
+            inputHandler.Cut(stateStack);
+            Refresh();
+        }
+
+        private void pasteButton_Click(object sender, EventArgs e)
+        {
+            inputHandler.Paste();
+        }
+
+        #endregion
+
 
     }
 }

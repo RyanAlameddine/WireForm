@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
@@ -22,6 +23,11 @@ namespace WireForm
                 return currentState;
             }
         }
+
+        /// <summary>
+        /// if saveToNew is "", pressing the save button will be treated as SaveAs
+        /// </summary>
+        private string savePath = "";
 
         public StateStack()
         {
@@ -66,16 +72,56 @@ namespace WireForm
             }
         }
 
-        public void Load(string v)
+        public void Load(OpenFileDialog openFileDialog)
         {
-            SaveManager.Load(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), v)), out currentState);
+            openFileDialog.Filter = "Json|*.json";
+            openFileDialog.Title  = "Load your wireForm";
+            openFileDialog.ShowDialog();
+
+            var fileName = openFileDialog.FileName;
+            if(fileName == "")
+            {
+                return;
+            }
+
+
+            SaveManager.Load(File.ReadAllText(fileName), out currentState);
             currentNode = new StateStackNode(null, null, currentState.Copy(), "Created Board");
+            savePath = fileName;
             Propogate();
         }
 
-        public void Save(string v)
+        public void Clear()
         {
-            SaveManager.Save(Path.Combine(Directory.GetCurrentDirectory(), v), currentState);
+            currentNode = new StateStackNode(null, null, new BoardState(), "Created Board");
+            currentState = currentNode.State;
+            savePath = "";
+        }
+
+        public void Save(SaveFileDialog saveFileDialog)
+        {
+            if (savePath == "")
+            {
+                SaveAs(saveFileDialog);
+                if (savePath == "") return;
+            }
+
+            SaveManager.Save(savePath, currentState);
+        }
+
+        public void SaveAs(SaveFileDialog saveFileDialog)
+        {
+            saveFileDialog.Filter = "Json|*.json";
+            saveFileDialog.Title = "Save your wireForm";
+            saveFileDialog.ShowDialog();
+            var fileName = saveFileDialog.FileName;
+            if (fileName == "")
+            {
+                return;
+            }
+            savePath = fileName;
+
+            Save(saveFileDialog);
         }
 
         public void Propogate()

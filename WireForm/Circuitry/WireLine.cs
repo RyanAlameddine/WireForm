@@ -38,7 +38,7 @@ namespace WireForm.Circuitry
 
         [JsonIgnore]
         public BitArray Data { get; set; }
-        protected override int BitDepth { get => Data.Length; set => Data = new BitArray(value); }
+        public override int BitDepth { get => Data.Length; protected set => Data = new BitArray(value); }
 
         public WireLine(Vec2 start, Vec2 end, bool IsHorizontal, int bitDepth)
         {
@@ -403,8 +403,9 @@ namespace WireForm.Circuitry
             {
                 var temp = wires[i].StartPoint;
                 wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
+                int bitDepth = wires[i].BitDepth;
                 wires[i].Validate(wires, connections);
-                WireLine newWire = new WireLine(temp, startsEnd, xpri, wires[i].BitDepth);
+                WireLine newWire = new WireLine(temp, startsEnd, xpri, bitDepth);
                 wires.Add(newWire);
                 newWire.Validate(wires, connections);
             }

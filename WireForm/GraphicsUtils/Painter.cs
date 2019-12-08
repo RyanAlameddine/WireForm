@@ -23,6 +23,7 @@ namespace WireForm.GraphicsUtils
         {
             gfx._DrawLine(color, 10, wireLine.StartPoint, wireLine.EndPoint);
 
+
             DrawPoint(gfx, propogator, wireLine.StartPoint, color);
             DrawPoint(gfx, propogator, wireLine.EndPoint, color);
         }

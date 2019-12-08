@@ -34,10 +34,10 @@ namespace WireForm
             state.Connections = new Dictionary<Vec2, List<BoardObject>>();
             for (int i = 0; i < state.wires.Count; i++)
             {
-                //if (state.wires[i].StartPoint.Y == state.wires[i].EndPoint.Y)
-                //{
-                //    state.wires[i] = new WireLine(state.wires[i].StartPoint, state.wires[i].EndPoint, true, state.wires[i].BitDepth);
-                //}
+                if (state.wires[i].StartPoint.Y == state.wires[i].EndPoint.Y)
+                {
+                    state.wires[i] = new WireLine(state.wires[i].StartPoint, state.wires[i].EndPoint, true, state.wires[i].BitDepth);
+                }
                 state.wires[i].AddConnections(state.Connections);
             }
 
