@@ -77,8 +77,8 @@ namespace WireForm.Circuitry.Data
 
         public static BitArray operator &(BitArray values1, BitArray values2)
         {
-            BitArray newBits = new BitArray(values1.Length);
-            for (int i = 0; i < newBits.Length; i++)
+            int minLength = ErrorOverflow(values1, values2, out var newBits);
+            for (int i = 0; i < minLength; i++)
             {
                 newBits[i] = values1[i] & values2[i];
             }
@@ -87,8 +87,8 @@ namespace WireForm.Circuitry.Data
 
         public static BitArray operator |(BitArray values1, BitArray values2)
         {
-            BitArray newBits = new BitArray(values1.Length);
-            for (int i = 0; i < newBits.Length; i++)
+            int minLength = ErrorOverflow(values1, values2, out var newBits);
+            for (int i = 0; i < minLength; i++)
             {
                 newBits[i] = values1[i] | values2[i];
             }
@@ -97,14 +97,33 @@ namespace WireForm.Circuitry.Data
 
         public static BitArray operator ^(BitArray values1, BitArray values2)
         {
-            BitArray newBits = new BitArray(values1.Length);
-            for (int i = 0; i < newBits.Length; i++)
+            int minLength = ErrorOverflow(values1, values2, out var newBits);
+            for (int i = 0; i < minLength; i++)
             {
                 newBits[i] = values1[i] ^ values2[i];
             }
             return newBits;
         }
 
+        /// <summary>
+        /// Finds the amount of bits shared between the two arrays, then errors out the output bits for the rest of the indicies
+        /// E.g. values1 = { 0, 1 }
+        ///      values2 = { 1, 1, 0 }
+        ///      ---------------------
+        ///      newBits = { -, -, Error }
+        /// </summary>
+        /// <returns>length before erroring</returns>
+        private static int ErrorOverflow(BitArray values1, BitArray values2, out BitArray newBits)
+        {
+            int min = Math.Min(values1.Length, values2.Length);
+            int max = Math.Max(values1.Length, values2.Length);
+            newBits = new BitArray(max);
+            for(int i = min; i < max; i++)
+            {
+                newBits[i] = BitValue.Error;
+            }
+            return min;
+        }
 
         public static bool operator ==(BitArray values1, BitArray values2)
         {

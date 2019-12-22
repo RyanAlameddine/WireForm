@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 
-namespace WireForm.Circuitry
+namespace WireForm.Circuitry.CircuitAttributes
 {
     /// <summary>
     /// Circuit Actions are functions which can be performed on a certain object, often found in the right-click menu.
@@ -42,6 +42,9 @@ namespace WireForm.Circuitry
             {
                 foreach (var attribute in (CircuitActionAttribute[])method.GetCustomAttributes(typeof(CircuitActionAttribute), true))
                 {
+                    //If method has IgnoreCircuitAttribute, continue
+                    if (method.GetCustomAttributes(typeof(IgnoreCircuitAttributesAttribute), true).Length != 0) continue;
+
                     EventHandler action;
 
                     string message = attribute.Name;
@@ -54,7 +57,7 @@ namespace WireForm.Circuitry
                         message += $" {target.GetType().Name} at {target.StartPoint}";
                     }
 
-                    ///add the methods to the event handler, including a possible parameter (the current state), and registering the change to the stateStack
+                    //add the methods to the event handler, including a possible parameter (the current state), and registering the change to the stateStack
                     if (method.GetParameters().Length > 0)
                     {
                         action = (sender, args) =>

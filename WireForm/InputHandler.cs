@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using WireForm.Circuitry;
+using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Gates.Utilities;

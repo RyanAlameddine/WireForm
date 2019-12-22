@@ -11,7 +11,7 @@ using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 
-namespace WireForm.Circuitry
+namespace WireForm.Circuitry.CircuitAttributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class CircuitPropertyAttribute : Attribute
@@ -21,24 +21,24 @@ namespace WireForm.Circuitry
 
         public CircuitPropertyAttribute(int min, int max)
         {
-            this.ValueRange = (min, max);
+            ValueRange = (min, max);
             int valueCount = max - min + 1;
             ValueNames = new string[valueCount];
-            for(int i = 0; i < valueCount; i++)
+            for (int i = 0; i < valueCount; i++)
             {
                 ValueNames[i] = (i + min).ToString();
             }
         }
-        
+
         public CircuitPropertyAttribute(int min, int max, string[] ValueNames)
         {
-            this.ValueRange = (min, max);
+            ValueRange = (min, max);
             this.ValueNames = ValueNames;
-            if(ValueRange.max < ValueRange.min)
+            if (ValueRange.max < ValueRange.min)
             {
                 throw new Exception("Max value range is lower than min value range");
             }
-            if(ValueNames.Length != ValueRange.max - ValueRange.min + 1)
+            if (ValueNames.Length != ValueRange.max - ValueRange.min + 1)
             {
                 throw new Exception("ValueRange is not of the same length as specified ValueNames array");
             }
@@ -51,10 +51,10 @@ namespace WireForm.Circuitry
 
             foreach (var property in properties)
             {
-                foreach (var attribute in (CircuitPropertyAttribute[])property.GetCustomAttributes(typeof(CircuitPropertyAttribute), true))
-                {
-                    circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, property.Name));
-                }
+                var attribute = property.GetCustomAttribute(typeof(CircuitPropertyAttribute), true) as CircuitPropertyAttribute;
+                ///If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
+                if (attribute == null || property.GetCustomAttribute(typeof(IgnoreCircuitAttributesAttribute), true) != null) continue;
+                circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, property.Name));
             }
             return circuitProps;
         }
@@ -64,8 +64,8 @@ namespace WireForm.Circuitry
     {
         private readonly PropertyInfo info;
         private readonly CircuitObject circuitObject;
-        public  readonly (int min, int max) valueRange;
-        public  readonly string[] valueNames;
+        public readonly (int min, int max) valueRange;
+        public readonly string[] valueNames;
 
         public readonly string Name;
 
@@ -80,12 +80,12 @@ namespace WireForm.Circuitry
 
         public int Get()
         {
-            return (int) info.GetValue(circuitObject);
+            return (int)info.GetValue(circuitObject);
         }
 
         public void Set(int value)
         {
-            if(value < valueRange.min || value > valueRange.max)
+            if (value < valueRange.min || value > valueRange.max)
             {
                 throw new Exception("Selected value is not in range");
             }

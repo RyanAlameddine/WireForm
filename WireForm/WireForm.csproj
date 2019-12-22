@@ -52,12 +52,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Circuitry\CircuitPropertyAttribute.cs" />
+    <Compile Include="Circuitry\CircuitAttributes\CircuitPropertyAttribute.cs" />
+    <Compile Include="Circuitry\CircuitAttributes\IgnoreCircuitAttributesAttribute.cs" />
     <Compile Include="Circuitry\Data\BitArray.cs" />
     <Compile Include="Circuitry\Data\BitArrayConverter.cs" />
     <Compile Include="Circuitry\Data\BitValue.cs" />
     <Compile Include="Circuitry\Data\BoardObject.cs" />
-    <Compile Include="Circuitry\CircuitActionAttribute.cs" />
+    <Compile Include="Circuitry\CircuitAttributes\CircuitActionAttribute.cs" />
     <Compile Include="Circuitry\FlowPropagator.cs" />
     <Compile Include="Circuitry\Data\CircuitObject.cs" />
     <Compile Include="Circuitry\Gates\NandGate.cs" />

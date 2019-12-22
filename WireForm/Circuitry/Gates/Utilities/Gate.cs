@@ -45,7 +45,11 @@ namespace WireForm.Circuitry.Gates.Utilities
             { 
                 if(Inputs == null || Inputs.Length == 0)
                 {
-                    return -1;
+                    if(Outputs == null || Outputs.Length == 0)
+                    {
+                        return -1;
+                    }
+                    return Outputs[0].Values.Length;
                 }
                 return Inputs[0].Values.Length; 
             } 

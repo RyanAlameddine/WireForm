@@ -114,6 +114,7 @@
             // 
             // SelectionSettingValue
             // 
+            this.SelectionSettingValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectionSettingValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.SelectionSettingValue.FormattingEnabled = true;
             this.SelectionSettingValue.Location = new System.Drawing.Point(667, 379);
@@ -211,7 +212,7 @@
             // 
             this.copyButton.Name = "copyButton";
             this.copyButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyButton.Size = new System.Drawing.Size(180, 22);
+            this.copyButton.Size = new System.Drawing.Size(174, 22);
             this.copyButton.Text = "Copy";
             this.copyButton.Click += new System.EventHandler(this.copyButton_Click);
             // 
@@ -219,7 +220,7 @@
             // 
             this.cutButton.Name = "cutButton";
             this.cutButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.cutButton.Size = new System.Drawing.Size(180, 22);
+            this.cutButton.Size = new System.Drawing.Size(174, 22);
             this.cutButton.Text = "Cut";
             this.cutButton.Click += new System.EventHandler(this.cutButton_Click);
             // 
@@ -227,7 +228,7 @@
             // 
             this.pasteButton.Name = "pasteButton";
             this.pasteButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.pasteButton.Size = new System.Drawing.Size(180, 22);
+            this.pasteButton.Size = new System.Drawing.Size(174, 22);
             this.pasteButton.Text = "Paste";
             this.pasteButton.Click += new System.EventHandler(this.pasteButton_Click);
             // 
@@ -235,7 +236,7 @@
             // 
             this.undoButton.Name = "undoButton";
             this.undoButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.undoButton.Size = new System.Drawing.Size(180, 22);
+            this.undoButton.Size = new System.Drawing.Size(174, 22);
             this.undoButton.Text = "Undo";
             this.undoButton.Click += new System.EventHandler(this.undoButton_Click);
             // 
@@ -244,7 +245,7 @@
             this.redoButton.Name = "redoButton";
             this.redoButton.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Z)));
-            this.redoButton.Size = new System.Drawing.Size(180, 22);
+            this.redoButton.Size = new System.Drawing.Size(174, 22);
             this.redoButton.Text = "Redo";
             this.redoButton.Click += new System.EventHandler(this.redoButton_Click);
             // 

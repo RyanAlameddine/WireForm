@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
@@ -38,6 +39,8 @@ namespace WireForm.Circuitry
 
         [JsonIgnore]
         public BitArray Data { get; set; }
+
+        [IgnoreCircuitAttributes]
         public override int BitDepth { get => Data.Length; protected set => Data = new BitArray(value); }
 
         public WireLine(Vec2 start, Vec2 end, bool IsHorizontal, int bitDepth)
