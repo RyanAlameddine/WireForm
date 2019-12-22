@@ -36,7 +36,7 @@ namespace WireForm
             {
                 if (state.wires[i].StartPoint.Y == state.wires[i].EndPoint.Y)
                 {
-                    state.wires[i] = new WireLine(state.wires[i].StartPoint, state.wires[i].EndPoint, true, state.wires[i].BitDepth);
+                    state.wires[i] = new WireLine(state.wires[i].StartPoint, state.wires[i].EndPoint, true);
                 }
                 state.wires[i].AddConnections(state.Connections);
             }

@@ -61,10 +61,11 @@
     <Compile Include="Circuitry\CircuitAttributes\CircuitActionAttribute.cs" />
     <Compile Include="Circuitry\FlowPropagator.cs" />
     <Compile Include="Circuitry\Data\CircuitObject.cs" />
-    <Compile Include="Circuitry\Gates\NandGate.cs" />
-    <Compile Include="Circuitry\Gates\NorGate.cs" />
-    <Compile Include="Circuitry\Gates\XorGate.cs" />
-    <Compile Include="Circuitry\Gates\OrGate.cs" />
+    <Compile Include="Circuitry\Gates\Splitter.cs" />
+    <Compile Include="Circuitry\Gates\Logic\NandGate.cs" />
+    <Compile Include="Circuitry\Gates\Logic\NorGate.cs" />
+    <Compile Include="Circuitry\Gates\Logic\XorGate.cs" />
+    <Compile Include="Circuitry\Gates\Logic\OrGate.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Circuitry\Data\BoardState.cs" />
     <Compile Include="Form1.cs">
@@ -77,8 +78,8 @@
     <Compile Include="Circuitry\Gates\Utilities\Gate.cs" />
     <Compile Include="Circuitry\Gates\Utilities\GateEnum.cs" />
     <Compile Include="Circuitry\Gates\Utilities\GatePin.cs" />
-    <Compile Include="Circuitry\Gates\AndGate.cs" />
-    <Compile Include="Circuitry\Gates\NotGate.cs" />
+    <Compile Include="Circuitry\Gates\Logic\AndGate.cs" />
+    <Compile Include="Circuitry\Gates\Logic\NotGate.cs" />
     <Compile Include="GraphicsUtils\GraphicsManager.cs" />
     <Compile Include="InputHandler.cs" />
     <Compile Include="MathUtils\Collision\BoxCollider.cs" />

@@ -65,7 +65,7 @@ namespace WireForm
         bool mouseLeftDown = false;
         bool mouseRightDown = false;
 
-        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false, 1);
+        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
         WireLine secondaryCurrentLine;
 
         public InputHandler()
@@ -163,8 +163,8 @@ namespace WireForm
                 if (button == MouseButtons.Left)
                 {
                     //Create Line
-                    currentLine = new WireLine(mousePointGridded, mousePointGridded, true, 1);
-                    secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false, 1);
+                    currentLine = new WireLine(mousePointGridded, mousePointGridded, true);
+                    secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false);
 
                     //Register Line to draw
                     state.wires.Add(secondaryCurrentLine);

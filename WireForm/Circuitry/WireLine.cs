@@ -40,15 +40,12 @@ namespace WireForm.Circuitry
         [JsonIgnore]
         public BitArray Data { get; set; }
 
-        [IgnoreCircuitAttributes]
-        public override int BitDepth { get => Data.Length; protected set => Data = new BitArray(value); }
-
-        public WireLine(Vec2 start, Vec2 end, bool IsHorizontal, int bitDepth)
+        public WireLine(Vec2 start, Vec2 end, bool IsHorizontal)
         {
             StartPoint = start;
             EndPoint = end;
             this.IsHorizontal = IsHorizontal;
-            Data = new BitArray(bitDepth);
+            Data = new BitArray(1);
         }
 
         public List<WireLine> Validate(List<WireLine> wires, Dictionary<Vec2, List<BoardObject>> connections)
@@ -64,8 +61,8 @@ namespace WireForm.Circuitry
                 {
                     if (StartPoint.IsContainedIn(wires[i]))
                     {
-                        WireLine wire1 = new WireLine(StartPoint, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
-                        WireLine wire2 = new WireLine(wires[i].StartPoint, StartPoint, wires[i].IsHorizontal, wires[i].BitDepth);
+                        WireLine wire1 = new WireLine(StartPoint, wires[i].EndPoint, wires[i].IsHorizontal);
+                        WireLine wire2 = new WireLine(wires[i].StartPoint, StartPoint, wires[i].IsHorizontal);
                         if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             wires[i].RemoveConnections(connections);
@@ -96,8 +93,8 @@ namespace WireForm.Circuitry
                     //If wirestart is contained in wires[i], split wires[i] into two wires
                     if (MathHelper.IsContainedIn(StartPoint, wires[i]))
                     {
-                        WireLine wire1 = new WireLine(StartPoint, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
-                        WireLine wire2 = new WireLine(wires[i].StartPoint, StartPoint, wires[i].IsHorizontal, wires[i].BitDepth);
+                        WireLine wire1 = new WireLine(StartPoint, wires[i].EndPoint, wires[i].IsHorizontal);
+                        WireLine wire2 = new WireLine(wires[i].StartPoint, StartPoint, wires[i].IsHorizontal);
                         //Both wires exist
                         if(wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
@@ -122,8 +119,8 @@ namespace WireForm.Circuitry
                     //If wireend is contained in wires[i], split wires[i] into two wires
                     else if (MathHelper.IsContainedIn(EndPoint, wires[i]))
                     {
-                        WireLine wire1 = new WireLine(EndPoint, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
-                        WireLine wire2 = new WireLine(wires[i].StartPoint, EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
+                        WireLine wire1 = new WireLine(EndPoint, wires[i].EndPoint, wires[i].IsHorizontal);
+                        WireLine wire2 = new WireLine(wires[i].StartPoint, EndPoint, wires[i].IsHorizontal);
                         //Both wires exist
                         if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
@@ -149,8 +146,8 @@ namespace WireForm.Circuitry
                     //If wires[i].wirestart is contained in this wire, split this wire into two wires
                     if (MathHelper.IsContainedIn(wires[i].StartPoint, this))
                     {
-                        WireLine wire1 = new WireLine(wires[i].StartPoint, EndPoint, IsHorizontal, wires[i].BitDepth);
-                        WireLine wire2 = new WireLine(StartPoint, wires[i].StartPoint, IsHorizontal, wires[i].BitDepth);
+                        WireLine wire1 = new WireLine(wires[i].StartPoint, EndPoint, IsHorizontal);
+                        WireLine wire2 = new WireLine(StartPoint, wires[i].StartPoint, IsHorizontal);
                         //Both wires exist
                         if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
@@ -164,8 +161,8 @@ namespace WireForm.Circuitry
                     //If wires[i].wireend is contained in this wire, split this wire into two wires
                     if (MathHelper.IsContainedIn(wires[i].EndPoint, this))
                     {
-                        WireLine wire1 = new WireLine(wires[i].EndPoint, EndPoint, IsHorizontal, wires[i].BitDepth);
-                        WireLine wire2 = new WireLine(StartPoint, wires[i].EndPoint, IsHorizontal, wires[i].BitDepth);
+                        WireLine wire1 = new WireLine(wires[i].EndPoint, EndPoint, IsHorizontal);
+                        WireLine wire2 = new WireLine(StartPoint, wires[i].EndPoint, IsHorizontal);
                         //Both wires exist
                         if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
@@ -229,8 +226,8 @@ namespace WireForm.Circuitry
 
                     if(startDist < endDist)
                     {
-                        WireLine toStart = new WireLine(StartPoint, wires[i].StartPoint, wires[i].IsHorizontal, wires[i].BitDepth);
-                        WireLine toEnd = new WireLine(EndPoint, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
+                        WireLine toStart = new WireLine(StartPoint, wires[i].StartPoint, wires[i].IsHorizontal);
+                        WireLine toEnd = new WireLine(EndPoint, wires[i].EndPoint, wires[i].IsHorizontal);
 
                         wires.Add(toStart);
                         createdWires.AddRange(toStart.Validate(wires, connections));
@@ -239,8 +236,8 @@ namespace WireForm.Circuitry
                     }
                     else
                     {
-                        WireLine toStart = new WireLine(EndPoint, wires[i].StartPoint, wires[i].IsHorizontal, wires[i].BitDepth);
-                        WireLine toEnd = new WireLine(StartPoint, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
+                        WireLine toStart = new WireLine(EndPoint, wires[i].StartPoint, wires[i].IsHorizontal);
+                        WireLine toEnd = new WireLine(StartPoint, wires[i].EndPoint, wires[i].IsHorizontal);
 
                         wires.Add(toStart);
                         createdWires.AddRange(toStart.Validate(wires, connections));
@@ -311,7 +308,7 @@ namespace WireForm.Circuitry
                     return false;
                 }
                 wires[i].RemoveConnections(connections);
-                wires[i] = new WireLine(chkThis, chkThat, wires[i].IsHorizontal, wires[i].BitDepth);
+                wires[i] = new WireLine(chkThis, chkThat, wires[i].IsHorizontal);
             }
             else
             {
@@ -322,7 +319,7 @@ namespace WireForm.Circuitry
                     return false;
                 }
                 wires[i].RemoveConnections(connections);
-                wires[i] = new WireLine(chkThis, eqThat, wires[i].IsHorizontal, wires[i].BitDepth);
+                wires[i] = new WireLine(chkThis, eqThat, wires[i].IsHorizontal);
             }
             createdWires.AddRange(wires[i].Validate(wires, connections));
             return true;
@@ -394,21 +391,20 @@ namespace WireForm.Circuitry
 
             if (point == wires[i].StartPoint)
             {
-                wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
+                wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].IsHorizontal);
                 wires[i].Validate(wires, connections);
             }
             else if (point == wires[i].EndPoint)
             {
-                wires[i] = new WireLine(wires[i].StartPoint, startsEnd, wires[i].IsHorizontal, wires[i].BitDepth);
+                wires[i] = new WireLine(wires[i].StartPoint, startsEnd, wires[i].IsHorizontal);
                 wires[i].Validate(wires, connections);
             }
             else
             {
                 var temp = wires[i].StartPoint;
-                wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].IsHorizontal, wires[i].BitDepth);
-                int bitDepth = wires[i].BitDepth;
+                wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].IsHorizontal);
                 wires[i].Validate(wires, connections);
-                WireLine newWire = new WireLine(temp, startsEnd, xpri, bitDepth);
+                WireLine newWire = new WireLine(temp, startsEnd, xpri);
                 wires.Add(newWire);
                 newWire.Validate(wires, connections);
             }
@@ -422,7 +418,7 @@ namespace WireForm.Circuitry
 
         public override CircuitObject Copy()
         {
-            return new WireLine(StartPoint, EndPoint, IsHorizontal, BitDepth);
+            return new WireLine(StartPoint, EndPoint, IsHorizontal);
         }
 
         public override string ToString()

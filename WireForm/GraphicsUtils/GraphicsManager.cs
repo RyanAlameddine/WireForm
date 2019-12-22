@@ -166,5 +166,20 @@ namespace WireForm.GraphicsUtils
         {
             gfx.FillRectangle(new Pen(color, 1).Brush, (x - width/2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
         }
+
+        public static void _DrawString(this Graphics gfx, string s, Color color, float x, float y, float scaleDivider)
+        {
+            Font font = new Font(FontFamily.GenericMonospace, scale / scaleDivider, FontStyle.Bold);
+            gfx.DrawString(s, font, new Pen(color, 10).Brush, x * scale, y * scale);
+        }
+
+        public static void _DrawStringC(this Graphics gfx, string s, Color color, float x, float y, float scaleDivider)
+        {
+            Font font = new Font(FontFamily.GenericMonospace, scale / scaleDivider, FontStyle.Bold);
+
+            var size = gfx.MeasureString(s, font);
+
+            gfx.DrawString(s, font, new Pen(color, 10).Brush, x * scale - size.Width / 2f, y * scale - size.Height / 2f);
+        }
     }
 }

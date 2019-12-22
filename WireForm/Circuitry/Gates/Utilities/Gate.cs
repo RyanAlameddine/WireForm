@@ -36,28 +36,19 @@ namespace WireForm.Circuitry.Gates.Utilities
         public GatePin[] Inputs { get; set; }
 
         [JsonIgnore]
-        public override BoxCollider HitBox { get; set; }
-
-        //[CircuitProperty(1, 32)]
-        public override int BitDepth 
-        { 
-            get 
-            { 
-                if(Inputs == null || Inputs.Length == 0)
-                {
-                    if(Outputs == null || Outputs.Length == 0)
-                    {
-                        return -1;
-                    }
-                    return Outputs[0].Values.Length;
-                }
-                return Inputs[0].Values.Length; 
-            } 
-            protected set 
-            { 
-                Inputs.SetDepth(value); 
-                Outputs.SetDepth(value); 
-            } 
+        private BoxCollider hitBox;
+        [JsonIgnore]
+        public override BoxCollider HitBox {
+            get
+            {
+                return hitBox;
+            }
+            set
+            {
+                hitBox = value;
+                hitBox.X += StartPoint.X;
+                hitBox.Y += StartPoint.Y;
+            }
         }
 
         public Gate(Vec2 Position, BoxCollider HitBox)

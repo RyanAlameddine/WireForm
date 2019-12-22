@@ -227,7 +227,7 @@
             // pasteButton
             // 
             this.pasteButton.Name = "pasteButton";
-            this.pasteButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.pasteButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
             this.pasteButton.Size = new System.Drawing.Size(174, 22);
             this.pasteButton.Text = "Paste";
             this.pasteButton.Click += new System.EventHandler(this.pasteButton_Click);

@@ -29,19 +29,23 @@ namespace WireForm.Circuitry.Gates
 
         protected override void compute()
         {
-            Outputs[0].Values.Set(0, currentValue);
+            for (int i = 0; i < BitDepth; i++)
+            {
+                Outputs[0].Values.Set(i, currentValue);
+            }
         }
 
         public override CircuitObject Copy()
         {
             var gate = new BitSource(StartPoint);
             gate.currentValue = currentValue;
+            gate.BitDepth = BitDepth;
             return gate;
         }
 
 
         [JsonIgnore]
-        [CircuitProperty(2, 3, new[] { "Zero", "One" })]
+        [CircuitProperty(2, 3, false, new[] { "Zero", "One" })]
         public int Value
         {
             get
@@ -51,6 +55,19 @@ namespace WireForm.Circuitry.Gates
             set
             {
                 currentValue = value;
+            }
+        }
+
+        [CircuitProperty(1, 32, false)]
+        public int BitDepth
+        {
+            get
+            {
+                return Outputs[0].Values.Length;
+            }
+            set
+            {
+                Outputs[0].Values = new BitArray(value);
             }
         }
 

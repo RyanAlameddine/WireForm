@@ -22,8 +22,5 @@ namespace WireForm.Circuitry.Data
 
         [CircuitAction("Delete", System.Windows.Forms.Keys.Delete)]
         public abstract void Delete(BoardState state);
-
-        [CircuitProperty(1, 32)]
-        public abstract int BitDepth { get; protected set; }
     }
 }

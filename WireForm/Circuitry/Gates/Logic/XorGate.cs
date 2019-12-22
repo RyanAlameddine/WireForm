@@ -7,7 +7,7 @@ using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Gates
+namespace WireForm.Circuitry.Gates.Logic
 {
     class XorGate : Gate
     {

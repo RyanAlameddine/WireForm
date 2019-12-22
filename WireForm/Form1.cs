@@ -182,7 +182,7 @@ namespace WireForm
             int newVal = SelectionSettingValue.SelectedIndex + prop.valueRange.min;
             if (newVal == prevSelectedIndex) { return; }
             prevSelectedIndex = newVal;
-            prop.Set(newVal);
+            prop.Set(newVal, stateStack.CurrentState.Connections);
             stateStack.RegisterChange($"Changed {SelectionSettings.SelectedItem} to {newVal}");
             Refresh();
         }
@@ -240,7 +240,7 @@ namespace WireForm
 
         private void copyButton_Click(object sender, EventArgs e)
         {
-            inputHandler.Copy();
+            Refresh(); inputHandler.Copy();
         }
 
         private void cutButton_Click(object sender, EventArgs e)
@@ -252,6 +252,7 @@ namespace WireForm
         private void pasteButton_Click(object sender, EventArgs e)
         {
             inputHandler.Paste();
+            Refresh();
         }
 
         #endregion
