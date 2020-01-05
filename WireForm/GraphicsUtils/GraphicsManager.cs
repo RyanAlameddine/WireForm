@@ -31,7 +31,7 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void Paint(Graphics gfx, Painter painter, Vec2 viewportSize,
+        public static void Paint(Graphics gfx, WirePainter painter, Vec2 viewportSize,
             HashSet<BoxCollider> collisions, HashSet<CircuitObject> selections, BoxCollider mouseBox, HashSet<BoxCollider> resetBoxes,
             BoardState state)
         {
@@ -110,76 +110,6 @@ namespace WireForm.GraphicsUtils
                     gfx._FillRectangleC(Color.Gray, x, y, .02f, .02f);
                 }
             }
-        }
-
-        public static void _DrawLine(this Graphics gfx, Color color, int penWidth, float x1, float y1, float x2, float y2)
-        {
-            gfx.DrawLine(new Pen(color, penWidth * scale / 50f), x1 * scale, y1 * scale, x2 * scale, y2 * scale);
-        }
-
-        public static void _DrawLine(this Graphics gfx, Color color, int penWidth, Vec2 pt1, Vec2 pt2)
-        {
-            gfx.DrawLine(new Pen(color, penWidth * scale / 50f), (Point)(pt1 * scale), (Point)(pt2 * scale));
-        }
-
-        public static void _DrawArc(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height, float startAngle, float sweepAngle)
-        {
-            gfx.DrawArc(new Pen(color, penWidth * scale / 50f), x * scale, y * scale, width * scale, height * scale, startAngle, sweepAngle);
-        }
-
-        public static void _DrawArcC(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height, float startAngle, float sweepAngle)
-        {
-            gfx.DrawArc(new Pen(color, penWidth * scale / 50f), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale, startAngle, sweepAngle);
-        }
-
-        public static void _DrawEllipse(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height)
-        {
-            gfx.DrawEllipse(new Pen(color, penWidth * scale / 50f), x * scale, y * scale, width * scale, height * scale);
-        }
-
-        public static void _DrawEllipseC(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height)
-        {
-            gfx.DrawEllipse(new Pen(color, penWidth * scale / 50f), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
-        }
-
-        public static void _FillEllipse(this Graphics gfx, Color color, float x, float y, float width, float height)
-        {
-            gfx.FillEllipse(new Pen(color, 1).Brush, x * scale, y * scale, width * scale, height * scale);
-        }
-
-        public static void _FillEllipseC(this Graphics gfx, Color color, float x, float y, float width, float height)
-        {
-            gfx.FillEllipse(new Pen(color, 1).Brush, (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
-        }
-
-        public static void _DrawRectangle(this Graphics gfx, Color color, int penWidth, float x, float y, float width, float height)
-        {
-            gfx.DrawRectangle(new Pen(color, penWidth * scale / 50f), x * scale, y * scale, width * scale, height * scale);
-        }
-
-        public static void _FillRectangle(this Graphics gfx, Color color, float x, float y, float width, float height)
-        {
-            gfx.FillRectangle(new Pen(color, 1).Brush, x * scale, y * scale, width * scale, height * scale);
-        }
-
-        public static void _FillRectangleC(this Graphics gfx, Color color, float x, float y, float width, float height)
-        {
-            gfx.FillRectangle(new Pen(color, 1).Brush, (x - width/2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
-        }
-
-        public static void _DrawString(this Graphics gfx, string s, Color color, float x, float y, float scaleDivider)
-        {
-            Font font = new Font(FontFamily.GenericMonospace, scale / scaleDivider, FontStyle.Bold);
-            gfx.DrawString(s, font, new Pen(color, 10).Brush, x * scale, y * scale);
-        }
-
-        public static void _DrawStringC(this Graphics gfx, string s, Color color, float x, float y, float scaleDivider)
-        {
-            Font font = new Font(FontFamily.GenericMonospace, scale / scaleDivider, FontStyle.Bold);
-
-            var size = gfx.MeasureString(s, font);
-
-            gfx.DrawString(s, font, new Pen(color, 10).Brush, x * scale - size.Width / 2f, y * scale - size.Height / 2f);
         }
     }
 }

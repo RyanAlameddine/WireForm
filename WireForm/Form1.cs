@@ -18,7 +18,7 @@ namespace WireForm
 
     public partial class Form1 : Form
     {
-        Painter painter = new Painter();
+        WirePainter painter = new WirePainter();
         InputHandler inputHandler = new InputHandler();
         StateStack stateStack = new StateStack();
 
