@@ -87,5 +87,15 @@ namespace WireForm.MathUtils
         {
             return (int) Math.Abs(point1.X - point2.X) + (int) Math.Abs(point1.Y - point2.Y);
         }
+
+        public static int Ceiling(float value)
+        {
+            int i = (int)value;
+            if(value != i)
+            {
+                return i + 1;
+            }
+            return i;
+        }
     }
 }

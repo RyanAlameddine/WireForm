@@ -61,8 +61,8 @@
             this.toolBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolBox.FormattingEnabled = true;
             this.toolBox.Items.AddRange(new object[] {
-            "Wire Painter",
-            "Gate Controller"});
+            "Wire Painter (W)",
+            "Gate Controller (G)"});
             this.toolBox.Location = new System.Drawing.Point(667, 12);
             this.toolBox.Name = "toolBox";
             this.toolBox.Size = new System.Drawing.Size(121, 21);
@@ -268,6 +268,7 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);

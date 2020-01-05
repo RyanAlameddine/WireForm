@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
@@ -25,7 +26,7 @@ namespace WireForm.Circuitry.Gates.Logic
             };
         }
 
-        public Splitter(Vec2 Position, int bitDepth, int direction)
+        public Splitter(Vec2 Position, int splitCount, int inputDepth, int direction)
             : base(Position, new BoxCollider(0, 0, 2, 1))
         {
             Inputs = new GatePin[] {
@@ -35,29 +36,47 @@ namespace WireForm.Circuitry.Gates.Logic
             Outputs = new GatePin[] {
                 new GatePin(this, new Vec2(2, 1))
             };
-            BitDepth = bitDepth;
             Direction = direction;
+            SplitCount = splitCount;
+            SplitDepth = inputDepth;
         }
 
         protected override void compute()
         {
             if (direction == 0)
             {
-                for (int i = 0; i < Inputs[0].Values.Length; i++)
+                for (int i = 0; i < Outputs.Length; i++)
                 {
-                    Outputs[i].Values.Set(0, Inputs[0].Values[i]);
-                }
-                for (int i = Inputs[0].Values.Length; i < bitDepth; i++)
-                {
-                    Outputs[i].Values.Set(0, BitValue.Error);
+                    for (int j = 0; j < splitDepth; j++)
+                    {
+                        int k = splitDepth * i + j;
+                        if (Inputs[0].Values.Length > k)
+                        {
+                            Outputs[i].Values.Set(j, Inputs[0].Values[k]);
+                        }
+                        else
+                        {
+                            Outputs[i].Values.Set(j, BitValue.Error);
+                        }
+                    }
                 }
             }
             else
             {
-                Outputs[0].Values = new BitArray(Inputs.Length);
-                for(int i = 0; i < Inputs.Length; i++)
+                for (int i = 0; i < Inputs.Length; i++)
                 {
-                    Outputs[0].Values.Set(i, Inputs[i].Values[0]);
+                    for (int j = 0; j < Inputs[i].Values.Length; j++)
+                    {
+                        int k = splitDepth * i + j;
+                        if (Outputs[0].Values.Length > k)
+                        {
+                            Outputs[0].Values.Set(k, Inputs[i].Values[j]);
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Splitter overflow");
+                        }
+                    }
                 }
             }
         }
@@ -66,12 +85,14 @@ namespace WireForm.Circuitry.Gates.Logic
         {
             gfx._DrawLine(Color.DarkGray, 10, StartPoint, StartPoint + new Vec2(1, 1));
 
-            gfx._DrawLine(Color.DarkGray, 10, StartPoint + new Vec2(1, 1), StartPoint + new Vec2(1, 1 + bitDepth - 1));
+            gfx._DrawLine(Color.DarkGray, 10, StartPoint + new Vec2(1, 1), StartPoint + new Vec2(1, 1 + splitCount - 1));
 
             gfx._DrawLine(Color.DarkGray, 10, StartPoint + new Vec2(1 - 1 / 20f, 1), StartPoint + new Vec2(2, 1));
-            for (int i = 1; i < bitDepth; i++)
+            gfx._DrawStringC(getRange(0), Color.Black, StartPoint.X + 1.4f, StartPoint.Y + 1, 4);
+            for (int i = 1; i < splitCount; i++)
             {
                 gfx._DrawLine(Color.DarkGray, 10, StartPoint + new Vec2(1, 1 + i), StartPoint + new Vec2(2, 1 + i));
+                gfx._DrawStringC(getRange(i), Color.Black, StartPoint.X + 1.4f, StartPoint.Y + 1 + i, 4);
             }
 
             if (direction == 0)
@@ -84,41 +105,89 @@ namespace WireForm.Circuitry.Gates.Logic
             }
         }
 
-        public override CircuitObject Copy()
+        private string getRange(int i)
         {
-            Splitter splitter = new Splitter(StartPoint, bitDepth, direction);
-
-            return splitter;
-            //TODO FIX THIS PROBABLY DOESNT WORK
-        }
-
-        int bitDepth = 1;
-        [CircuitProperty(1, 32, true)]
-        public int BitDepth
-        {
-            get
+            if(splitDepth == 1)
             {
-                return bitDepth;
+                return i.ToString();
             }
-            set
+            else
             {
-                bitDepth = value;
-                HitBox = new BoxCollider(0, 0, 2, value);
-                if (direction == 0)
+                if(i == 0)
                 {
-                    Outputs = new GatePin[value];
-                    for (int i = 0; i < value; i++)
-                    {
-                        Outputs[i] = new GatePin(this, new Vec2(2, i + 1));
-                    }
+                    return "0-" + (splitDepth - 1);
                 }
                 else
                 {
-                    Inputs = new GatePin[value];
-                    for (int i = 0; i < value; i++)
-                    {
-                        Inputs[i] = new GatePin(this, new Vec2(2, i + 1));
-                    }
+                    int startIndex = i * splitDepth;
+                    int endIndex = startIndex + splitDepth - 1;
+                    return startIndex + "-" + endIndex;
+                }
+            }
+        }
+
+        public override CircuitObject Copy()
+        {
+            Splitter splitter = new Splitter(StartPoint, splitCount, splitDepth, direction);
+
+            return splitter;
+        }
+
+        int splitCount = 1;
+        [CircuitProperty(1, 32, true)]
+        public int SplitCount
+        {
+            get
+            {
+                return splitCount;
+            }
+            set
+            {
+                splitCount = value;
+                ResetIO();
+            }
+        }
+
+        int splitDepth = 1;
+        [CircuitProperty(1, 32, true)]
+        public int SplitDepth
+        {
+            get
+            {
+                return splitDepth;
+            }
+            set
+            {
+                splitDepth = value;
+                ResetIO();
+            }
+        }
+
+        /// <summary>
+        /// Resets the Inputs and Outputs to match an updated splitCount and/or bitDepth
+        /// </summary>
+        void ResetIO()
+        {
+            HitBox = new BoxCollider(0, 0, 2, splitCount);
+            if (direction == 0)
+            {
+                //Inputs length is 1
+                Outputs = new GatePin[splitCount];
+                for (int i = 0; i < splitCount; i++)
+                {
+                    Outputs[i] = new GatePin(this, new Vec2(2, i + 1));
+                    Outputs[i].Values = new BitArray(splitDepth);
+                }
+            }
+            else
+            {
+                //Outputs length is 1
+                Outputs[0].Values = new BitArray(splitDepth * splitCount);
+                Inputs = new GatePin[splitCount];
+                for (int i = 0; i < splitCount; i++)
+                {
+                    Inputs[i] = new GatePin(this, new Vec2(2, i + 1));
+                    Inputs[i].Values = new BitArray(splitDepth);
                 }
             }
         }
@@ -146,7 +215,7 @@ namespace WireForm.Circuitry.Gates.Logic
         [CircuitAction("Toggle", System.Windows.Forms.Keys.T)]
         public void Toggle()
         {
-            if(direction == 0)
+            if (direction == 0)
             {
                 Direction = 1;
             }

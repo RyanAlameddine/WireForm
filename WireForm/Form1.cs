@@ -90,10 +90,26 @@ namespace WireForm
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
+            //If W is pressed, change to Wire tool
+            if(e.KeyCode == Keys.W)
+            {
+                toolBox.SelectedIndex = 0;
+                toolBox_SelectedIndexChanged(this, new EventArgs());
+            }
+            if (e.KeyCode == Keys.G)
+            {
+                toolBox.SelectedIndex = 1; 
+                toolBox_SelectedIndexChanged(this, new EventArgs());
+            }
+
             if (inputHandler.KeyDown(stateStack, e, this))
             {
                 Refresh();
             }
+        }
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+
         }
 
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
@@ -240,7 +256,8 @@ namespace WireForm
 
         private void copyButton_Click(object sender, EventArgs e)
         {
-            Refresh(); inputHandler.Copy();
+            inputHandler.Copy();
+            Refresh(); 
         }
 
         private void cutButton_Click(object sender, EventArgs e)
@@ -255,8 +272,7 @@ namespace WireForm
             Refresh();
         }
 
+
         #endregion
-
-
     }
 }
