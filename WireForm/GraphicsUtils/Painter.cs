@@ -8,34 +8,42 @@ using WireForm.MathUtils;
 
 namespace WireForm.GraphicsUtils
 {
-    public class Painter
+    /// <summary>
+    /// A tool used to draw on the circuit board.
+    /// Each painter contains a reference to the current Graphics class
+    /// as well as the current zoom value.
+    /// Painters also contain an internal offset value which will be applied to all position elements
+    /// </summary>
+    public struct Painter
     {
-        private static float scale = 50f;
-        public static float SizeScale
-        {
-            get
-            {
-                return scale;
-            }
-            set
-            {
-                if (value > 5)
-                {
-                    scale = value;
-                }
-                else
-                {
-                    scale = 5;
-                }
-            }
-        }
+        private float zoom; // = 50f
 
         private Graphics gfx;
+
+        private Vec2 offset;
+
+        /// <summary>
+        /// Creates an empty painter
+        /// </summary>
+        public Painter(Graphics gfx, float zoom)
+        {
+            this.gfx = gfx;
+            this.zoom = zoom;
+            this.offset = Vec2.Zero;
+        }
+
+        /// <summary>
+        /// Adds a new Vec2 to the target offset
+        /// </summary>
+        public void AppendOffset(Vec2 offset)
+        {
+            this.offset += offset;
+        }
 
 
         Pen getPen(Color color, int width)
         {
-            return new Pen(color, width * scale / 50f);
+            return new Pen(color, width * zoom / 50f);
         }
 
         Brush getEmptyBrush(Color color)
@@ -43,13 +51,29 @@ namespace WireForm.GraphicsUtils
             return (new Pen(color, 1)).Brush;
         }
 
-        void scalePoint(ref Vec2 position)
+        /// <summary>
+        /// Scales a point to match the Painter.zoom value
+        /// </summary>
+        void ScalePoint(ref Vec2 position)
         {
-            position.X *= scale;
-            position.Y *= scale;
+            position.X *= zoom;
+            position.Y *= zoom;
         }
 
-        void centerPoint(ref Vec2 position, Vec2 size)
+        /// <summary>
+        /// Offsets a point to match the Painter.offset value
+        /// </summary>
+        void OffsetPoint(ref Vec2 position)
+        {
+            position.X += offset.X;
+            position.Y += offset.Y;
+        }
+
+        /// <summary>
+        /// Centers a point to the middle of it's size Vector
+        /// </summary>
+        /// <param name="position"></param>
+        void CenterPoint(ref Vec2 position, Vec2 size)
         {
             position.X -= size.X / 2f;
             position.Y -= size.Y / 2f;
@@ -57,73 +81,127 @@ namespace WireForm.GraphicsUtils
 
         public void DrawLine(Color color, int penWidth, Vec2 startPoint, Vec2 endPoint)
         {
-            scalePoint(ref startPoint);
-            scalePoint(ref endPoint);
+            OffsetPoint(ref startPoint);
+            OffsetPoint(ref endPoint);
+
+            ScalePoint(ref startPoint);
+            ScalePoint(ref endPoint);
 
             gfx.DrawLine(getPen(color, penWidth), startPoint.X, startPoint.Y, endPoint.X, endPoint.Y);
         }
 
         public void DrawArc(Color color, int penWidth, Vec2 startPoint, Vec2 size, float startAngle, float sweepAngle)
         {
-            scalePoint(ref startPoint);
-            scalePoint(ref size);
+            OffsetPoint(ref startPoint);
+
+            ScalePoint(ref startPoint);
+            ScalePoint(ref size);
 
             gfx.DrawArc(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y, startAngle, sweepAngle);
         }
 
-        public void DrawArcC(Color color, int penWidth, float x, float y, float width, float height, float startAngle, float sweepAngle)
+        public void DrawArcC(Color color, int penWidth, Vec2 centerPoint, Vec2 size, float startAngle, float sweepAngle)
         {
-            gfx.DrawArc(getPen(color, penWidth), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale, startAngle, sweepAngle);
+            OffsetPoint(ref centerPoint);
+            CenterPoint(ref centerPoint, size);
+
+            ScalePoint(ref centerPoint);
+            ScalePoint(ref size);
+
+            gfx.DrawArc(getPen(color, penWidth), centerPoint.X, centerPoint.Y, size.X, size.Y, startAngle, sweepAngle);
         }
 
-        public void DrawEllipse(Color color, int penWidth, float x, float y, float width, float height)
+        public void DrawEllipse(Color color, int penWidth, Vec2 startPoint, Vec2 size)
         {
-            gfx.DrawEllipse(getPen(color, penWidth), x * scale, y * scale, width * scale, height * scale);
+            OffsetPoint(ref startPoint);
+
+            ScalePoint(ref startPoint);
+            ScalePoint(ref size);
+
+            gfx.DrawEllipse(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
-        public void DrawEllipseC(Color color, int penWidth, float x, float y, float width, float height)
+        public void DrawEllipseC(Color color, int penWidth, Vec2 centerPoint, Vec2 size)
         {
-            gfx.DrawEllipse(getPen(color, penWidth), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
+            OffsetPoint(ref centerPoint);
+            CenterPoint(ref centerPoint, size);
+
+            ScalePoint(ref centerPoint);
+            ScalePoint(ref size);
+
+            gfx.DrawEllipse(getPen(color, penWidth), centerPoint.X, centerPoint.Y, size.X, size.Y);
         }
 
-        public void FillEllipse(Color color, float x, float y, float width, float height)
+        public void FillEllipse(Color color, Vec2 startPoint, Vec2 size)
         {
-            gfx.FillEllipse(getEmptyBrush(color), x * scale, y * scale, width * scale, height * scale);
+            OffsetPoint(ref startPoint);
+
+            ScalePoint(ref startPoint);
+            ScalePoint(ref size);
+
+            gfx.FillEllipse(getEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
-        public void FillEllipseC(Color color, float x, float y, float width, float height)
+        public void FillEllipseC(Color color, Vec2 centerPoint, Vec2 size)
         {
-            gfx.FillEllipse(getEmptyBrush(color), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
+            OffsetPoint(ref centerPoint);
+
+            CenterPoint(ref centerPoint, size);
+
+            ScalePoint(ref centerPoint);
+            ScalePoint(ref size);
+
+            gfx.FillEllipse(getEmptyBrush(color), centerPoint.X, centerPoint.Y, size.X, size.Y);
         }
 
-        public void DrawRectangle(Color color, int penWidth, float x, float y, float width, float height)
+        public void DrawRectangle(Color color, int penWidth, Vec2 startPoint, Vec2 size)
         {
-            gfx.DrawRectangle(getPen(color, penWidth), x * scale, y * scale, width * scale, height * scale);
+            OffsetPoint(ref startPoint);
+
+            ScalePoint(ref startPoint);
+            ScalePoint(ref size);
+
+            gfx.DrawRectangle(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
-        public void FillRectangle(Color color, float x, float y, float width, float height)
+        public void FillRectangle(Color color, Vec2 startPoint, Vec2 size)
         {
-            gfx.FillRectangle(getEmptyBrush(color), x * scale, y * scale, width * scale, height * scale);
+            OffsetPoint(ref startPoint);
+
+            ScalePoint(ref startPoint);
+            ScalePoint(ref size);
+
+            gfx.FillRectangle(getEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
-        public void FillRectangleC(Color color, float x, float y, float width, float height)
+        public void FillRectangleC(Color color, Vec2 centerPoint, Vec2 size)
         {
-            gfx.FillRectangle(getEmptyBrush(color), (x - width / 2f) * scale, (y - height / 2f) * scale, width * scale, height * scale);
+            OffsetPoint(ref centerPoint);
+            CenterPoint(ref centerPoint, size);
+
+            ScalePoint(ref centerPoint);
+            ScalePoint(ref size);
+
+            gfx.FillRectangle(getEmptyBrush(color), centerPoint.X, centerPoint.Y, size.X, size.Y);
         }
 
-        public void DrawString(string s, Color color, float x, float y, float scaleDivider)
+        public void DrawString(string s, Color color, Vec2 startPoint, float scaleDivider)
         {
-            Font font = new Font(FontFamily.GenericMonospace, scale / scaleDivider, FontStyle.Bold);
-            gfx.DrawString(s, font, new Pen(color, 10).Brush, x * scale, y * scale);
+            OffsetPoint(ref startPoint);
+
+            Font font = new Font(FontFamily.GenericMonospace, zoom / scaleDivider, FontStyle.Bold);
+            gfx.DrawString(s, font, new Pen(color, 10).Brush, startPoint.X * zoom, startPoint.Y * zoom);
         }
 
-        public void DrawStringC(string s, Color color, float x, float y, float scaleDivider)
+        public void DrawStringC(string s, Color color, Vec2 centerPoint, float scaleDivider)
         {
-            Font font = new Font(FontFamily.GenericMonospace, scale / scaleDivider, FontStyle.Bold);
+            OffsetPoint(ref centerPoint);
+
+            Font font = new Font(FontFamily.GenericMonospace, zoom / scaleDivider, FontStyle.Bold);
 
             var size = gfx.MeasureString(s, font);
 
-            gfx.DrawString(s, font, new Pen(color, 10).Brush, x * scale - size.Width / 2f, y * scale - size.Height / 2f);
+            gfx.DrawString(s, font, new Pen(color, 10).Brush, centerPoint.X * zoom - size.Width / 2f, centerPoint.Y * zoom - size.Height / 2f);
         }
     }
 }

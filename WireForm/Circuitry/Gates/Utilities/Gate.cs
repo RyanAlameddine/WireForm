@@ -87,22 +87,23 @@ namespace WireForm.Circuitry.Gates.Utilities
             }
         }
 
-        protected abstract void draw(Graphics gfx);
-        public void Draw(Graphics gfx)
+        protected abstract void draw(Painter painter);
+        public void Draw(Painter painter)
         {
-
-            draw(gfx);
+            painter.AppendOffset(StartPoint);
+            draw(painter);
+            painter.DrawEllipseC(Color.Red, 3, Vec2.Zero, new Vec2(.1f, .1f));
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
 
             //gfx._DrawEllipseC(Color.Black, 3, StartPoint.X, StartPoint.Y, .01f, .01f);
 
             foreach (var output in Outputs)
             {
-                WirePainter.DrawPin(gfx, output.StartPoint, output.Values);
+                WirePainter.DrawPin(painter, output.LocalPoint, output.Values);
             }
             foreach (var input in Inputs)
             {
-                WirePainter.DrawPin(gfx, input.StartPoint, input.Values);
+                WirePainter.DrawPin(painter, input.LocalPoint, input.Values);
             }
         }
 

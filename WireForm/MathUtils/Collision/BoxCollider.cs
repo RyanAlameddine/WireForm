@@ -16,6 +16,22 @@ namespace WireForm.MathUtils.Collision
         public float Width { get; set; }
         public float Height { get; set; }
 
+        public Vec2 Position 
+        {
+            get
+            {
+                return new Vec2(X, Y);
+            } 
+        }
+
+        public Vec2 Bounds
+        {
+            get
+            {
+                return new Vec2(Width, Height);
+            }
+        }
+
         public static BoxCollider Zero
         {
             get

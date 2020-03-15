@@ -81,27 +81,27 @@ namespace WireForm.Circuitry.Gates.Logic
             }
         }
 
-        protected override void draw(Graphics gfx)
+        protected override void draw(Painter painter)
         {
-            gfx._DrawLine(Color.DarkGray, 10, StartPoint, StartPoint + new Vec2(1, 1));
+            painter.DrawLine(Color.DarkGray, 10, Vec2.Zero, new Vec2(1, 1));
 
-            gfx._DrawLine(Color.DarkGray, 10, StartPoint + new Vec2(1, 1), StartPoint + new Vec2(1, 1 + splitCount - 1));
+            painter.DrawLine(Color.DarkGray, 10, new Vec2(1, 1), new Vec2(1, 1 + splitCount - 1));
 
-            gfx._DrawLine(Color.DarkGray, 10, StartPoint + new Vec2(1 - 1 / 20f, 1), StartPoint + new Vec2(2, 1));
-            gfx._DrawStringC(getRange(0), Color.Black, StartPoint.X + 1.4f, StartPoint.Y + 1, 4);
+            painter.DrawLine(Color.DarkGray, 10, new Vec2(1 - 1 / 20f, 1), new Vec2(2, 1));
+            painter.DrawStringC(getRange(0), Color.Black, new Vec2(1.4f, 1), 4);
             for (int i = 1; i < splitCount; i++)
             {
-                gfx._DrawLine(Color.DarkGray, 10, StartPoint + new Vec2(1, 1 + i), StartPoint + new Vec2(2, 1 + i));
-                gfx._DrawStringC(getRange(i), Color.Black, StartPoint.X + 1.4f, StartPoint.Y + 1 + i, 4);
+                painter.DrawLine(Color.DarkGray, 10, new Vec2(1, 1 + i), new Vec2(2, 1 + i));
+                painter.DrawStringC(getRange(i), Color.Black, new Vec2(1.4f, 1 + i), 4);
             }
 
             if (direction == 0)
             {
-                gfx._DrawStringC("I/O", Color.Black, StartPoint.X + 1f, StartPoint.Y + .5f, 2);
+                painter.DrawStringC("I/O", Color.Black, new Vec2(1f, .5f), 2);
             }
             else
             {
-                gfx._DrawStringC("O/I", Color.Black, StartPoint.X + 1f, StartPoint.Y + .5f, 2);
+                painter.DrawStringC("O/I", Color.Black, new Vec2(1f, .5f), 2);
             }
         }
 

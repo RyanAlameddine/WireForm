@@ -10,7 +10,27 @@ namespace WireForm.Circuitry.Gates.Utilities
     public class GatePin : BoardObject
     {
         [JsonIgnore]
-        public override Vec2 StartPoint { get; set; }
+        Vec2 startPoint;
+        [JsonIgnore]
+        public override Vec2 StartPoint
+        {
+            get
+            {
+                return startPoint;
+            }
+            set
+            {
+                startPoint = value;
+
+                if (Parent == null)
+                {
+                    //Debug.WriteLine("Null parent in gatepin initialization - If this occurs while loading, this is not an error");
+                    return;
+                }
+
+                localPoint = startPoint - Parent.StartPoint;
+            }
+        }
         Vec2 localPoint;
         public Vec2 LocalPoint
         {
@@ -28,7 +48,7 @@ namespace WireForm.Circuitry.Gates.Utilities
                     return;
                 }
 
-                StartPoint = MathHelper.Plus(value, Parent.StartPoint);
+                startPoint = MathHelper.Plus(value, Parent.StartPoint);
 
             }
         }
@@ -42,7 +62,9 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             Values = new BitArray(1);
         }
-
+        /// <summary>
+        /// Refreshes the StartPoint and LocalPoint variables to ensure that they are synced
+        /// </summary>
         public void RefreshLocation()
         {
             StartPoint = localPoint + Parent.StartPoint;

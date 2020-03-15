@@ -27,12 +27,11 @@ namespace WireForm.Circuitry.Gates.Logic
             Outputs[0].Values = !Inputs[0].Values;
         }
 
-        protected override void draw(Graphics gfx)
+        protected override void draw(Painter painter)
         {
-            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-1, .75f), StartPoint + new Vec2(-1, -.75f));
-
-            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-1, .75f), StartPoint + new Vec2(1, 0));
-            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-1, -.75f), StartPoint + new Vec2(1, 0));
+            painter.DrawLine(Color.Black, 10, new Vec2(-1, .75f), new Vec2(-1, -.75f));
+            painter.DrawLine(Color.Black, 10, new Vec2(-1, .75f), new Vec2(1, 0));
+            painter.DrawLine(Color.Black, 10, new Vec2(-1, -.75f), new Vec2(1, 0));
         }
 
         public override CircuitObject Copy()

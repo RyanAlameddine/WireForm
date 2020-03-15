@@ -14,24 +14,24 @@ namespace WireForm.GraphicsUtils
     public class WirePainter
     {
 
-        public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine)
+        public void DrawWireLine(Painter painter, BoardState propogator, WireLine wireLine)
         {
             Color bitColor = wireLine.Data.BitColor();
-            DrawWireLine(gfx, propogator, wireLine, bitColor);
+            DrawWireLine(painter, propogator, wireLine, bitColor);
         }
-        public void DrawWireLine(Graphics gfx, BoardState propogator, WireLine wireLine, Color color)
+        public void DrawWireLine(Painter painter, BoardState propogator, WireLine wireLine, Color color)
         {
-            gfx._DrawLine(color, 10, wireLine.StartPoint, wireLine.EndPoint);
+            painter.DrawLine(color, 10, wireLine.StartPoint, wireLine.EndPoint);
 
 
-            DrawPoint(gfx, propogator, wireLine.StartPoint, color);
-            DrawPoint(gfx, propogator, wireLine.EndPoint, color);
+            DrawPoint(painter, propogator, wireLine.StartPoint, color);
+            DrawPoint(painter, propogator, wireLine.EndPoint, color);
         }
 
-        public void DrawPoint(Graphics gfx, BoardState propogator, Vec2 point, Color bitColor)
+        public void DrawPoint(Painter painter, BoardState propogator, Vec2 point, Color bitColor)
         {
 
-            gfx._FillRectangleC(bitColor, point.X, point.Y, 1/5f, 1/5f);
+            painter.FillRectangleC(bitColor, point, new Vec2(1/5f, 1/5f));
 
             ///Draws point in the following cases:
             ///    The point has an amount of connections greater than or less than 2
@@ -56,13 +56,13 @@ namespace WireForm.GraphicsUtils
 
             if (draw)
             {
-                gfx._FillEllipseC(bitColor, point.X, point.Y, .5f, .5f);
+                painter.FillEllipseC(bitColor, point, new Vec2(.5f, .5f));
             }
         }
 
-        public static void DrawPin(Graphics gfx, Vec2 position, BitArray values)
+        public static void DrawPin(Painter painter, Vec2 position, BitArray values)
         {
-            gfx._FillEllipseC(values.BitColor(), position.X, position.Y, .4f, .4f);
+            painter.FillEllipseC(values.BitColor(), position, new Vec2(.4f, .4f));
         }
     }
 }

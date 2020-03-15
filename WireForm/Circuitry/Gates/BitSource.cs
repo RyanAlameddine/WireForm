@@ -22,9 +22,9 @@ namespace WireForm.Circuitry.Gates
             };
         }
 
-        protected override void draw(Graphics gfx)
+        protected override void draw(Painter painter)
         {
-            gfx._DrawRectangle(Color.Green, 10, StartPoint.X - .4f, StartPoint.Y - .4f, .8f, .8f);
+            painter.DrawRectangle(Color.Green, 10, new Vec2(-.4f, -.4f), new Vec2(.8f, .8f));
         }
 
         protected override void compute()

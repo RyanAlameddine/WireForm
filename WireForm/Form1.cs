@@ -145,10 +145,7 @@ namespace WireForm
         {
             Gate newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
             var temp = GraphicsManager.SizeScale;
-            GraphicsManager.SizeScale = 15;
-            newGate.Draw(e.Graphics);
-
-            GraphicsManager.SizeScale = temp;
+            newGate.Draw(new Painter(e.Graphics, 15));
         }
         #endregion Graphics
 

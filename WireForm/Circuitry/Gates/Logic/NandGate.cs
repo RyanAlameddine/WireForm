@@ -28,15 +28,15 @@ namespace WireForm.Circuitry.Gates.Logic
             Outputs[0].Values = !(Inputs[0].Values & Inputs[1].Values);
         }
 
-        protected override void draw(Graphics gfx)
+        protected override void draw(Painter painter)
         {
-            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-2, 1.5f), StartPoint + new Vec2(-2, -1.5f));
-
-            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-2, 1.5f), StartPoint + new Vec2(-.5f + .1f, 1.5f));
-            gfx._DrawLine(Color.Black, 10, StartPoint + new Vec2(-2, -1.5f), StartPoint + new Vec2(-.5f + .1f, -1.5f));
-            gfx._DrawArc(Color.Black, 10, StartPoint.X - 2f, StartPoint.Y - 1.5f, 3f, 3f, 270, 180);
-
-            gfx._DrawEllipseC(Color.Black, 10, StartPoint.X + 1, StartPoint.Y, .4f, .4f);
+            painter.DrawLine(Color.Black, 10, new Vec2(-2, 1.5f), new Vec2(-2, -1.5f));
+            
+            painter.DrawLine(Color.Black, 10, new Vec2(-2, 1.5f), new Vec2(-.5f + .1f, 1.5f));
+            painter.DrawLine(Color.Black, 10, new Vec2(-2, -1.5f), new Vec2(-.5f + .1f, -1.5f));
+            painter.DrawArc(Color.Black, 10, new Vec2(-2f, -1.5f), new Vec2(3f, 3f), 270, 180);
+            
+            painter.DrawEllipseC(Color.Black, 10, new Vec2(1, 0), new Vec2(.4f, .4f));
         }
 
         public override CircuitObject Copy()

@@ -29,14 +29,12 @@ namespace WireForm.Circuitry.Gates.Logic
             Outputs[0].Values = Inputs[0].Values ^ Inputs[1].Values;
         }
 
-        protected override void draw(Graphics gfx)
+        protected override void draw(Painter painter)
         {
-            gfx._DrawArcC(Color.Black, 10, StartPoint.X - 3.5f - .75f, StartPoint.Y, 5, 5, 321, 78);
-
-            gfx._DrawArcC(Color.Black, 10, StartPoint.X - 2.5f - .75f, StartPoint.Y, 5, 5, 321, 78);
-
-            gfx._DrawArcC(Color.Black, 10, StartPoint.X - 1.3f, StartPoint.Y + 2, 8f, 7, 270, 60);
-            gfx._DrawArcC(Color.Black, 10, StartPoint.X - 1.3f, StartPoint.Y - 2, 8f, 7, 90, -60);
+            painter.DrawArcC(Color.Black, 10, new Vec2(-3.5f - .75f, 0), new Vec2(5, 5), 321, 78);
+            painter.DrawArcC(Color.Black, 10, new Vec2(-2.5f - .75f, 0), new Vec2(5, 5), 321, 78);
+            painter.DrawArcC(Color.Black, 10, new Vec2(-1.3f       , 2), new Vec2(8, 7), 270, 60);
+            painter.DrawArcC(Color.Black, 10, new Vec2(-1.3f       , -2), new Vec2(8, 7), 90, -60);
         }
 
         public override CircuitObject Copy()

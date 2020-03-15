@@ -460,7 +460,7 @@ namespace WireForm
                                 }
                                 else
                                 {
-                                    if (selections.Count > 0)
+                                    if (selections.Count == 0)
                                     {
                                         message = "Moved selections";
                                     }
@@ -468,9 +468,13 @@ namespace WireForm
                                     {
                                         message = $"Moved wire from {OGPosition}-{selections.First().StartPoint}";
                                     }
-                                    else
+                                    else if(selections.First() is Gate)
                                     {
                                         message = $"Moved gate from {OGPosition}-{selections.First().StartPoint}";
+                                    }
+                                    else
+                                    {
+                                        message = "Moved selections";
                                     }
                                 }
                                 stateStack.RegisterChange(message);
@@ -489,10 +493,6 @@ namespace WireForm
 
         public bool MouseMove(Vec2 position, BoardState propogator)
         {
-            if (additiveSelection)
-            {
-                ;
-            }
 
             //Refresh if updated
             bool toRefresh = false;
