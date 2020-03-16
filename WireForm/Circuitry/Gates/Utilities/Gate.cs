@@ -52,7 +52,8 @@ namespace WireForm.Circuitry.Gates.Utilities
             }
         }
 
-        [CircuitProperty(0, 3, true, new[] { "Up", "Down", "Left", "Right" })]
+        [CircuitAction("Rotate", System.Windows.Forms.Keys.R)]
+        [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
         public virtual Direction Direction { get; protected set; } = Direction.Right;
 
         public Gate(Vec2 Position, BoxCollider HitBox)

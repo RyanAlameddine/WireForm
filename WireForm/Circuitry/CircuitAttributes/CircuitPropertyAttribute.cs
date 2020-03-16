@@ -16,9 +16,9 @@ namespace WireForm.Circuitry.CircuitAttributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class CircuitPropertyAttribute : Attribute
     {
-        public (int min, int max) ValueRange;
-        public string[] ValueNames;
-        bool RequireRefresh;
+        public readonly (int min, int max) ValueRange;
+        public readonly string[] ValueNames;
+        public readonly bool RequireRefresh;
 
         /// <param name="RequireRefresh">true if the Circuit Property requires the gate to be refreshed (connections reset) on edit</param>
         public CircuitPropertyAttribute(int min, int max, bool RequireRefresh)
@@ -56,7 +56,7 @@ namespace WireForm.Circuitry.CircuitAttributes
 
             foreach (var property in properties)
             {
-                var attribute = property.GetCustomAttribute(typeof(CircuitPropertyAttribute), true) as CircuitPropertyAttribute;
+                var attribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
                 ///If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
                 if (attribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
                 circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, attribute.RequireRefresh, property.Name));

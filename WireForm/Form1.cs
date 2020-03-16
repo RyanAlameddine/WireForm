@@ -22,7 +22,7 @@ namespace WireForm
         InputHandler inputHandler = new InputHandler();
         StateStack stateStack = new StateStack();
 
-        public static int value = 0;
+        //public static int value = 0;
         public Form1()
         {
             InitializeComponent();
@@ -62,8 +62,8 @@ namespace WireForm
         {
             bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateStack.CurrentState);
 
-            value = e.Location.X;
-            Refresh();
+            //value = e.Location.X;
+            //Refresh();
 
             if (toRefresh) Refresh();
         }
@@ -163,14 +163,15 @@ namespace WireForm
                 oldSelections = new HashSet<CircuitObject>(inputHandler.selections);
                 SelectionSettings.Items.Clear();
                 SelectionSettingValue.Items.Clear();
-                
-                foreach(CircuitObject obj in oldSelections)
+
+                circuitProperties = new List<CircuitProp>();
+                foreach (CircuitObject obj in oldSelections)
                 {
-                    circuitProperties = CircuitPropertyAttribute.GetProperties(obj, stateStack, this);
-                    foreach (var property in circuitProperties)
-                    {
-                        SelectionSettings.Items.Add(property.Name);
-                    }
+                    circuitProperties.AddRange(CircuitPropertyAttribute.GetProperties(obj, stateStack, this));
+                }
+                foreach (var property in circuitProperties)
+                {
+                    SelectionSettings.Items.Add(property.Name);
                 }
             }
         }

@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Circuitry\CircuitAttributes\CircuitPropertyAttribute.cs" />
-    <Compile Include="Circuitry\CircuitAttributes\IgnoreCircuitAttributesAttribute.cs" />
+    <Compile Include="Circuitry\CircuitAttributes\HideCircuitAttributesAttribute.cs" />
     <Compile Include="Circuitry\Data\BitArray.cs" />
     <Compile Include="Circuitry\Data\BitArrayConverter.cs" />
     <Compile Include="Circuitry\Data\BitValue.cs" />

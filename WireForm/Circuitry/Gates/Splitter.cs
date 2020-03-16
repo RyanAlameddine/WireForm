@@ -29,14 +29,14 @@ namespace WireForm.Circuitry.Gates.Logic
         public Splitter(Vec2 Position, int splitCount, int inputDepth, int direction)
             : this(Position)
         {
-            Direction = direction;
+            SplitDirection = direction;
             SplitCount = splitCount;
             SplitDepth = inputDepth;
         }
 
         protected override void compute()
         {
-            if (direction == 0)
+            if (splitDirection == 0)
             {
                 for (int i = 0; i < Outputs.Length; i++)
                 {
@@ -88,7 +88,7 @@ namespace WireForm.Circuitry.Gates.Logic
                 painter.DrawStringC(getRange(i), Color.Black, new Vec2(.4f, i), 4);
             }
 
-            if (direction == 0)
+            if (splitDirection == 0)
             {
                 painter.DrawStringC("I", Color.Black, new Vec2(0f, -.5f), 2);
                 painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 2);
@@ -125,7 +125,7 @@ namespace WireForm.Circuitry.Gates.Logic
 
         public override CircuitObject Copy()
         {
-            Splitter splitter = new Splitter(StartPoint, splitCount, splitDepth, direction);
+            Splitter splitter = new Splitter(StartPoint, splitCount, splitDepth, splitDirection);
 
             return splitter;
         }
@@ -166,7 +166,7 @@ namespace WireForm.Circuitry.Gates.Logic
         void ResetIO()
         {
             HitBox = new BoxCollider(-1, -1, 2, splitCount);
-            if (direction == 0)
+            if (splitDirection == 0)
             {
                 //Inputs length is 1
                 Outputs = new GatePin[splitCount];
@@ -189,19 +189,19 @@ namespace WireForm.Circuitry.Gates.Logic
             }
         }
 
-        private int direction = 0;
+        private int splitDirection = 0;
         [CircuitProperty(0, 1, true, new[] { "Expand", "Contract" })]
-        public int Direction
+        public int SplitDirection
         {
             get
             {
-                return direction;
+                return splitDirection;
             }
             set
             {
-                if (direction != value)
+                if (splitDirection != value)
                 {
-                    direction = value;
+                    splitDirection = value;
                     var temp = Outputs;
                     Outputs = Inputs;
                     Inputs = temp;
@@ -212,13 +212,13 @@ namespace WireForm.Circuitry.Gates.Logic
         [CircuitAction("Toggle", System.Windows.Forms.Keys.T)]
         public void Toggle()
         {
-            if (direction == 0)
+            if (splitDirection == 0)
             {
-                Direction = 1;
+                SplitDirection = 1;
             }
             else
             {
-                Direction = 0;
+                SplitDirection = 0;
             }
         }
     }

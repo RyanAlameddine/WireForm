@@ -10,9 +10,9 @@ namespace WireForm.Circuitry.Gates.Utilities
 {
     public enum Direction
     {
-        Up,
+        Right,
         Down,
         Left,
-        Right
+        Up
     }
 }

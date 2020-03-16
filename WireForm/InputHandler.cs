@@ -15,6 +15,10 @@ using WireForm.MathUtils.Collision;
 
 namespace WireForm
 {
+    /// <summary>
+    /// NOTE: This is the LEAST well organized system in the entire project, so I apologize if you have to directly code in here.
+    /// This will be COMPLETELY reworked to a cleaner state machine in a later version.
+    /// </summary>
     public class InputHandler
     {
 
