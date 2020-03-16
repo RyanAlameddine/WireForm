@@ -15,27 +15,20 @@ namespace WireForm.Circuitry.Gates.Logic
     {
         [JsonConstructor]
         public Splitter(Vec2 Position)
-            : base(Position, new BoxCollider(0, 0, 2, 1))
+            : base(Position, new BoxCollider(-1, -1, 2, 1))
         {
             Inputs = new GatePin[] {
-                new GatePin(this, new Vec2(0, 0))
+                new GatePin(this, new Vec2(-1, -1))
             };
 
             Outputs = new GatePin[] {
-                new GatePin(this, new Vec2(2, 1))
+                new GatePin(this, new Vec2(1, 0))
             };
         }
 
         public Splitter(Vec2 Position, int splitCount, int inputDepth, int direction)
-            : base(Position, new BoxCollider(0, 0, 2, 1))
+            : this(Position)
         {
-            Inputs = new GatePin[] {
-                new GatePin(this, new Vec2(0, 0))
-            };
-
-            Outputs = new GatePin[] {
-                new GatePin(this, new Vec2(2, 1))
-            };
             Direction = direction;
             SplitCount = splitCount;
             SplitDepth = inputDepth;
@@ -83,25 +76,29 @@ namespace WireForm.Circuitry.Gates.Logic
 
         protected override void draw(Painter painter)
         {
-            painter.DrawLine(Color.DarkGray, 10, Vec2.Zero, new Vec2(1, 1));
+            painter.DrawLine(Color.DarkGray, 10, new Vec2(-1, -1), Vec2.Zero);
 
-            painter.DrawLine(Color.DarkGray, 10, new Vec2(1, 1), new Vec2(1, 1 + splitCount - 1));
+            painter.DrawLine(Color.DarkGray, 10, Vec2.Zero, new Vec2(0, splitCount - 1));
 
-            painter.DrawLine(Color.DarkGray, 10, new Vec2(1 - 1 / 20f, 1), new Vec2(2, 1));
-            painter.DrawStringC(getRange(0), Color.Black, new Vec2(1.4f, 1), 4);
+            painter.DrawLine(Color.DarkGray, 10, new Vec2(0 - 1 / 20f, 0), new Vec2(1, 0));
+            painter.DrawStringC(getRange(0), Color.Black, new Vec2(.4f, 0), 4);
             for (int i = 1; i < splitCount; i++)
             {
-                painter.DrawLine(Color.DarkGray, 10, new Vec2(1, 1 + i), new Vec2(2, 1 + i));
-                painter.DrawStringC(getRange(i), Color.Black, new Vec2(1.4f, 1 + i), 4);
+                painter.DrawLine(Color.DarkGray, 10, new Vec2(0, i), new Vec2(1, i));
+                painter.DrawStringC(getRange(i), Color.Black, new Vec2(.4f, i), 4);
             }
 
             if (direction == 0)
             {
-                painter.DrawStringC("I/O", Color.Black, new Vec2(1f, .5f), 2);
+                painter.DrawStringC("I", Color.Black, new Vec2(0f, -.5f), 2);
+                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 2);
+                painter.DrawStringC("O", Color.Black, new Vec2(.8f, -.5f), 2);
             }
             else
             {
-                painter.DrawStringC("O/I", Color.Black, new Vec2(1f, .5f), 2);
+                painter.DrawStringC("O", Color.Black, new Vec2(0f, -.5f), 2);
+                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 2);
+                painter.DrawStringC("I", Color.Black, new Vec2(.8f, -.5f), 2);
             }
         }
 
@@ -168,14 +165,14 @@ namespace WireForm.Circuitry.Gates.Logic
         /// </summary>
         void ResetIO()
         {
-            HitBox = new BoxCollider(0, 0, 2, splitCount);
+            HitBox = new BoxCollider(-1, -1, 2, splitCount);
             if (direction == 0)
             {
                 //Inputs length is 1
                 Outputs = new GatePin[splitCount];
                 for (int i = 0; i < splitCount; i++)
                 {
-                    Outputs[i] = new GatePin(this, new Vec2(2, i + 1));
+                    Outputs[i] = new GatePin(this, new Vec2(1, i));
                     Outputs[i].Values = new BitArray(splitDepth);
                 }
             }
@@ -186,7 +183,7 @@ namespace WireForm.Circuitry.Gates.Logic
                 Inputs = new GatePin[splitCount];
                 for (int i = 0; i < splitCount; i++)
                 {
-                    Inputs[i] = new GatePin(this, new Vec2(2, i + 1));
+                    Inputs[i] = new GatePin(this, new Vec2(1, i));
                     Inputs[i].Values = new BitArray(splitDepth);
                 }
             }

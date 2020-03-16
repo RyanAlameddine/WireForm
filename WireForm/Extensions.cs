@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;

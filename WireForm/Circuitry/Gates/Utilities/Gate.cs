@@ -91,6 +91,29 @@ namespace WireForm.Circuitry.Gates.Utilities
         public void Draw(Painter painter)
         {
             painter.AppendOffset(StartPoint);
+            //if (Form1.value < 100)
+            //{
+            //    painter.SetLocalMultiplier(new Vec2(1, 1));
+            //}
+            //else if (Form1.value < 200)
+            //{
+            //    painter.SetLocalMultiplier(new Vec2(-1, 1));
+            //}
+            //else if (Form1.value < 400)
+            //{
+            //    painter.SetLocalMultiplier(new Vec2(1, -1));
+            //}
+            //else if (Form1.value < 600)
+            //{
+            //    painter.SetLocalMultiplier(new Vec2(-1, -1));
+            //}
+
+            if(this is IRotatable rotatable)
+            {
+                painter.SetLocalMultiplier(rotatable.Direction);
+            }
+
+            //painter.DrawEllipseC(Color.White, 10, new Vec2(1, 1), new Vec2(3, 3));
             draw(painter);
             painter.DrawEllipseC(Color.Red, 3, Vec2.Zero, new Vec2(.1f, .1f));
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
@@ -105,6 +128,7 @@ namespace WireForm.Circuitry.Gates.Utilities
             {
                 WirePainter.DrawPin(painter, input.LocalPoint, input.Values);
             }
+            //painter.SetLocalMultiplier(new Vec2(1, 1));
         }
 
         protected abstract void compute();

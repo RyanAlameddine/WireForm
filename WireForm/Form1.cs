@@ -22,6 +22,7 @@ namespace WireForm
         InputHandler inputHandler = new InputHandler();
         StateStack stateStack = new StateStack();
 
+        public static int value = 0;
         public Form1()
         {
             InitializeComponent();
@@ -61,7 +62,10 @@ namespace WireForm
         {
             bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateStack.CurrentState);
 
-            if(toRefresh) Refresh();
+            value = e.Location.X;
+            Refresh();
+
+            if (toRefresh) Refresh();
         }
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {

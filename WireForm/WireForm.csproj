@@ -66,6 +66,7 @@
     <Compile Include="Circuitry\Gates\Logic\NorGate.cs" />
     <Compile Include="Circuitry\Gates\Logic\XorGate.cs" />
     <Compile Include="Circuitry\Gates\Logic\OrGate.cs" />
+    <Compile Include="Circuitry\Gates\Utilities\IRotatable.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Circuitry\Data\BoardState.cs" />
     <Compile Include="Form1.cs">
@@ -77,7 +78,7 @@
     <Compile Include="Circuitry\Gates\BitSource.cs" />
     <Compile Include="Circuitry\Gates\Utilities\Gate.cs" />
     <Compile Include="Circuitry\Gates\Utilities\GateEnum.cs" />
-    <Compile Include="Circuitry\Gates\Utilities\GatePin.cs" />
+    <Compile Include="Circuitry\GatePin.cs" />
     <Compile Include="Circuitry\Gates\Logic\AndGate.cs" />
     <Compile Include="Circuitry\Gates\Logic\NotGate.cs" />
     <Compile Include="GraphicsUtils\GraphicsManager.cs" />

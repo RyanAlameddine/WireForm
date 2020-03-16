@@ -16,7 +16,7 @@ namespace WireForm.Circuitry.Gates.Utilities
         {
             get
             {
-                if(gatesEnum == null)
+                if (gatesEnum == null)
                 {
                     gatesEnum = CreateEnum();
                 }
@@ -29,7 +29,7 @@ namespace WireForm.Circuitry.Gates.Utilities
         {
             get
             {
-                if(allGates == null)
+                if (allGates == null)
                 {
                     allGates = Assembly.GetExecutingAssembly().GetTypes().Where((x) => x.IsSubclassOf(typeof(Gate))).ToArray();
                 }
@@ -67,9 +67,9 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             int i = 0;
             string selectedValue = "";
-            foreach(var value in values)
+            foreach (var value in values)
             {
-                if(i == gateIndex)
+                if (i == gateIndex)
                 {
                     selectedValue = value.ToString();
                     break;
@@ -79,7 +79,7 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             var gateType = AllGates.First((x) => x.Name == selectedValue);
 
-            var gate = (Gate) Activator.CreateInstance(gateType, Position);
+            var gate = (Gate)Activator.CreateInstance(gateType, Position);
 
             return gate;
         }

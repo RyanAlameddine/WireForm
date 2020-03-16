@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using WireForm.Circuitry.Data;
+using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Gates.Utilities
+namespace WireForm.Circuitry
 {
     public class GatePin : BoardObject
     {
@@ -42,7 +43,7 @@ namespace WireForm.Circuitry.Gates.Utilities
             {
                 localPoint = value;
 
-                if(Parent == null)
+                if (Parent == null)
                 {
                     //Debug.WriteLine("Null parent in gatepin initialization - If this occurs while loading, this is not an error");
                     return;
@@ -58,7 +59,7 @@ namespace WireForm.Circuitry.Gates.Utilities
         public GatePin(Gate Parent, Vec2 LocalStart)
         {
             this.Parent = Parent;
-            this.LocalPoint = LocalStart;
+            LocalPoint = LocalStart;
 
             Values = new BitArray(1);
         }

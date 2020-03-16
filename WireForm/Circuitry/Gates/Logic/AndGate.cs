@@ -8,8 +8,10 @@ using WireForm.MathUtils.Collision;
 
 namespace WireForm.Circuitry.Gates.Logic
 {
-    class AndGate : Gate
+    class AndGate : Gate, IRotatable
     {
+        public Direction Direction { get; set; }
+
         public AndGate(Vec2 Position)
             : base(Position, new BoxCollider(-2, -1.5f, 3, 3))
         {
