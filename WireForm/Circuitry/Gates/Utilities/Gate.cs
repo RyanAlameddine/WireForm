@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;
+using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
@@ -50,6 +51,9 @@ namespace WireForm.Circuitry.Gates.Utilities
                 hitBox.Y += StartPoint.Y;
             }
         }
+
+        [CircuitProperty(0, 3, true, new[] { "Up", "Down", "Left", "Right" })]
+        public virtual Direction Direction { get; protected set; } = Direction.Right;
 
         public Gate(Vec2 Position, BoxCollider HitBox)
         {
@@ -107,11 +111,8 @@ namespace WireForm.Circuitry.Gates.Utilities
             //{
             //    painter.SetLocalMultiplier(new Vec2(-1, -1));
             //}
-
-            if(this is IRotatable rotatable)
-            {
-                painter.SetLocalMultiplier(rotatable.Direction);
-            }
+            painter.SetLocalMultiplier(Direction);
+            
 
             //painter.DrawEllipseC(Color.White, 10, new Vec2(1, 1), new Vec2(3, 3));
             draw(painter);

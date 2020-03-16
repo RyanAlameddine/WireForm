@@ -43,7 +43,7 @@ namespace WireForm.Circuitry.CircuitAttributes
                 foreach (var attribute in (CircuitActionAttribute[])method.GetCustomAttributes(typeof(CircuitActionAttribute), true))
                 {
                     //If method has IgnoreCircuitAttribute, continue
-                    if (method.GetCustomAttributes(typeof(IgnoreCircuitAttributesAttribute), true).Length != 0) continue;
+                    if (method.GetCustomAttributes(typeof(HideCircuitAttributesAttribute), true).Length != 0) continue;
 
                     EventHandler action;
 

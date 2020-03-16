@@ -58,7 +58,7 @@ namespace WireForm.Circuitry.CircuitAttributes
             {
                 var attribute = property.GetCustomAttribute(typeof(CircuitPropertyAttribute), true) as CircuitPropertyAttribute;
                 ///If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
-                if (attribute == null || property.GetCustomAttribute(typeof(IgnoreCircuitAttributesAttribute), true) != null) continue;
+                if (attribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
                 circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, attribute.RequireRefresh, property.Name));
             }
             return circuitProps;

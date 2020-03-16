@@ -8,12 +8,6 @@ using WireForm.MathUtils;
 
 namespace WireForm.Circuitry.Gates.Utilities
 {
-    public interface IRotatable
-    {
-        [CircuitProperty(0, 3, true, new[] { "Up", "Right", "Down", "Left" })]
-        public Direction Direction { get; set; }
-    }
-
     public enum Direction
     {
         Up,

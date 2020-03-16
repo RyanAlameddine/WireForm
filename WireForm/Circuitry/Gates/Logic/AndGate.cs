@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates.Utilities;
 using WireForm.GraphicsUtils;
@@ -8,10 +9,8 @@ using WireForm.MathUtils.Collision;
 
 namespace WireForm.Circuitry.Gates.Logic
 {
-    class AndGate : Gate, IRotatable
+    class AndGate : Gate
     {
-        public Direction Direction { get; set; }
-
         public AndGate(Vec2 Position)
             : base(Position, new BoxCollider(-2, -1.5f, 3, 3))
         {
@@ -33,7 +32,6 @@ namespace WireForm.Circuitry.Gates.Logic
         protected override void draw(Painter painter)
         {
             painter.DrawLine(Color.Black, 10, new Vec2(-2, 1.5f), new Vec2(-2, -1.5f));
-
             painter.DrawLine(Color.Black, 10, new Vec2(-2, 1.5f), new Vec2(-.5f + .1f, 1.5f));
             painter.DrawLine(Color.Black, 10, new Vec2(-2, -1.5f), new Vec2(-.5f + .1f, -1.5f));
             painter.DrawArc(Color.Black, 10, new Vec2(-2f, -1.5f), new Vec2(3f, 3f), 270, 180);
