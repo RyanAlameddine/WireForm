@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WireForm.MathUtils;
 
-namespace WireForm.Circuitry.Gates.Utilities
+namespace WireForm.Circuitry.Utilities
 {
     public static class GateEnum
     {
@@ -79,7 +79,7 @@ namespace WireForm.Circuitry.Gates.Utilities
 
             var gateType = AllGates.First((x) => x.Name == selectedValue);
 
-            var gate = (Gate)Activator.CreateInstance(gateType, Position);
+            var gate = (Gate)Activator.CreateInstance(gateType, Position, default);
 
             return gate;
         }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 
 namespace WireForm.Circuitry.CircuitAttributes
 {
@@ -36,7 +36,7 @@ namespace WireForm.Circuitry.CircuitAttributes
         }
 
         /// <param name="target">The target object on which the actions are found and run</param>
-        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(CircuitObject target, StateStack stateStack, Form form)
+        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(CircuitObject target, StateStack stateStack, Panel panel)
         {
             var actions = new List<(CircuitActionAttribute attribute, EventHandler action)>();
 
@@ -72,7 +72,7 @@ namespace WireForm.Circuitry.CircuitAttributes
                     }
                     action += (sender, args) =>
                     {
-                        form.Refresh();
+                        panel.Refresh();
                     };
                     actions.Add((attribute, action));
                 }
@@ -103,7 +103,7 @@ namespace WireForm.Circuitry.CircuitAttributes
                         value = prop.valueRange.min;
                     prop.Set(value, stateStack.CurrentState.Connections);
                     stateStack.RegisterChange(message);
-                    form.Refresh();
+                    panel.Refresh();
                 };
 
                 actions.Add((actionAttribute, action));

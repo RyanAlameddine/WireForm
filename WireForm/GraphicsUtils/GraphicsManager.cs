@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 

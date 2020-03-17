@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.MathUtils;
 
 namespace WireForm.Circuitry
@@ -26,6 +26,7 @@ namespace WireForm.Circuitry
 
             PatternStack<WireValuePair> patternStack = new PatternStack<WireValuePair>();
             HashSet<WireLine> visitedWires = new HashSet<WireLine>();
+            HashSet<GatePin> visitedPins = new HashSet<GatePin>();
 
             while (sources.Count > 0)
             {
@@ -35,22 +36,35 @@ namespace WireForm.Circuitry
                 source.Compute();
                 foreach (var output in source.Outputs)
                 {
-                    PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Values);
+                    PropagateWires(state, patternStack, visitedWires, visitedPins, output.StartPoint, output.Values);
                 }
-                foreach (WireLine wire in state.wires)
+            }
+            foreach (WireLine wire in state.wires)
+            {
+                if (!visitedWires.Contains(wire))
                 {
-                    if (!visitedWires.Contains(wire))
+                    for (int i = 0; i < wire.Data.BitValues.Length; i++)
                     {
-                        for (int i = 0; i < wire.Data.BitValues.Length; i++)
+                        wire.Data.BitValues[i] = BitValue.Nothing;
+                    }
+                }
+            }
+            foreach (Gate gate in state.gates)
+            {
+                foreach (GatePin pin in gate.Inputs)
+                {
+                    if (!visitedPins.Contains(pin))
+                    {
+                        for (int i = 0; i < pin.Values.Length; i++)
                         {
-                            wire.Data.BitValues[i] = BitValue.Nothing;
+                            pin.Values.Set(i, BitValue.Nothing);
                         }
                     }
                 }
             }
         }
 
-        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, Vec2 startPoint, BitArray values)
+        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, HashSet<GatePin> visitedPins, Vec2 startPoint, BitArray values)
         {
             if (!state.Connections.ContainsKey(startPoint))
             {
@@ -70,7 +84,10 @@ namespace WireForm.Circuitry
                     var index = patternStack.HeadIndex;
                     bool patternMatched = patternStack.Push(new WireValuePair(wire, values));
                     visitedWires.Add(wire);
-                    wire.Data = values;
+
+                    values.CopyTo(out var copiedData);
+                    wire.Data = copiedData;
+                    //wire.Data = values;
 
                     if (patternMatched)
                     {
@@ -107,15 +124,14 @@ namespace WireForm.Circuitry
                     }
                     else
                     {
-
                         if (wire.StartPoint == startPoint)
                         {
-                            PropagateWires(state, patternStack, visitedWires, wire.EndPoint, values);
+                            PropagateWires(state, patternStack, visitedWires, visitedPins, wire.EndPoint, values);
                             patternStack.Pop(patternStack.HeadIndex - index);
                         }
                         else if (wire.EndPoint == startPoint)
                         {
-                            PropagateWires(state, patternStack, visitedWires, wire.StartPoint, values);
+                            PropagateWires(state, patternStack, visitedWires, visitedPins, wire.StartPoint, values);
                             patternStack.Pop(patternStack.HeadIndex - index);
                         }
                         else
@@ -134,12 +150,13 @@ namespace WireForm.Circuitry
                     {
                         if (pin.Parent.Inputs.Contains(pin))
                         {
+                            visitedPins.Add(pin);
                             pin.Values = values;
 
                             pin.Parent.Compute();
                             foreach (GatePin output in pin.Parent.Outputs)
                             {
-                                PropagateWires(state, patternStack, visitedWires, output.StartPoint, output.Values);
+                                PropagateWires(state, patternStack, visitedWires, visitedPins, output.StartPoint, output.Values);
                             }
                         }
                     }

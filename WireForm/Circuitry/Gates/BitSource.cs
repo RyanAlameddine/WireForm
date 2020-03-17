@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
@@ -13,8 +13,8 @@ namespace WireForm.Circuitry.Gates
 {
     public class BitSource : Gate
     {
-        public BitSource(Vec2 Position)
-            : base(Position, new BoxCollider(-.5f, -.5f, 1, 1))
+        public BitSource(Vec2 Position, Direction direction)
+            : base(Position, direction, new BoxCollider(-.5f, -.5f, 1, 1))
         {
             Inputs = new GatePin[0];
             Outputs = new GatePin[] {
@@ -37,7 +37,7 @@ namespace WireForm.Circuitry.Gates
 
         public override CircuitObject Copy()
         {
-            var gate = new BitSource(StartPoint);
+            var gate = new BitSource(StartPoint, Direction);
             gate.currentValue = currentValue;
             gate.BitDepth = BitDepth;
             return gate;
@@ -70,6 +70,9 @@ namespace WireForm.Circuitry.Gates
                 Outputs[0].Values = new BitArray(value);
             }
         }
+
+        [HideCircuitAttributes]
+        public override Direction Direction { get => base.Direction; set => base.Direction = value; }
 
         public BitValue currentValue = BitValue.One;
 

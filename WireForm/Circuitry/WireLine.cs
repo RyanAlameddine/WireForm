@@ -31,7 +31,6 @@ namespace WireForm.Circuitry
 
                 return collider;
             }
-            set => throw new System.NotImplementedException();
         }
 
         [JsonIgnore]

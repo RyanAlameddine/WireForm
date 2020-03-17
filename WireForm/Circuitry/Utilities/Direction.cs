@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.MathUtils;
 
-namespace WireForm.Circuitry.Gates.Utilities
+namespace WireForm.Circuitry.Utilities
 {
     public enum Direction
     {

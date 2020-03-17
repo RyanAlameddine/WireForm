@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.MathUtils;
 
 namespace WireForm
@@ -20,6 +20,23 @@ namespace WireForm
         public static void RemoveConnection(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject circuitObject)
         {
             connections[circuitObject.StartPoint].Remove(circuitObject);
+        }
+
+        public static Vec2 GetMultiplier(this Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return new Vec2(-1, -1);
+                case Direction.Down:
+                    return new Vec2(1, -1);
+                case Direction.Left:
+                    return new Vec2(-1, 1);
+                case Direction.Right:
+                    return new Vec2(1, 1);
+                default:
+                    throw new System.Exception("How did I get here");
+            }
         }
 
         public static void SetDepth(this GatePin[] pins, int bitDepth)

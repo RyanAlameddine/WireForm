@@ -13,7 +13,7 @@ namespace WireForm.Circuitry.Data
     public abstract class CircuitObject : BoardObject
     {
 
-        public abstract BoxCollider HitBox { get; set; }
+        public abstract BoxCollider HitBox { get; }
 
         public abstract void AddConnections(Dictionary<Vec2, List<BoardObject>> connections);
 

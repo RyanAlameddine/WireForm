@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
@@ -14,8 +14,8 @@ namespace WireForm.Circuitry.Gates.Logic
     class Splitter : Gate
     {
         [JsonConstructor]
-        public Splitter(Vec2 Position)
-            : base(Position, new BoxCollider(-1, -1, 2, 1))
+        public Splitter(Vec2 Position, Direction direction)
+            : base(Position, direction, new BoxCollider(-1, -1, 2, 1))
         {
             Inputs = new GatePin[] {
                 new GatePin(this, new Vec2(-1, -1))
@@ -26,10 +26,10 @@ namespace WireForm.Circuitry.Gates.Logic
             };
         }
 
-        public Splitter(Vec2 Position, int splitCount, int inputDepth, int direction)
-            : this(Position)
+        public Splitter(Vec2 Position, Direction direction, int splitCount, int inputDepth, int splitDirection)
+            : this(Position, direction)
         {
-            SplitDirection = direction;
+            SplitDirection = splitDirection;
             SplitCount = splitCount;
             SplitDepth = inputDepth;
         }
@@ -125,7 +125,7 @@ namespace WireForm.Circuitry.Gates.Logic
 
         public override CircuitObject Copy()
         {
-            Splitter splitter = new Splitter(StartPoint, splitCount, splitDepth, splitDirection);
+            Splitter splitter = new Splitter(StartPoint, Direction, splitCount, splitDepth, splitDirection);
 
             return splitter;
         }
@@ -165,7 +165,7 @@ namespace WireForm.Circuitry.Gates.Logic
         /// </summary>
         void ResetIO()
         {
-            HitBox = new BoxCollider(-1, -1, 2, splitCount);
+            LocalHitbox = new BoxCollider(-1, -1, 2, splitCount);
             if (splitDirection == 0)
             {
                 //Inputs length is 1

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.MathUtils;
 
 namespace WireForm

@@ -105,6 +105,15 @@ namespace WireForm.Circuitry.Data
             return newBits;
         }
 
+        public void CopyTo(out BitArray data)
+        {
+            data = new BitArray(Length);
+            for(int i = 0; i < Length; i++)
+            {
+                data[i] = BitValues[i];
+            }
+        }
+
         /// <summary>
         /// Finds the amount of bits shared between the two arrays, then errors out the output bits for the rest of the indicies
         /// E.g. values1 = { 0, 1 }

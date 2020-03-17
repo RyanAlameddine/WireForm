@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
@@ -10,8 +10,8 @@ namespace WireForm.Circuitry.Gates.Logic
 {
     class OrGate : Gate
     {
-        public OrGate(Vec2 Position)
-            : base(Position, new BoxCollider(-2, -1.5f, 3, 3))
+        public OrGate(Vec2 Position, Direction direction)
+            : base(Position, direction, new BoxCollider(-2, -1.5f, 3, 3))
         {
             Inputs = new GatePin[] {
                 new GatePin(this, new Vec2(-2, -1)),
@@ -37,7 +37,7 @@ namespace WireForm.Circuitry.Gates.Logic
 
         public override CircuitObject Copy()
         {
-            return new OrGate(StartPoint);
+            return new OrGate(StartPoint, Direction);
         }
     }
 }

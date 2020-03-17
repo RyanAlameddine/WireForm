@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
@@ -48,8 +48,18 @@ namespace WireForm.Circuitry
                     //Debug.WriteLine("Null parent in gatepin initialization - If this occurs while loading, this is not an error");
                     return;
                 }
+                Vec2 multiplier = Parent.Direction.GetMultiplier();
+                Vec2 pos = value;
+                if(multiplier.Y == -1)
+                {
+                    pos = new Vec2(pos.Y, pos.X * multiplier.X);
+                }
+                else
+                {
+                    pos = new Vec2(pos.X * multiplier.X, pos.Y);
+                }
 
-                startPoint = MathHelper.Plus(value, Parent.StartPoint);
+                startPoint = MathHelper.Plus(pos, Parent.StartPoint);
 
             }
         }
@@ -68,7 +78,7 @@ namespace WireForm.Circuitry
         /// </summary>
         public void RefreshLocation()
         {
-            StartPoint = localPoint + Parent.StartPoint;
+            LocalPoint = localPoint;
         }
     }
 }

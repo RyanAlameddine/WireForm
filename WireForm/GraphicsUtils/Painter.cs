@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.MathUtils;
 
 namespace WireForm.GraphicsUtils
@@ -60,23 +60,7 @@ namespace WireForm.GraphicsUtils
         /// </summary>
         public void SetLocalMultiplier(Direction direction)
         {
-            switch (direction)
-            {
-                case Direction.Up:
-                    multiplier = new Vec2(-1, -1);
-                    break;
-                case Direction.Down:
-                    multiplier = new Vec2(1, -1);
-                    break;
-                case Direction.Left:
-                    multiplier = new Vec2(-1, 1);
-                    break;
-                case Direction.Right:
-                    multiplier = new Vec2(1, 1);
-                    break;
-                default:
-                    break;
-            }
+            multiplier = direction.GetMultiplier();
         }
 
         Pen getPen(Color color, int width)

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
 using WireForm.MathUtils;
 
 namespace WireForm.GraphicsUtils

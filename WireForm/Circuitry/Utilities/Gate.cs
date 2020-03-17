@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
@@ -7,7 +8,7 @@ using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Gates.Utilities
+namespace WireForm.Circuitry.Utilities
 {
     public abstract class Gate : CircuitObject
     {
@@ -26,40 +27,69 @@ namespace WireForm.Circuitry.Gates.Utilities
             {
                 Vec2 offset = value - position;
                 position = value;
-                HitBox.X += offset.X;
-                HitBox.Y += offset.Y;
 
-                RefreshPins();
+                RefreshChildren();
             }
         }
 
         public GatePin[] Outputs { get; set; }
         public GatePin[] Inputs { get; set; }
 
+        /// <summary>
+        /// Lo
+        /// </summary>
+        [JsonIgnore]
+        private BoxCollider localHitbox;
+        public BoxCollider LocalHitbox
+        {
+            get
+            {
+                return localHitbox;
+            }
+            protected set
+            {
+                localHitbox = value;
+
+                var mult = Direction.GetMultiplier();
+                Debug.WriteLine(Direction);
+                if (mult.Y == -1)
+                {
+                    hitBox = new BoxCollider(value.Y, value.X, value.Height, value.Width * mult.X);
+                    mult = new Vec2(1, mult.X);
+                }
+                else
+                {
+                    hitBox = new BoxCollider(value.X, value.Y, value.Width * mult.X, value.Height);
+                }
+                hitBox.X = StartPoint.X + hitBox.X * mult.X;
+                hitBox.Y = StartPoint.Y + hitBox.Y * mult.Y;
+                hitBox = hitBox.GetNormalized();
+            }
+        }
+
         [JsonIgnore]
         private BoxCollider hitBox;
+        /// <summary>
+        /// Hitbox with rotations and global transformations applied
+        /// </summary>
         [JsonIgnore]
-        public override BoxCollider HitBox {
+        public override BoxCollider HitBox
+        {
             get
             {
                 return hitBox;
-            }
-            set
-            {
-                hitBox = value;
-                hitBox.X += StartPoint.X;
-                hitBox.Y += StartPoint.Y;
             }
         }
 
         [CircuitAction("Rotate", System.Windows.Forms.Keys.R)]
         [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
-        public virtual Direction Direction { get; protected set; } = Direction.Right;
+        public virtual Direction Direction { get; set; } = Direction.Right;
 
-        public Gate(Vec2 Position, BoxCollider HitBox)
+        public Gate(Vec2 Position, Direction direction, BoxCollider localHitbox)
         {
-            this.HitBox = HitBox;
-            this.StartPoint = Position;
+            Direction = direction;
+            this.localHitbox = localHitbox;
+            StartPoint = Position;
         }
 
         /// <summary>
@@ -67,6 +97,7 @@ namespace WireForm.Circuitry.Gates.Utilities
         /// </summary>
         public override void AddConnections(Dictionary<Vec2, List<BoardObject>> connections)
         {
+            RefreshChildren();
             foreach (GatePin input in Inputs)
             {
                 connections.AddConnection(input);
@@ -96,27 +127,10 @@ namespace WireForm.Circuitry.Gates.Utilities
         public void Draw(Painter painter)
         {
             painter.AppendOffset(StartPoint);
-            //if (Form1.value < 100)
-            //{
-            //    painter.SetLocalMultiplier(new Vec2(1, 1));
-            //}
-            //else if (Form1.value < 200)
-            //{
-            //    painter.SetLocalMultiplier(new Vec2(-1, 1));
-            //}
-            //else if (Form1.value < 400)
-            //{
-            //    painter.SetLocalMultiplier(new Vec2(1, -1));
-            //}
-            //else if (Form1.value < 600)
-            //{
-            //    painter.SetLocalMultiplier(new Vec2(-1, -1));
-            //}
-            painter.SetLocalMultiplier(Direction);
-            
 
-            //painter.DrawEllipseC(Color.White, 10, new Vec2(1, 1), new Vec2(3, 3));
+            painter.SetLocalMultiplier(Direction);
             draw(painter);
+
             painter.DrawEllipseC(Color.Red, 3, Vec2.Zero, new Vec2(.1f, .1f));
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
 
@@ -130,7 +144,6 @@ namespace WireForm.Circuitry.Gates.Utilities
             {
                 WirePainter.DrawPin(painter, input.LocalPoint, input.Values);
             }
-            //painter.SetLocalMultiplier(new Vec2(1, 1));
         }
 
         protected abstract void compute();
@@ -140,10 +153,13 @@ namespace WireForm.Circuitry.Gates.Utilities
         }
 
         /// <summary>
-        /// Refreshes the absolute position of the pins in Inputs and Outputs relative to the changed position of the Gate
+        /// Refreshes the absolute position of the pins in Inputs and Outputs relative 
+        /// to the changed position of the Gate and refreshes the Gate's HitBox.
         /// </summary>
-        private void RefreshPins()
+        private void RefreshChildren()
         {
+            LocalHitbox = localHitbox;
+
             if (Inputs == null)
             {
                 //Debug.WriteLine("Pin Inputs null when refreshing");

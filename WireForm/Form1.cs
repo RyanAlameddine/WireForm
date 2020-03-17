@@ -4,12 +4,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using WireForm.Circuitry;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 
@@ -31,6 +32,9 @@ namespace WireForm
                 ControlStyles.UserPaint |
                 ControlStyles.DoubleBuffer,
                 true);
+            typeof(Panel).InvokeMember("DoubleBuffered",
+                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                null, drawingPanel, new object[] { true });
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -40,33 +44,35 @@ namespace WireForm
         }
 
         #region Input
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
+
+        private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2) e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
+            bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
 
             if (toRefresh)
             {
                 SettingsUpdate();
-                Refresh();
+                drawingPanel.Refresh();
             }
         }
 
-        private void Form1_MouseUp(object sender, MouseEventArgs e)
+        private void drawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
             inputHandler.MouseUp(stateStack, e.Button);
 
-            Refresh();
+            drawingPanel.Refresh();
         }
 
-        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        private void drawingPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseMove((Vec2) e.Location, stateStack.CurrentState);
+            bool toRefresh = inputHandler.MouseMove((Vec2)e.Location, stateStack.CurrentState);
 
             //value = e.Location.X;
             //Refresh();
 
-            if (toRefresh) Refresh();
+            if (toRefresh) drawingPanel.Refresh();
         }
+
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '+' || e.KeyChar == '=')
@@ -89,7 +95,7 @@ namespace WireForm
                 }
                 FlowPropagator.Propogate(stateStack.CurrentState, sources);
             }
-            Refresh();
+            drawingPanel.Refresh();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -108,7 +114,7 @@ namespace WireForm
 
             if (inputHandler.KeyDown(stateStack, e, this))
             {
-                Refresh();
+                drawingPanel.Refresh();
             }
         }
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -124,31 +130,35 @@ namespace WireForm
             {
                 GraphicsManager.SizeScale = 70;
             }
-            Refresh();
+            drawingPanel.Refresh();
         }
 
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
             inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
-            Refresh();
+            drawingPanel.Refresh();
         }
         #endregion Input
 
         #region Graphics
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+
+        }
+        private void drawingPanel_Paint(object sender, PaintEventArgs e)
+        {
             GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateStack.CurrentState);
         }
 
         private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
             gatePicBox.Refresh();
         }
 
+        Gate newGate = new BitSource(new Vec2(4, 2.5f), Direction.Right);
         private void GatePicBox_Paint(object sender, PaintEventArgs e)
         {
-            Gate newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
-            var temp = GraphicsManager.SizeScale;
             newGate.Draw(new Painter(e.Graphics, 15));
         }
         #endregion Graphics
@@ -202,7 +212,8 @@ namespace WireForm
             prevSelectedIndex = newVal;
             prop.Set(newVal, stateStack.CurrentState.Connections);
             stateStack.RegisterChange($"Changed {SelectionSettings.SelectedItem} to {newVal}");
-            Refresh();
+            drawingPanel.Refresh();
+            //Refresh();
         }
         #endregion CircuitProperties
 
@@ -216,7 +227,7 @@ namespace WireForm
             gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
 
             inputHandler.selections.Clear();
-            Refresh();
+            drawingPanel.Refresh();
         }
 
         private void newButton_Click(object sender, EventArgs e)
@@ -247,31 +258,31 @@ namespace WireForm
         private void undoButton_Click(object sender, EventArgs e)
         {
             inputHandler.Undo(stateStack);
-            Refresh();
+            drawingPanel.Refresh();
         }
 
         private void redoButton_Click(object sender, EventArgs e)
         {
             inputHandler.Redo(stateStack);
-            Refresh();
+            drawingPanel.Refresh();
         }
 
         private void copyButton_Click(object sender, EventArgs e)
         {
             inputHandler.Copy();
-            Refresh(); 
+            drawingPanel.Refresh(); 
         }
 
         private void cutButton_Click(object sender, EventArgs e)
         {
             inputHandler.Cut(stateStack);
-            Refresh();
+            drawingPanel.Refresh();
         }
 
         private void pasteButton_Click(object sender, EventArgs e)
         {
             inputHandler.Paste();
-            Refresh();
+            drawingPanel.Refresh();
         }
 
 

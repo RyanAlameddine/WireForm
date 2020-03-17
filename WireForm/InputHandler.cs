@@ -8,7 +8,7 @@ using WireForm.Circuitry;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
@@ -290,7 +290,7 @@ namespace WireForm
                             clickedcircuitObject = v;
                         }
 
-                        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, stateStack, form);
+                        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, stateStack, form.drawingPanel);
 
                         ///Add refreshing to the actions if necessary
                         gateMenu.Items.Clear();
@@ -668,7 +668,7 @@ namespace WireForm
             {
                 foreach (CircuitObject selection in selections)
                 {
-                    var actions = CircuitActionAttribute.GetActions(selection, stateStack, form);
+                    var actions = CircuitActionAttribute.GetActions(selection, stateStack, form.drawingPanel);
                     foreach (var action in actions)
                     {
                         if (action.attribute.Hotkey == e.KeyCode)

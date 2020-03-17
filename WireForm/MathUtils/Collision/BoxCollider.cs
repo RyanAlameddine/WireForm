@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates.Utilities;
+using WireForm.Circuitry.Utilities;
 
 namespace WireForm.MathUtils.Collision
 {
