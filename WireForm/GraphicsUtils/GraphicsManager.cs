@@ -85,7 +85,7 @@ namespace WireForm.GraphicsUtils
                     BoxCollider selectionBox = selection.HitBox;
 
                     painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
-                    wirePainter.DrawWireLine(painter, state, asWire, Color.FromArgb(255, 0, 128, 128)); 
+                    wirePainter.DrawWireLine(painter, state, asWire, new[] { Color.FromArgb(255, 0, 128, 128) }); 
                 }
             }
             

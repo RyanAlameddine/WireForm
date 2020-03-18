@@ -41,28 +41,27 @@ namespace WireForm.Circuitry.Data
             }
         }
 
-        public Color BitColor()
+        public Color[] BitColors()
         {
+            Color[] colors = new Color[Length];
+            for(int i = 0; i < colors.Length; i++)
+            {
+                colors[i] = GetBitColor(i);
+            }
+            return colors;
+        }
 
-            if (Length == 1)
+        public Color GetBitColor(int index)
+        {
+            return BitValues[index].Selected switch
             {
-                switch (BitValues[0].Selected)
-                {
-                    case BitValue.Error:
-                        return Color.DarkRed;
-                    case BitValue.Nothing:
-                        return Color.DimGray;
-                    case BitValue.One:
-                        return Color.Blue;
-                    case BitValue.Zero:
-                        return Color.DarkBlue;
-                }
-                throw new NullReferenceException();
-            }
-            else
-            {
-                return Color.Black;
-            }
+                BitValue.Error => Color.DarkRed,
+                BitValue.Nothing => Color.DimGray,
+                BitValue.One => Color.Blue,
+                BitValue.Zero => Color.DarkBlue,
+
+                _ => throw new Exception("BitValue undefined")
+            };
         }
 
         public static BitArray operator !(BitArray values)

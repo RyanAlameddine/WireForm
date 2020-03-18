@@ -59,7 +59,7 @@ namespace WireForm.Circuitry
                     pos = new Vec2(pos.X * multiplier.X, pos.Y);
                 }
 
-                startPoint = MathHelper.Plus(pos, Parent.StartPoint);
+                startPoint = pos + Parent.StartPoint;
 
             }
         }

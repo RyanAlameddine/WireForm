@@ -10,14 +10,15 @@ namespace WireForm.MathUtils
 {
     public static class MathHelper
     {
-        public static Vec2 Times(this Vec2 point, float x)
+
+        public static Vec2 Times(this Vec2 point, float a)
         {
-            return new Vec2((int) (point.X * x), (int) (point.Y * x));
+            return new Vec2((int) (point.X * a), (int) (point.Y * a));
         }
 
-        public static Vec2 Plus(this Vec2 point, int x)
+        public static Vec2 Plus(this Vec2 point, int a)
         {
-            return new Vec2(point.X + x, point.Y + x);
+            return new Vec2(point.X + a, point.Y + a);
         }
 
         public static Vec2 Plus(this Vec2 point1, Vec2 point2)
@@ -34,7 +35,6 @@ namespace WireForm.MathUtils
         {
             return new Vec2((float) Math.Round(point.X), (float) Math.Round(point.Y));
         }
-
 
         public static bool IsContainedIn(this Vec2 point, WireLine line)
         {
@@ -86,6 +86,15 @@ namespace WireForm.MathUtils
         public static int ManhattanDistance(Vec2 point1, Vec2 point2)
         {
             return (int) Math.Abs(point1.X - point2.X) + (int) Math.Abs(point1.Y - point2.Y);
+        }
+
+        /// <summary>
+        /// Linearly interpolate from Vec2 a to Vec2 b by amount t.
+        /// t=0 is a. t=1 is b. t=0.5f is a point halfway between the a and b.
+        /// </summary>
+        public static Vec2 Lerp(Vec2 a, Vec2 b, float t)
+        {
+            return new Vec2(a.X + (b.X - a.X) * t, a.Y + (b.Y - a.Y) * t);
         }
 
         public static int Ceiling(float value)
