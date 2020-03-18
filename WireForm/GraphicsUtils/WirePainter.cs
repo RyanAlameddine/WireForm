@@ -7,7 +7,7 @@ namespace WireForm.GraphicsUtils
 {
     public class WirePainter
     {
-
+        private const float wireSize = 1.4f;
         public void DrawWireLine(Painter painter, BoardState propogator, WireLine wireLine)
         {
             Color[] bitColors = wireLine.Data.BitColors();
@@ -18,26 +18,26 @@ namespace WireForm.GraphicsUtils
             Vec2 squareFixerSize;
             if (colors.Length != 1)
             {
-                painter.FillRectangleC(Color.Black, wireLine.StartPoint, new Vec2(.18f, .18f));
-                painter.FillRectangleC(Color.Black, wireLine.EndPoint  , new Vec2(.18f, .18f));
+                painter.FillRectangleC(Color.Black, wireLine.StartPoint, new Vec2(.18f * wireSize, .18f * wireSize));
+                painter.FillRectangleC(Color.Black, wireLine.EndPoint  , new Vec2(.18f * wireSize, .18f * wireSize));
 
 
-                painter.DrawLine(Color.Black, 10, wireLine.StartPoint, wireLine.EndPoint);
+                painter.DrawLine(Color.Black, (int) (10 * wireSize), wireLine.StartPoint, wireLine.EndPoint);
                 Vec2 previousStart = wireLine.StartPoint;
                 for (int i = 0; i < colors.Length; i++)
                 {
                     Vec2 endPoint = MathHelper.Lerp(wireLine.StartPoint, wireLine.EndPoint, (i + 1f) / colors.Length);
-                    painter.DrawLine(colors[i], 6, previousStart, endPoint);
+                    painter.DrawLine(colors[i], (int) (6 * wireSize), previousStart, endPoint);
                     previousStart = endPoint;
                 }
 
-                squareFixerSize = new Vec2(.14f, .14f);
+                squareFixerSize = new Vec2(.14f * wireSize, .14f * wireSize);
             }
             else
             {
-                painter.DrawLine(colors[0], 10, wireLine.StartPoint, wireLine.EndPoint);
+                painter.DrawLine(colors[0], (int) (10 * wireSize), wireLine.StartPoint, wireLine.EndPoint);
 
-                squareFixerSize = new Vec2(.16f, .16f);
+                squareFixerSize = new Vec2(.16f * wireSize, .16f * wireSize);
             }
 
             painter.FillRectangleC(colors[0]                , wireLine.StartPoint, squareFixerSize);

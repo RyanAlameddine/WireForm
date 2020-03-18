@@ -57,8 +57,8 @@ namespace WireForm.Circuitry.Data
             {
                 BitValue.Error => Color.DarkRed,
                 BitValue.Nothing => Color.DimGray,
-                BitValue.One => Color.Blue,
-                BitValue.Zero => Color.DarkBlue,
+                BitValue.One => Color.FromArgb(51, 171, 212),//Color.Blue,
+                BitValue.Zero => Color.FromArgb(26, 30, 153),//Color.DarkBlue,
 
                 _ => throw new Exception("BitValue undefined")
             };

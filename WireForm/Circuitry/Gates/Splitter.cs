@@ -90,15 +90,15 @@ namespace WireForm.Circuitry.Gates.Logic
 
             if (splitDirection == 0)
             {
-                painter.DrawStringC("I", Color.Black, new Vec2(0f, -.5f), 2);
-                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 2);
-                painter.DrawStringC("O", Color.Black, new Vec2(.8f, -.5f), 2);
+                painter.DrawStringC("I", Color.Black,  new Vec2(0f, -.5f), 3);
+                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 3);
+                painter.DrawStringC("O", Color.Black, new Vec2(.8f, -.5f), 3);
             }
             else
             {
-                painter.DrawStringC("O", Color.Black, new Vec2(0f, -.5f), 2);
-                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 2);
-                painter.DrawStringC("I", Color.Black, new Vec2(.8f, -.5f), 2);
+                painter.DrawStringC("O", Color.Black,  new Vec2(0f, -.5f), 3);
+                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 3);
+                painter.DrawStringC("I", Color.Black, new Vec2(.8f, -.5f), 3);
             }
         }
 
