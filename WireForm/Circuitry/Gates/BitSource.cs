@@ -22,7 +22,7 @@ namespace WireForm.Circuitry.Gates
             };
         }
 
-        protected override void draw(Painter painter)
+        protected override void draw(PainterScope painter)
         {
             painter.DrawRectangle(Color.Green, 10, new Vec2(-.4f, -.4f), new Vec2(.8f, .8f));
         }

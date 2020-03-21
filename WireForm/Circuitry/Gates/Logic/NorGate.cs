@@ -28,7 +28,7 @@ namespace WireForm.Circuitry.Gates.Logic
             Outputs[0].Values = !(Inputs[0].Values | Inputs[1].Values);
         }
 
-        protected override void draw(Painter painter)
+        protected override void draw(PainterScope painter)
         {
 
             painter.DrawArcC(Color.Black, 10, new Vec2(-3.5f - .75f, 0), new Vec2(5, 5), 321, 78);

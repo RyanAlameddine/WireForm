@@ -302,7 +302,7 @@
         private System.Windows.Forms.ComboBox toolBox;
         private System.Windows.Forms.ComboBox gateBox;
         private System.Windows.Forms.PictureBox gatePicBox;
-        private System.Windows.Forms.ContextMenuStrip GateMenu;
+        internal System.Windows.Forms.ContextMenuStrip GateMenu;
         private System.Windows.Forms.ListBox SelectionSettings;
         private System.Windows.Forms.ComboBox SelectionSettingValue;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;

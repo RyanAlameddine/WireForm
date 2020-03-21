@@ -84,8 +84,14 @@
     <Compile Include="Circuitry\Gates\Logic\AndGate.cs" />
     <Compile Include="Circuitry\Gates\Logic\NotGate.cs" />
     <Compile Include="GraphicsUtils\GraphicsManager.cs" />
-    <Compile Include="GraphicsUtils\Painter.cs" />
+    <Compile Include="GraphicsUtils\PainterScope.cs" />
     <Compile Include="InputHandler.cs" />
+    <Compile Include="Input\InputManager.cs" />
+    <Compile Include="Input\States\Selection\MovingSelectionState.cs" />
+    <Compile Include="Input\States\Selection\SelectingState.cs" />
+    <Compile Include="Input\States\Selection\SelectionStateBase.cs" />
+    <Compile Include="Input\States\Selection\SelectionToolState.cs" />
+    <Compile Include="Input\InputState.cs" />
     <Compile Include="MathUtils\Collision\BoxCollider.cs" />
     <Compile Include="MathUtils\MathHelper.cs" />
     <Compile Include="GraphicsUtils\WirePainter.cs" />
@@ -123,5 +129,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,6 +8,7 @@ using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
+using WireForm.Input;
 using WireForm.MathUtils;
 
 namespace WireForm
@@ -15,9 +16,7 @@ namespace WireForm
 
     public partial class Form1 : Form
     {
-        WirePainter painter = new WirePainter();
-        InputHandler inputHandler = new InputHandler();
-        StateStack stateStack = new StateStack();
+        public StateStack stateStack = new StateStack();
 
         //public static int value = 0;
         public Form1()
@@ -43,7 +42,9 @@ namespace WireForm
 
         private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
+            //bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
+
+            bool toRefresh = inputManager.MouseDown(stateStack.CurrentState, (Vec2) e.Location, e.Button);
 
             if (toRefresh)
             {
@@ -54,19 +55,22 @@ namespace WireForm
 
         private void drawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            inputHandler.MouseUp(stateStack, e.Button);
+            bool toRefresh = inputManager.MouseUp(stateStack.CurrentState, (Vec2)e.Location);
 
-            drawingPanel.Refresh();
+            if (toRefresh)
+            {
+                drawingPanel.Refresh();
+            }
         }
 
         private void drawingPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputHandler.MouseMove((Vec2)e.Location, stateStack.CurrentState);
+            bool toRefresh = inputManager.MouseMove(stateStack.CurrentState, (Vec2)e.Location);
 
-            //value = e.Location.X;
-            //Refresh();
-
-            if (toRefresh) drawingPanel.Refresh();
+            if (toRefresh)
+            {
+                drawingPanel.Refresh();
+            }
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -145,7 +149,7 @@ namespace WireForm
         private void drawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            GraphicsManager.Paint(e.Graphics, painter, new Vec2(Width, Height), inputHandler.intersectionBoxes, inputHandler.selections, inputHandler.mouseBox, inputHandler.resetBoxes, stateStack.CurrentState);
+            GraphicsManager.Paint(e.Graphics, new Vec2(Width, Height), stateStack.CurrentState);
         }
 
         private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -157,7 +161,7 @@ namespace WireForm
         Gate newGate = new BitSource(new Vec2(4, 2.5f), Direction.Right);
         private void GatePicBox_Paint(object sender, PaintEventArgs e)
         {
-            newGate.Draw(new Painter(e.Graphics, 15));
+            newGate.Draw(new PainterScope(e.Graphics, 15));
         }
         #endregion Graphics
 

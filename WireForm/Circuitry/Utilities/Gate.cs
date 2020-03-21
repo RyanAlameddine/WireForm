@@ -51,7 +51,7 @@ namespace WireForm.Circuitry.Utilities
                 localHitbox = value;
 
                 var mult = Direction.GetMultiplier();
-                Debug.WriteLine(Direction);
+                //Debug.WriteLine(Direction);
                 if (mult.Y == -1)
                 {
                     hitBox = new BoxCollider(value.Y, value.X, value.Height, value.Width * mult.X);
@@ -123,8 +123,8 @@ namespace WireForm.Circuitry.Utilities
             }
         }
 
-        protected abstract void draw(Painter painter);
-        public void Draw(Painter painter)
+        protected abstract void draw(PainterScope painter);
+        public void Draw(PainterScope painter)
         {
             painter.AppendOffset(StartPoint);
 

@@ -15,7 +15,7 @@ namespace WireForm.GraphicsUtils
     /// as well as the current zoom value.
     /// Painters also contain an internal offset value which will be applied to all position elements
     /// </summary>
-    public struct Painter
+    public struct PainterScope
     {
         private float zoom; // = 50f
 
@@ -28,7 +28,7 @@ namespace WireForm.GraphicsUtils
         /// <summary>
         /// Creates an empty painter
         /// </summary>
-        public Painter(Graphics gfx, float zoom)
+        public PainterScope(Graphics gfx, float zoom)
         {
             this.gfx = gfx;
             this.zoom = zoom;
@@ -74,7 +74,7 @@ namespace WireForm.GraphicsUtils
         }
 
         /// <summary>
-        /// Scales a point to match the Painter.zoom value
+        /// Scales a point to match the PainterScope.zoom value
         /// </summary>
         void ScalePoint(ref Vec2 position)
         {
@@ -83,7 +83,7 @@ namespace WireForm.GraphicsUtils
         }
 
         /// <summary>
-        /// Offsets and flips a point to match the Painter.offset value and Painter.multiplier
+        /// Offsets and flips a point to match the PainterScope.offset value and PainterScope.multiplier
         /// </summary>
         void OffsetPosition(ref Vec2 position, ref Vec2 size)
         {
@@ -98,7 +98,7 @@ namespace WireForm.GraphicsUtils
             position.Y = offset.Y + position.Y * mult.Y;
         }
         /// <summary>
-        /// Offsets and flips a point to match the Painter.offset value and Painter.multiplier where the bound is topLeft
+        /// Offsets and flips a point to match the PainterScope.offset value and PainterScope.multiplier where the bound is topLeft
         /// </summary>
         void OffsetPositionTL(ref Vec2 position, ref Vec2 size)
         {
@@ -125,7 +125,7 @@ namespace WireForm.GraphicsUtils
         }
 
         /// <summary>
-        /// Offsets an arc by the Painter.multiplier value
+        /// Offsets an arc by the PainterScope.multiplier value
         /// </summary>
         void MultiplyArc(ref float startAngle, ref float sweepAngle)
         {

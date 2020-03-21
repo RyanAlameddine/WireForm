@@ -74,7 +74,7 @@ namespace WireForm.Circuitry.Gates.Logic
             }
         }
 
-        protected override void draw(Painter painter)
+        protected override void draw(PainterScope painter)
         {
             painter.DrawLine(Color.DarkGray, 10, new Vec2(-1, -1), Vec2.Zero);
 

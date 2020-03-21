@@ -5,15 +5,15 @@ using WireForm.MathUtils;
 
 namespace WireForm.GraphicsUtils
 {
-    public class WirePainter
+    public static class WirePainter
     {
         private const float wireSize = 1.4f;
-        public void DrawWireLine(Painter painter, BoardState propogator, WireLine wireLine)
+        public static void DrawWireLine(PainterScope painter, BoardState propogator, WireLine wireLine)
         {
             Color[] bitColors = wireLine.Data.BitColors();
             DrawWireLine(painter, propogator, wireLine, bitColors);
         }
-        public void DrawWireLine(Painter painter, BoardState propogator, WireLine wireLine, Color[] colors)
+        public static void DrawWireLine(PainterScope painter, BoardState propogator, WireLine wireLine, Color[] colors)
         {
             Vec2 squareFixerSize;
             if (colors.Length != 1)
@@ -46,7 +46,7 @@ namespace WireForm.GraphicsUtils
             drawPoint(painter, propogator, wireLine.EndPoint, colors[colors.Length - 1]);
         }
 
-        private void drawPoint(Painter painter, BoardState propogator, Vec2 point, Color bitColor)
+        private static void drawPoint(PainterScope painter, BoardState propogator, Vec2 point, Color bitColor)
         {
 
             ///Draws point in the following cases:
@@ -76,8 +76,8 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        //TODO MAKE THIS WORK MAGICALLY
-        public static void DrawPin(Painter painter, Vec2 position, BitArray values)
+        //This might need to be improved a tad
+        public static void DrawPin(PainterScope painter, Vec2 position, BitArray values)
         {
             painter.FillEllipseC(values.BitColors()[0], position, new Vec2(.4f, .4f));
         }

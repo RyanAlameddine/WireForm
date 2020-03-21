@@ -31,11 +31,9 @@ namespace WireForm.GraphicsUtils
             }
         }
 
-        public static void Paint(Graphics gfx, WirePainter wirePainter, Vec2 viewportSize,
-            HashSet<BoxCollider> collisions, HashSet<CircuitObject> selections, BoxCollider mouseBox, HashSet<BoxCollider> resetBoxes,
-            BoardState state)
+        public static void Paint(Graphics gfx, Vec2 viewportSize, BoardState state)
         {
-            Painter painter = new Painter(gfx, scale);
+            PainterScope painter = new PainterScope(gfx, scale);
 
             int xSize = (int)(viewportSize.X / SizeScale);
             int step = MathHelper.Ceiling(xSize / 50f);
@@ -56,7 +54,7 @@ namespace WireForm.GraphicsUtils
 
             foreach (WireLine wireLine in state.wires)
             {
-                wirePainter.DrawWireLine(painter, state, wireLine);
+                WirePainter.DrawWireLine(painter, state, wireLine);
             }
 
             foreach (BoxCollider collision in collisions)
@@ -64,30 +62,30 @@ namespace WireForm.GraphicsUtils
                 painter.FillRectangle(Color.FromArgb(128, 255, 0, 0), collision.Position, collision.Bounds);
             }
 
-            foreach (CircuitObject selection in selections)
-            {
-                Gate asGate = selection as Gate;
-                WireLine asWire = selection as WireLine;
-                if(asGate != null) 
-                { 
-                    asGate.Draw(painter);
-                    BoxCollider selectionBox = selection.HitBox;
+            //foreach (CircuitObject selection in selections)
+            //{
+            //    Gate asGate = selection as Gate;
+            //    WireLine asWire = selection as WireLine;
+            //    if(asGate != null) 
+            //    { 
+            //        asGate.Draw(painter);
+            //        BoxCollider selectionBox = selection.HitBox;
 
-                    painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
+            //        painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
 
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selectionBox.Position                                                              , new Vec2(.4f, .4f));
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X + selectionBox.Width, selectionBox.Y                      ), new Vec2(.4f, .4f));
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X                     , selectionBox.Y + selectionBox.Height), new Vec2(.4f, .4f));
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X + selectionBox.Width, selectionBox.Y + selectionBox.Height), new Vec2(.4f, .4f));
-                }
-                if(asWire != null)
-                {
-                    BoxCollider selectionBox = selection.HitBox;
+            //        painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selectionBox.Position                                                              , new Vec2(.4f, .4f));
+            //        painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X + selectionBox.Width, selectionBox.Y                      ), new Vec2(.4f, .4f));
+            //        painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X                     , selectionBox.Y + selectionBox.Height), new Vec2(.4f, .4f));
+            //        painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X + selectionBox.Width, selectionBox.Y + selectionBox.Height), new Vec2(.4f, .4f));
+            //    }
+            //    if(asWire != null)
+            //    {
+            //        BoxCollider selectionBox = selection.HitBox;
 
-                    painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
-                    wirePainter.DrawWireLine(painter, state, asWire, new[] { Color.FromArgb(255, 0, 128, 128) }); 
-                }
-            }
+            //        painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
+            //        wirePainter.DrawWireLine(painter, state, asWire, new[] { Color.FromArgb(255, 0, 128, 128) }); 
+            //    }
+            //}
             
             //foreach(var key in state.Connections.Keys)
             //{
@@ -100,12 +98,12 @@ namespace WireForm.GraphicsUtils
             //    }
             //}
 
-            if (mouseBox != null)
-            {
-                BoxCollider newBox = mouseBox.GetNormalized();
-                painter.DrawRectangle(Color.FromArgb(255, 0, 0, 255), 3, newBox.Position, newBox.Bounds);
-                painter.FillRectangle(Color.FromArgb(64, 128, 128, 255), newBox.Position, newBox.Bounds);
-            }
+            //if (mouseBox != null)
+            //{
+            //    BoxCollider newBox = mouseBox.GetNormalized();
+            //    painter.DrawRectangle(Color.FromArgb(255, 0, 0, 255), 3, newBox.Position, newBox.Bounds);
+            //    painter.FillRectangle(Color.FromArgb(64, 128, 128, 255), newBox.Position, newBox.Bounds);
+            //}
 
             if (collisions.Count > 0)
             {
