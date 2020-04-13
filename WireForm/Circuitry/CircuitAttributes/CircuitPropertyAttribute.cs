@@ -43,7 +43,7 @@ namespace WireForm.Circuitry.CircuitAttributes
             }
         }
 
-        public static List<CircuitProp> GetProperties(CircuitObject target, StateStack stateStack, Form form)
+        public static List<CircuitProp> GetProperties(CircuitObject target)
         {
             var properties = target.GetType().GetProperties();
             var circuitProps = new List<CircuitProp>();
@@ -59,6 +59,10 @@ namespace WireForm.Circuitry.CircuitAttributes
         }
     }
 
+    /// <summary>
+    /// A processed representation of a property with a [CircuitProperty]
+    /// Includes the Get and Set methods
+    /// </summary>
     public readonly struct CircuitProp
     {
         private readonly PropertyInfo info;

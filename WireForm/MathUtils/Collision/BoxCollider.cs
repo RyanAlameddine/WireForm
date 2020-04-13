@@ -157,10 +157,10 @@ namespace WireForm.MathUtils.Collision
         /// </summary>
         /// <param name="intersectBoxes">The rectangles for the intersections</param>
         /// <returns>Did the BoxCollider intersect with anything</returns>
-        public bool GetIntersections(BoardState propogator, bool hitWires, out List<BoxCollider> intersectBoxes, out List<CircuitObject> intersectedcircuitObjects, bool only2D = true)
+        public bool GetIntersections(BoardState propogator, bool hitWires, out HashSet<BoxCollider> intersectBoxes, out HashSet<CircuitObject> intersectedcircuitObjects, bool only2D = true)
         {
-            intersectBoxes = new List<BoxCollider>();
-            intersectedcircuitObjects = new List<CircuitObject>();
+            intersectBoxes = new HashSet<BoxCollider>();
+            intersectedcircuitObjects = new HashSet<CircuitObject>();
 
             if (hitWires)
             {

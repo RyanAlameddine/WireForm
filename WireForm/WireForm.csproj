@@ -86,12 +86,13 @@
     <Compile Include="GraphicsUtils\GraphicsManager.cs" />
     <Compile Include="GraphicsUtils\PainterScope.cs" />
     <Compile Include="InputHandler.cs" />
+    <Compile Include="Input\InputControls.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\States\Selection\MovingSelectionState.cs" />
     <Compile Include="Input\States\Selection\SelectingState.cs" />
     <Compile Include="Input\States\Selection\SelectionStateBase.cs" />
     <Compile Include="Input\States\Selection\SelectionToolState.cs" />
-    <Compile Include="Input\InputState.cs" />
+    <Compile Include="Input\InputHandlerState.cs" />
     <Compile Include="MathUtils\Collision\BoxCollider.cs" />
     <Compile Include="MathUtils\MathHelper.cs" />
     <Compile Include="GraphicsUtils\WirePainter.cs" />

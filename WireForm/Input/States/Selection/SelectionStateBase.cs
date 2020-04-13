@@ -13,9 +13,17 @@ using WireForm.MathUtils.Collision;
 
 namespace WireForm.Input.States.Selection
 {
-    abstract class SelectionStateBase : InputState
+    /// <summary>
+    /// Base class for selection states which handles drawing of selections
+    /// </summary>
+    abstract class SelectionStateBase : InputHandlerState
     {
-        protected List<CircuitObject> selections;
+        protected readonly HashSet<CircuitObject> selections;
+
+        public SelectionStateBase(HashSet<CircuitObject> selections)
+        {
+            this.selections = selections;
+        }
 
         public override void Draw(BoardState currentState, PainterScope painter)
         {

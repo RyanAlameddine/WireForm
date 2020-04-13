@@ -14,6 +14,7 @@ namespace WireForm.GraphicsUtils
     /// Each painter contains a reference to the current Graphics class
     /// as well as the current zoom value.
     /// Painters also contain an internal offset value which will be applied to all position elements
+    /// and a multiplier which determines rotational values of drawn gates
     /// </summary>
     public struct PainterScope
     {
@@ -145,24 +146,6 @@ namespace WireForm.GraphicsUtils
                 startAngle = 90 - startAngle;
                 sweepAngle *= -1;
             }
-
-            //int switcher = 0;
-            //if (multiplier.X == -1)
-            //{
-            //    switcher = -180;
-            //    if (multiplier.Y == -1)
-            //    {
-            //        switcher = -90;
-            //    }
-            //}
-            //else if(multiplier.Y == -1)
-            //{
-            //    switcher = 90;
-            //}
-
-
-
-            //startAngle = startAngle + switcher; 
         }
 
         public void DrawLine(Color color, int penWidth, Vec2 startPoint, Vec2 endPoint)

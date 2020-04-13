@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WireForm.Circuitry;
+using WireForm.GraphicsUtils;
 
 namespace WireForm.MathUtils
 {
@@ -74,6 +75,9 @@ namespace WireForm.MathUtils
             return false;
         }
 
+        /// <summary>
+        /// Returns true if both wires have the same X coordinate (for horizontal lines) or Y coordinate (for vertical lines)
+        /// </summary>
         public static bool OnLine(WireLine line1, WireLine line2)
         {
             if((line1.IsHorizontal && line2.IsHorizontal && line1.StartPoint.Y == line2.StartPoint.Y) || (!line1.IsHorizontal && !line2.IsHorizontal && line1.StartPoint.X == line2.StartPoint.X))
@@ -105,6 +109,22 @@ namespace WireForm.MathUtils
                 return i + 1;
             }
             return i;
+        }
+
+        ///// <summary>
+        ///// Position of the mouse in local coordinates rounded to the nearest grid point
+        ///// </summary>
+        //public static Vec2 LocalGridPoint(Vec2 mousePosition)
+        //{
+        //    return ((mousePosition + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+        //}
+
+        /// <summary>
+        /// Transforms a Vec2 from viewport coordinates to relative to the local grid
+        /// </summary>
+        public static Vec2 ViewportToLocalPoint(Vec2 point)
+        {
+            return point * (1 / GraphicsManager.SizeScale);
         }
     }
 }

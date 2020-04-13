@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using WireForm.Circuitry;
@@ -16,7 +17,8 @@ namespace WireForm
 
     public partial class Form1 : Form
     {
-        public StateStack stateStack = new StateStack();
+        readonly StateStack stateStack = new StateStack();
+        readonly InputManager inputManager = new InputManager();
 
         //public static int value = 0;
         public Form1()
@@ -40,22 +42,59 @@ namespace WireForm
 
         #region Input
 
+        void MakeControls(out InputControls inputControls)
+        {
+            inputControls = new InputControls(stateStack.CurrentState, (Vec2)drawingPanel.PointToClient(Cursor.Position), drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+        }
+
         private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
             //bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
 
-            bool toRefresh = inputManager.MouseDown(stateStack.CurrentState, (Vec2) e.Location, e.Button);
+            bool toRefresh = false;
+
+            MakeControls(out var inputControls);
+            if      (e.Button == MouseButtons.Left ) toRefresh = inputManager.MouseLeftDown (inputControls, (Vec2)e.Location);
+            else if (e.Button == MouseButtons.Right) toRefresh = inputManager.MouseRightDown(inputControls, (Vec2)e.Location);
+
+
+            if (inputControls.circuitActionsOutput != null)
+            {
+                GateMenu.Items.Clear();
+                for (int i = 0; i < inputControls.circuitActionsOutput.Count; i++)
+                {
+                    GateMenu.Items.Add(inputControls.circuitActionsOutput[i].attribute.Name, null, inputControls.circuitActionsOutput[i].action);
+                }
+
+                GateMenu.Show(this, (Point)MathHelper.ViewportToLocalPoint((Vec2)e.Location));
+            }
+
+            if(inputControls.circuitPropertiesOutput != null)
+            {
+                SelectionSettings.Items.Clear();
+                SelectionSettingValue.Items.Clear();
+                circuitProperties = inputControls.circuitPropertiesOutput;
+                    //circuitProperties.AddRange(CircuitPropertyAttribute.GetProperties(obj, stateStack, this
+                foreach (var property in circuitProperties)
+                {
+                    SelectionSettings.Items.Add(property.Name);
+                }
+            }
 
             if (toRefresh)
             {
-                SettingsUpdate();
+                //SettingsUpdate();
                 drawingPanel.Refresh();
             }
         }
 
         private void drawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputManager.MouseUp(stateStack.CurrentState, (Vec2)e.Location);
+            bool toRefresh = false;
+
+            MakeControls(out var inputControls);
+            if      (e.Button == MouseButtons.Left ) toRefresh = inputManager.MouseLeftUp (inputControls, (Vec2)e.Location);
+            else if (e.Button == MouseButtons.Right) toRefresh = inputManager.MouseRightUp(inputControls, (Vec2)e.Location);
 
             if (toRefresh)
             {
@@ -65,7 +104,8 @@ namespace WireForm
 
         private void drawingPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            bool toRefresh = inputManager.MouseMove(stateStack.CurrentState, (Vec2)e.Location);
+            MakeControls(out var inputControls);
+            bool toRefresh = inputManager.MouseMove(inputControls, (Vec2)e.Location);
 
             if (toRefresh)
             {
@@ -112,7 +152,9 @@ namespace WireForm
                 toolBox_SelectedIndexChanged(this, new EventArgs());
             }
 
-            if (inputHandler.KeyDown(stateStack, e, this))
+            MakeControls(out var inputControls);
+
+            if (inputManager.KeyDown(inputControls, e))
             {
                 drawingPanel.Refresh();
             }
@@ -135,8 +177,9 @@ namespace WireForm
 
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
-            inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
-            drawingPanel.Refresh();
+            MakeControls(out var inputControls);
+            //inputManager.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
+            drawingPanel_MouseDown(sender, e);
         }
         #endregion Input
 
@@ -145,11 +188,10 @@ namespace WireForm
         {
 
         }
-        int i = 0;
         private void drawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            GraphicsManager.Paint(e.Graphics, new Vec2(Width, Height), stateStack.CurrentState);
+            GraphicsManager.Paint(e.Graphics, new Vec2(Width, Height), stateStack.CurrentState, inputManager);
         }
 
         private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -166,27 +208,7 @@ namespace WireForm
         #endregion Graphics
 
         #region CircuitProperties
-        HashSet<CircuitObject> oldSelections;
         List<CircuitProp> circuitProperties;
-        private void SettingsUpdate()
-        {
-            if (!inputHandler.selections.Equals(oldSelections))
-            {
-                oldSelections = new HashSet<CircuitObject>(inputHandler.selections);
-                SelectionSettings.Items.Clear();
-                SelectionSettingValue.Items.Clear();
-
-                circuitProperties = new List<CircuitProp>();
-                foreach (CircuitObject obj in oldSelections)
-                {
-                    circuitProperties.AddRange(CircuitPropertyAttribute.GetProperties(obj, stateStack, this));
-                }
-                foreach (var property in circuitProperties)
-                {
-                    SelectionSettings.Items.Add(property.Name);
-                }
-            }
-        }
 
         int prevSelectedIndex = 0;
         private void SelectionSettings_SelectedIndexChanged(object sender, EventArgs e)
@@ -222,14 +244,14 @@ namespace WireForm
         #region FormInput
         private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            inputHandler.tool = (Tool) toolBox.SelectedIndex;
-            gateBox.Visible                = inputHandler.tool == Tool.GateController;
-            SelectionSettings.Visible      = inputHandler.tool == Tool.GateController;
-            SelectionSettingValue.Visible  = inputHandler.tool == Tool.GateController;
-            gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
+            //inputHandler.tool = (Tool) toolBox.SelectedIndex;
+            //gateBox.Visible                = inputHandler.tool == Tool.GateController;
+            //SelectionSettings.Visible      = inputHandler.tool == Tool.GateController;
+            //SelectionSettingValue.Visible  = inputHandler.tool == Tool.GateController;
+            //gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
 
-            inputHandler.selections.Clear();
-            drawingPanel.Refresh();
+            //inputHandler.selections.Clear();
+            //drawingPanel.Refresh();
         }
 
         private void newButton_Click(object sender, EventArgs e)
@@ -259,35 +281,33 @@ namespace WireForm
 
         private void undoButton_Click(object sender, EventArgs e)
         {
-            inputHandler.Undo(stateStack);
-            drawingPanel.Refresh();
+            MakeControls(out var inputControls);
+            if (inputManager.Undo(inputControls)) drawingPanel.Refresh();
         }
 
         private void redoButton_Click(object sender, EventArgs e)
         {
-            inputHandler.Redo(stateStack);
-            drawingPanel.Refresh();
+            MakeControls(out var inputControls);
+            if (inputManager.Redo(inputControls)) drawingPanel.Refresh();
         }
 
         private void copyButton_Click(object sender, EventArgs e)
         {
-            inputHandler.Copy();
-            drawingPanel.Refresh(); 
+            MakeControls(out var inputControls);
+            if (inputManager.Copy(inputControls)) drawingPanel.Refresh();
         }
 
         private void cutButton_Click(object sender, EventArgs e)
         {
-            inputHandler.Cut(stateStack);
-            drawingPanel.Refresh();
+            MakeControls(out var inputControls);
+            if (inputManager.Cut(inputControls)) drawingPanel.Refresh();
         }
 
         private void pasteButton_Click(object sender, EventArgs e)
-        {
-            inputHandler.Paste();
-            drawingPanel.Refresh();
+        { 
+            MakeControls(out var inputControls);
+            if (inputManager.Paste(inputControls)) drawingPanel.Refresh();        
         }
-
-
         #endregion
     }
 }

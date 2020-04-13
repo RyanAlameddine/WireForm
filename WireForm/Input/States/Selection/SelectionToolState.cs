@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using WireForm.Circuitry;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
+using WireForm.Circuitry.Utilities;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
 
@@ -11,30 +13,17 @@ namespace WireForm.Input.States.Selection
 {
     /// <summary>
     /// The state where the Selection tool is selected and the program sits idle.
-    /// Also controls the right click action which loads CircuitActions.
+    /// Also inputControls the right click action which loads CircuitActions.
     /// </summary>
     class SelectionToolState : SelectionStateBase
     {
-        public SelectionToolState(List<CircuitObject> selections)
-        {
-            this.selections = selections;
-        }
+        public SelectionToolState(HashSet<CircuitObject> selections) : base(selections) { }
 
-        public override InputReturns MouseDown(Form1 form, Vec2 mousePosition, MouseButtons mouseButton)
+        public override InputReturns MouseLeftDown(InputControls inputControls)
         {
-            return mouseButton switch
-            {
-                MouseButtons.Left  => LeftClick(form, mousePosition),
-                MouseButtons.Right => RightClick(form, mousePosition),
-                _                  => (false, this),
-            };
-        }
-
-        private InputReturns LeftClick(Form1 form, Vec2 mousePosition)
-        {
-            Vec2 mousePointGridded = LocalGridPoint(mousePosition);
+            Vec2 localPoint = MathHelper.ViewportToLocalPoint(inputControls.MousePosition);
             //true if you click a gate
-            if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(form.stateStack.CurrentState, true, out _, out var circuitObjects, false))
+            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(inputControls.State, true, out _, out var circuitObjects, false))
             {
                 CircuitObject clickedcircuitObject = null;
                 //Select first selected object
@@ -42,17 +31,27 @@ namespace WireForm.Input.States.Selection
                 {
                     clickedcircuitObject = v;
                 }
-                return (true, new MovingSelectionState(mousePosition, selections));
+                if (!selections.Contains(clickedcircuitObject))
+                {
+                    selections.Clear();
+                    selections.Add(clickedcircuitObject);
+                }
+
+                //Load circuitProperties
+                inputControls.circuitPropertiesOutput = CircuitPropertyAttribute.GetProperties(clickedcircuitObject);
+
+                return (true, new MovingSelectionState(inputControls.MousePosition, selections, clickedcircuitObject, inputControls.State, true));
             }
-            return (true, new SelectingState(mousePosition, selections));
+            //Begin dragging selection box
+            selections.Clear();
+            return (true, new SelectingState(localPoint, selections));
         }
 
-
-        private InputReturns RightClick(Form1 form, Vec2 mousePosition)
+        public override InputReturns MouseRightDown(InputControls inputControls)
         {
-            Vec2 mousePointGridded = LocalGridPoint(mousePosition);
+            Vec2 localPoint = MathHelper.ViewportToLocalPoint(inputControls.MousePosition);
             //true if you click a gate
-            if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(form.stateStack.CurrentState, true, out _, out var circuitObjects, false))
+            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(inputControls.State, true, out _, out var circuitObjects, false))
             {
                 CircuitObject clickedcircuitObject = null;
                 //Select first selected object
@@ -61,20 +60,74 @@ namespace WireForm.Input.States.Selection
                     clickedcircuitObject = v;
                 }
 
-                var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, form.stateStack, form.drawingPanel);
-
-                ///Add refreshing to the actions if necessary
-                form.GateMenu.Items.Clear();
-                for (int i = 0; i < actions.Count; i++)
-                {
-                    form.GateMenu.Items.Add(actions[i].attribute.Name, null, actions[i].action);
-                }
-
-                form.GateMenu.Show(form, (Point)mousePosition);
+                var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, inputControls.State, inputControls.RegisterChange, inputControls.Refresh);
+                inputControls.circuitActionsOutput = new List<(CircuitActionAttribute attribute, EventHandler action)>();
+                inputControls.circuitActionsOutput.AddRange(actions);
 
                 return (true, this);
             }
             return (false, this);
+        }
+
+
+        public override InputReturns Undo(InputControls inputControls)
+        {
+            selections.Clear();
+            inputControls.Reverse();
+
+            return (true, this);
+        }
+
+        public override InputReturns Redo(InputControls inputControls)
+        {
+            selections.Clear();
+            inputControls.Advance();
+
+            return (true, this);
+        }
+
+        public override InputReturns Copy(InputControls inputControls, HashSet<CircuitObject> clipBoard)
+        {
+            clipBoard.Clear();
+            clipBoard.UnionWith(selections);
+
+            return (false, this);
+        }
+
+        public override InputReturns Cut(InputControls inputControls, HashSet<CircuitObject> clipBoard)
+        {
+            clipBoard.Clear();
+            foreach (var selection in selections)
+            {
+                selection.Delete(inputControls.State);
+                clipBoard.Add(selection.Copy());
+            }
+            selections.Clear();
+
+            return (clipBoard.Count > 0, this);
+        }
+
+        public override InputReturns Paste(InputControls inputControls, HashSet<CircuitObject> clipBoard)
+        {
+            selections.Clear();
+
+            CircuitObject currentObject = null;
+            foreach (var obj in clipBoard)
+            {
+                var newObj = obj.Copy();
+                selections.Add(newObj);
+
+                currentObject = newObj;
+            }
+
+            if(selections.Count > 0)
+            {
+                var newState = new MovingSelectionState(inputControls.MousePosition, selections, currentObject, inputControls.State, false);
+                return (true, newState);
+            }
+
+            return (false, this);
+
         }
     }
 }

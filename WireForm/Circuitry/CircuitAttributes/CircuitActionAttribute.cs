@@ -36,7 +36,7 @@ namespace WireForm.Circuitry.CircuitAttributes
         }
 
         /// <param name="target">The target object on which the actions are found and run</param>
-        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(CircuitObject target, StateStack stateStack, Panel panel)
+        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(CircuitObject target, BoardState state, Action<string> registerChange, Action refresh)
         {
             var actions = new List<(CircuitActionAttribute attribute, EventHandler action)>();
 
@@ -58,8 +58,8 @@ namespace WireForm.Circuitry.CircuitAttributes
                     {
                         action = (sender, args) =>
                         {
-                            method.Invoke(target, new object[] { stateStack.CurrentState });
-                            stateStack.RegisterChange(message);
+                            method.Invoke(target, new object[] { state });
+                            registerChange(message);
                         };
                     }
                     else
@@ -67,12 +67,12 @@ namespace WireForm.Circuitry.CircuitAttributes
                         action = (sender, args) =>
                         {
                             method.Invoke(target, null);
-                            stateStack.RegisterChange(message);
+                            registerChange(message);
                         };
                     }
                     action += (sender, args) =>
                     {
-                        panel.Refresh();
+                        refresh();
                     };
                     actions.Add((attribute, action));
                 }
@@ -101,9 +101,9 @@ namespace WireForm.Circuitry.CircuitAttributes
                     int value = prop.Get();
                     if(++value > prop.valueRange.max)
                         value = prop.valueRange.min;
-                    prop.Set(value, stateStack.CurrentState.Connections);
-                    stateStack.RegisterChange(message);
-                    panel.Refresh();
+                    prop.Set(value, state.Connections);
+                    registerChange(message);
+                    refresh();
                 };
 
                 actions.Add((actionAttribute, action));
@@ -111,6 +111,7 @@ namespace WireForm.Circuitry.CircuitAttributes
 
             return actions;
         }
+
         private static string GetMessage(CircuitActionAttribute attribute, CircuitObject target)
         {
             //Append necessary info to the message

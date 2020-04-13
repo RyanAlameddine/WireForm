@@ -100,11 +100,11 @@ namespace WireForm.Circuitry.Utilities
             RefreshChildren();
             foreach (GatePin input in Inputs)
             {
-                connections.AddConnection(input);
+                connections.Attach(input);
             }
             foreach (GatePin output in Outputs)
             {
-                connections.AddConnection(output);
+                connections.Attach(output);
             }
         }
 
@@ -115,11 +115,11 @@ namespace WireForm.Circuitry.Utilities
         {
             foreach (GatePin input in Inputs)
             {
-                connections.RemoveConnection(input);
+                connections.Detatch(input);
             }
             foreach (GatePin output in Outputs)
             {
-                connections.RemoveConnection(output);
+                connections.Detatch(output);
             }
         }
 

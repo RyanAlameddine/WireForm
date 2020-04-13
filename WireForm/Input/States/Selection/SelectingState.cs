@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -19,11 +20,11 @@ namespace WireForm.Input.States.Selection
     /// </summary>
     class SelectingState : SelectionStateBase
     {
-        private readonly List<CircuitObject> additiveSelections;
+        private readonly HashSet<CircuitObject> additiveSelections;
 
         private readonly BoxCollider mouseBox;
 
-        public SelectingState(Vec2 position, List<CircuitObject> additiveSelections)
+        public SelectingState(Vec2 position, HashSet<CircuitObject> additiveSelections) : base(additiveSelections)
         {
             this.additiveSelections = additiveSelections;
             mouseBox = new BoxCollider(position.X, position.Y, 0, 0);
@@ -38,20 +39,23 @@ namespace WireForm.Input.States.Selection
             base.Draw(state, painter);
         }
 
-        public override InputReturns MouseMove(Form1 form, Vec2 mousePosition)
+        public override InputReturns MouseMove(InputControls inputControls)
         {
-            Vec2 localPoint = LocalPoint(mousePosition);
+            Vec2 localPoint = MathHelper.ViewportToLocalPoint(inputControls.MousePosition);
+            //Debug.WriteLine($"{mouseBox.Position}, {localPoint}");
 
             mouseBox.Width = localPoint.X - mouseBox.X;
             mouseBox.Height = localPoint.Y - mouseBox.Y;
 
-            mouseBox.GetNormalized().GetIntersections(form.stateStack.CurrentState, true, out _, out var selections);
-            selections.AddRange(additiveSelections);
-            this.selections = selections;
+
+            mouseBox.GetNormalized().GetIntersections(inputControls.State, true, out _, out var newSelections);
+            selections.Clear();
+            selections.UnionWith(newSelections);
+            selections.UnionWith(additiveSelections);
             return (true, this);
         }
 
-        public override InputReturns MouseUp(Form1 form, Vec2 mousePosition)
+        public override InputReturns MouseLeftUp(InputControls inputControls)
         {
             return (true, new SelectionToolState(selections));
         }

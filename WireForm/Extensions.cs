@@ -8,35 +8,64 @@ namespace WireForm
 {
     public static class Extensions
     {
-        public static void AddConnection(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject circuitObject)
+        /// <summary>
+        /// Adds BoardObject to connections
+        /// </summary>
+        public static void Attach(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject boardObject)
         {
-            if (!connections.ContainsKey(circuitObject.StartPoint))
+            if (!connections.ContainsKey(boardObject.StartPoint))
             {
-                connections.Add(circuitObject.StartPoint, new List<BoardObject>());
+                connections.Add(boardObject.StartPoint, new List<BoardObject>());
             }
-            connections[circuitObject.StartPoint].Add(circuitObject);
+            connections[boardObject.StartPoint].Add(boardObject);
         }
 
-        public static void RemoveConnection(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject circuitObject)
+        /// <summary>
+        /// Removes BoardObject from connections
+        /// </summary>
+        public static void Detatch(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject boardObject)
         {
-            connections[circuitObject.StartPoint].Remove(circuitObject);
+            connections[boardObject.StartPoint].Remove(boardObject);
+        }
+
+        /// <summary>
+        /// Removes all mentioned CircuitObjects from state.wires and state.gate
+        /// and removes connections for all of those circuitObjects
+        /// </summary>
+        public static void DetatchAll(this BoardState state, HashSet<CircuitObject> circuitObjects)
+        {
+            foreach (CircuitObject circuitObject in circuitObjects)
+            {
+                if (circuitObject is WireLine wire) state.wires.Remove(wire);
+                else if (circuitObject is Gate gate) state.gates.Remove(gate);
+                circuitObject.RemoveConnections(state.Connections);
+            }
+        }
+
+        /// <summary>
+        /// Puts all mentioned CircuitObjects from state.wires and state.gate
+        /// and adds connections for all of those circuitObjects
+        /// </summary>
+        public static void AttachAll(this BoardState state, HashSet<CircuitObject> circuitObjects)
+        {
+            foreach (CircuitObject circuitObject in circuitObjects)
+            {
+                if (circuitObject is WireLine wire) state.wires.Add(wire);
+                else if (circuitObject is Gate gate) state.gates.Add(gate);
+                circuitObject.AddConnections(state.Connections);
+            }
         }
 
         public static Vec2 GetMultiplier(this Direction direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case Direction.Up:
-                    return new Vec2(-1, -1);
-                case Direction.Down:
-                    return new Vec2(1, -1);
-                case Direction.Left:
-                    return new Vec2(-1, 1);
-                case Direction.Right:
-                    return new Vec2(1, 1);
-                default:
-                    throw new System.Exception("How did I get here");
-            }
+                Direction.Up => new Vec2(-1, -1),
+                Direction.Down => new Vec2(1, -1),
+                Direction.Left => new Vec2(-1, 1),
+                Direction.Right => new Vec2(1, 1),
+                _ => throw new System.Exception("How did I get here"),
+            };
         }
 
         public static void SetDepth(this GatePin[] pins, int bitDepth)
