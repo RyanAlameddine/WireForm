@@ -19,6 +19,12 @@ namespace WireForm.Input.States.Selection
     {
         public SelectionToolState(HashSet<CircuitObject> selections) : base(selections) { }
 
+        public override InputReturns KeyDown(InputControls inputControls)
+        {
+            bool toRefresh = ExecuteHotkey(inputControls);
+            return (toRefresh, this);
+        }
+
         public override InputReturns MouseLeftDown(InputControls inputControls)
         {
             Vec2 localPoint = MathHelper.ViewportToLocalPoint(inputControls.MousePosition);

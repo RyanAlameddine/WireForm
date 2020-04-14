@@ -22,118 +22,118 @@
 //    public class InputHandler
 //    {
 
-//        /// <summary>
-//        /// Tool selected (linked to dropdown on Form1)
-//        /// </summary>
-//        public Tool tool { get; set; }
+//        ///// <summary>
+//        ///// Tool selected (linked to dropdown on Form1)
+//        ///// </summary>
+//        //public Tool tool { get; set; }
 
-//        /// <summary>
-//        /// Mouse selection box
-//        /// </summary>
-//        public BoxCollider mouseBox = null;
+//        ///// <summary>
+//        ///// Mouse selection box
+//        ///// </summary>
+//        //public BoxCollider mouseBox = null;
 
-//        /// <summary>
-//        /// Intersections of the currentGate with gates already on the board
-//        /// </summary>
-//        public HashSet<BoxCollider> intersectionBoxes = new HashSet<BoxCollider>();
+//        ///// <summary>
+//        ///// Intersections of the currentGate with gates already on the board
+//        ///// </summary>
+//        //public HashSet<BoxCollider> intersectionBoxes = new HashSet<BoxCollider>();
 
 
-//        /// <summary>
-//        /// Gates/Wires which have been selected
-//        /// </summary>
-//        public HashSet<CircuitObject> selections = new HashSet<CircuitObject>();
-//        /// <summary>
-//        /// Gates/Wires which have already been selected, but are being added onto by a mouse drag with additiveSelection=true
-//        /// </summary>
-//        private HashSet<CircuitObject> preSelections = new HashSet<CircuitObject>();
-//        public HashSet<CircuitObject> clipBoard = new HashSet<CircuitObject>();
+//        ///// <summary>
+//        ///// Gates/Wires which have been selected
+//        ///// </summary>
+//        //public HashSet<CircuitObject> selections = new HashSet<CircuitObject>();
+//        ///// <summary>
+//        ///// Gates/Wires which have already been selected, but are being added onto by a mouse drag with additiveSelection=true
+//        ///// </summary>
+//        //private HashSet<CircuitObject> preSelections = new HashSet<CircuitObject>();
+//        //public HashSet<CircuitObject> clipBoard = new HashSet<CircuitObject>();
 
-//        /// <summary>
-//        /// Gates/Wires held by mouse
-//        /// </summary>
-//        private CircuitObject currentcircuitObject;
-//        /// <summary>
-//        /// Original position of current gate held by mouse. Will be null if the gate was just created
-//        /// </summary>
-//        private Vec2? OGPosition = null;
-//        /// <summary>
-//        /// Original hitbox of the selected gates being moved by the mouse. Only used for drawing
-//        /// </summary>
-//        public HashSet<BoxCollider> resetBoxes = new HashSet<BoxCollider>();
-//        /// <summary>
-//        /// true if the gate/wire has been moved during this drag session
-//        /// </summary>
-//        private bool circuitObjectMoved = false;
-//        private bool additiveSelection = false;
+//        ///// <summary>
+//        ///// Gates/Wires held by mouse
+//        ///// </summary>
+//        //private CircuitObject currentcircuitObject;
+//        ///// <summary>
+//        ///// Original position of current gate held by mouse. Will be null if the gate was just created
+//        ///// </summary>
+//        //private Vec2? OGPosition = null;
+//        ///// <summary>
+//        ///// Original hitbox of the selected gates being moved by the mouse. Only used for drawing
+//        ///// </summary>
+//        //public HashSet<BoxCollider> resetBoxes = new HashSet<BoxCollider>();
+//        ///// <summary>
+//        ///// true if the gate/wire has been moved during this drag session
+//        ///// </summary>
+//        //private bool circuitObjectMoved = false;
+//        //private bool additiveSelection = false;
 
-//        bool mouseLeftDown = false;
-//        bool mouseRightDown = false;
+//        //bool mouseLeftDown = false;
+//        //bool mouseRightDown = false;
 
-//        WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
-//        WireLine secondaryCurrentLine;
+//        //WireLine currentLine = new WireLine(new Vec2(), new Vec2(), false);
+//        //WireLine secondaryCurrentLine;
 
-//        public InputHandler()
-//        {
-//            tool = Tool.WirePainter;
-//        }
+//        //public InputHandler()
+//        //{
+//        //    tool = Tool.WirePainter;
+//        //}
 
-//        public void Undo(StateStack stateStack)
-//        {
-//            stateStack.Reverse();
-//            selections.Clear();
-//        }
+//        //public void Undo(StateStack stateStack)
+//        //{
+//        //    stateStack.Reverse();
+//        //    selections.Clear();
+//        //}
 
-//        public void Redo(StateStack stateStack)
-//        {
-//            stateStack.Advance();
-//            selections.Clear();
-//        }
+//        //public void Redo(StateStack stateStack)
+//        //{
+//        //    stateStack.Advance();
+//        //    selections.Clear();
+//        //}
 
-//        public void Copy()
-//        {
-//            clipBoard.Clear();
-//            foreach (var selection in selections)
-//            {
-//                clipBoard.Add(selection.Copy());
-//            }
-//        }
+//        //public void Copy()
+//        //{
+//        //    clipBoard.Clear();
+//        //    foreach (var selection in selections)
+//        //    {
+//        //        clipBoard.Add(selection.Copy());
+//        //    }
+//        //}
 
-//        public void Cut(StateStack stateStack)
-//        {
-//            clipBoard.Clear();
-//            foreach (var selection in selections)
-//            {
-//                selection.Delete(stateStack.CurrentState);
-//                clipBoard.Add(selection.Copy());
-//            }
-//            selections.Clear();
-//            OGPosition = null;
-//        }
+//        //public void Cut(StateStack stateStack)
+//        //{
+//        //    clipBoard.Clear();
+//        //    foreach (var selection in selections)
+//        //    {
+//        //        selection.Delete(stateStack.CurrentState);
+//        //        clipBoard.Add(selection.Copy());
+//        //    }
+//        //    selections.Clear();
+//        //    OGPosition = null;
+//        //}
 
-//        public void Paste()
-//        {
-//            mouseLeftDown = true;
-//            selections.Clear();
-//            OGPosition = null;
-//            HashSet<CircuitObject> newClipBoard = new HashSet<CircuitObject>();
+//        //public void Paste()
+//        //{
+//        //    mouseLeftDown = true;
+//        //    selections.Clear();
+//        //    OGPosition = null;
+//        //    HashSet<CircuitObject> newClipBoard = new HashSet<CircuitObject>();
 
-//            foreach (var obj in clipBoard)
-//            {
-//                newClipBoard.Add(obj.Copy());
-//                selections.Add(obj);
+//        //    foreach (var obj in clipBoard)
+//        //    {
+//        //        newClipBoard.Add(obj.Copy());
+//        //        selections.Add(obj);
 
-//                obj.StartPoint += new Vec2(1, 1);
+//        //        obj.StartPoint += new Vec2(1, 1);
 
-//                WireLine asWire = obj as WireLine;
-//                if (asWire != null)
-//                {
-//                    asWire.EndPoint += new Vec2(1, 1);
-//                }
+//        //        WireLine asWire = obj as WireLine;
+//        //        if (asWire != null)
+//        //        {
+//        //            asWire.EndPoint += new Vec2(1, 1);
+//        //        }
 
-//                currentcircuitObject = obj;
-//            }
-//            clipBoard = newClipBoard;
-//        }
+//        //        currentcircuitObject = obj;
+//        //    }
+//        //    clipBoard = newClipBoard;
+//        //}
 
 
 //        /// <param name="position">Mouse location</param>
@@ -209,101 +209,101 @@
 //                        }
 //                    }
 //                    //Select circuitObject with mouse
-//                    else if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var gates, false))
-//                    {
-//                        //In the undefined case of multiple hits from a single mouse click, only deal with the first
-//                        CircuitObject clickedcircuitObject = null;
-//                        foreach (var v in gates)
-//                        {
-//                            clickedcircuitObject = v;
-//                        }
+//                    //else if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var gates, false))
+//                    //{
+//                    //    //In the undefined case of multiple hits from a single mouse click, only deal with the first
+//                    //    CircuitObject clickedcircuitObject = null;
+//                    //    foreach (var v in gates)
+//                    //    {
+//                    //        clickedcircuitObject = v;
+//                    //    }
 
-//                        OGPosition = clickedcircuitObject.StartPoint;
-//                        resetBoxes.Clear();
+//                    //    OGPosition = clickedcircuitObject.StartPoint;
+//                    //    resetBoxes.Clear();
 
-//                        if (!selections.Contains(clickedcircuitObject))
-//                        {
-//                            if (!additiveSelection)
-//                            {
-//                                selections.Clear();
-//                            }
-//                            selections.Add(clickedcircuitObject);
-//                        }
-//                        else if (additiveSelection)
-//                        {
-//                            selections.Remove(clickedcircuitObject);
-//                            clickedcircuitObject = null;
-//                            currentcircuitObject = null;
-//                            OGPosition = null;
-//                            return true;
-//                        }
+//                    //    if (!selections.Contains(clickedcircuitObject))
+//                    //    {
+//                    //        if (!additiveSelection)
+//                    //        {
+//                    //            selections.Clear();
+//                    //        }
+//                    //        selections.Add(clickedcircuitObject);
+//                    //    }
+//                    //    else if (additiveSelection)
+//                    //    {
+//                    //        selections.Remove(clickedcircuitObject);
+//                    //        clickedcircuitObject = null;
+//                    //        currentcircuitObject = null;
+//                    //        OGPosition = null;
+//                    //        return true;
+//                    //    }
 
-//                        foreach (var selection in selections)
-//                        {
-//                            resetBoxes.Add(selection.HitBox.Copy());
+//                    //    foreach (var selection in selections)
+//                    //    {
+//                    //        resetBoxes.Add(selection.HitBox.Copy());
 
-//                            Gate asGate = selection as Gate;
-//                            WireLine asWire = selection as WireLine;
-//                            if (asGate != null)
-//                            {
-//                                state.gates.Remove(asGate);
-//                            }
-//                            else if (asWire != null)
-//                            {
-//                                state.wires.Remove(asWire);
-//                            }
-//                            else
-//                            {
-//                                throw new NotImplementedException();
-//                            }
-//                            selection.RemoveConnections(state.Connections);
-//                        }
+//                    //        Gate asGate = selection as Gate;
+//                    //        WireLine asWire = selection as WireLine;
+//                    //        if (asGate != null)
+//                    //        {
+//                    //            state.gates.Remove(asGate);
+//                    //        }
+//                    //        else if (asWire != null)
+//                    //        {
+//                    //            state.wires.Remove(asWire);
+//                    //        }
+//                    //        else
+//                    //        {
+//                    //            throw new NotImplementedException();
+//                    //        }
+//                    //        selection.RemoveConnections(state.Connections);
+//                    //    }
 
-//                        currentcircuitObject = clickedcircuitObject;
-//                    }
-//                    //Draw selection box
-//                    else
-//                    {
-//                        if (!additiveSelection)
-//                        {
-//                            selections.Clear();
-//                            OGPosition = null;
-//                        }
-//                        else
-//                        {
-//                            preSelections.Clear();
-//                            foreach (var selection in selections)
-//                            {
-//                                preSelections.Add(selection);
-//                            }
-//                        }
-//                        mouseBox = new BoxCollider(mousePointAbsolute.X, mousePointAbsolute.Y, 0, 0);
-//                    }
-//                    toRefresh = true;
-//                }
-//                else if (mouseRightDown)
-//                {
-//                    if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var circuitObjects, false))
-//                    {
-//                        CircuitObject clickedcircuitObject = null;
-//                        foreach (var v in circuitObjects)
-//                        {
-//                            clickedcircuitObject = v;
-//                        }
+//                    //    currentcircuitObject = clickedcircuitObject;
+//                    //}
+//                    ////Draw selection box
+//                    //else
+//                    //{
+//                    //    if (!additiveSelection)
+//                    //    {
+//                    //        selections.Clear();
+//                    //        OGPosition = null;
+//                    //    }
+//                    //    else
+//                    //    {
+//                    //        preSelections.Clear();
+//                    //        foreach (var selection in selections)
+//                    //        {
+//                    //            preSelections.Add(selection);
+//                    //        }
+//                    //    }
+//                    //    mouseBox = new BoxCollider(mousePointAbsolute.X, mousePointAbsolute.Y, 0, 0);
+//                    //}
+//                    //toRefresh = true;
+//                //}
+//                //else if (mouseRightDown)
+//                //{
+//                //    if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var circuitObjects, false))
+//                //    {
+//                //        CircuitObject clickedcircuitObject = null;
+//                //        foreach (var v in circuitObjects)
+//                //        {
+//                //            clickedcircuitObject = v;
+//                //        }
 
-//                        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, stateStack, form.drawingPanel);
+//                //        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, stateStack, form.drawingPanel);
 
-//                        ///Add refreshing to the actions if necessary
-//                        gateMenu.Items.Clear();
-//                        for (int i = 0; i < actions.Count; i++)
-//                        {
-//                            gateMenu.Items.Add(actions[i].attribute.Name, null, actions[i].action);
-//                        }
+//                //        ///Add refreshing to the actions if necessary
+//                //        gateMenu.Items.Clear();
+//                //        for (int i = 0; i < actions.Count; i++)
+//                //        {
+//                //            gateMenu.Items.Add(actions[i].attribute.Name, null, actions[i].action);
+//                //        }
 
-//                        gateMenu.Show(form, (Point)position);
-//                        toRefresh = true;
-//                    }
-//                }
+//                //        gateMenu.Show(form, (Point)position);
+//                //        toRefresh = true;
+//                //    }
+//                //}
 //            }
 
 //            return toRefresh;
@@ -341,159 +341,159 @@
 //                }
 //            }
 //            //Tool - GateController
-//            else if (tool == Tool.GateController)
-//            {
-//                mouseRightDown = false;
-//                if (button == MouseButtons.Left)
-//                {
-//                    mouseLeftDown = false;
-//                    //Controlling mouse box
-//                    if (currentcircuitObject == null)
-//                    {
-//                        mouseBox = null;
-//                    }
-//                    //Controlling gates
-//                    else
-//                    {
-//                        bool intersected = false;
-//                        foreach (var selection in selections)
-//                        {
-//                            if (!(selection is WireLine) && selection.HitBox.GetIntersections(state, false, out _, out _))
-//                            {
-//                                intersected = true;
-//                            }
-//                        }
+//            //else if (tool == Tool.GateController)
+//            //{
+//            //    mouseRightDown = false;
+//            //    if (button == MouseButtons.Left)
+//            //    {
+//            //        mouseLeftDown = false;
+//            //        //Controlling mouse box
+//            //        if (currentcircuitObject == null)
+//            //        {
+//            //            mouseBox = null;
+//            //        }
+//            //        //Controlling gates
+//            //        else
+//            //        {
+//            //            bool intersected = false;
+//            //            foreach (var selection in selections)
+//            //            {
+//            //                if (!(selection is WireLine) && selection.HitBox.GetIntersections(state, false, out _, out _))
+//            //                {
+//            //                    intersected = true;
+//            //                }
+//            //            }
 
 
-//                        //Gate location invalid
-//                        if (intersected)
-//                        {
-//                            //New gate - delete gate
-//                            if (OGPosition == null)
-//                            {
-//                                selections.Clear();
-//                                intersectionBoxes.Clear();
-//                                currentcircuitObject = null;
-//                            }
-//                            else
-//                            {
-//                                //Pre-existing gate - move gates back to how they were originally
+//            //            //Gate location invalid
+//            //            if (intersected)
+//            //            {
+//            //                //New gate - delete gate
+//            //                if (OGPosition == null)
+//            //                {
+//            //                    selections.Clear();
+//            //                    intersectionBoxes.Clear();
+//            //                    currentcircuitObject = null;
+//            //                }
+//            //                else
+//            //                {
+//            //                    //Pre-existing gate - move gates back to how they were originally
 
-//                                Vec2 toOffset = currentcircuitObject.StartPoint - (Vec2)OGPosition;
+//            //                    Vec2 toOffset = currentcircuitObject.StartPoint - (Vec2)OGPosition;
 
-//                                foreach (var selection in selections)
-//                                {
-//                                    selection.StartPoint -= toOffset;
+//            //                    foreach (var selection in selections)
+//            //                    {
+//            //                        selection.StartPoint -= toOffset;
 
-//                                    Gate asGate = selection as Gate;
-//                                    WireLine asWire = selection as WireLine;
-//                                    if (asGate != null)
-//                                    {
-//                                        state.gates.Add(asGate);
-//                                    }
-//                                    else if (asWire != null)
-//                                    {
-//                                        asWire.EndPoint -= toOffset;
-//                                        state.wires.Add(asWire);
-//                                    }
-//                                    else
-//                                    {
-//                                        throw new NotImplementedException();
-//                                    }
-//                                    selection.AddConnections(state.Connections);
+//            //                        Gate asGate = selection as Gate;
+//            //                        WireLine asWire = selection as WireLine;
+//            //                        if (asGate != null)
+//            //                        {
+//            //                            state.gates.Add(asGate);
+//            //                        }
+//            //                        else if (asWire != null)
+//            //                        {
+//            //                            asWire.EndPoint -= toOffset;
+//            //                            state.wires.Add(asWire);
+//            //                        }
+//            //                        else
+//            //                        {
+//            //                            throw new NotImplementedException();
+//            //                        }
+//            //                        selection.AddConnections(state.Connections);
 
-//                                }
+//            //                    }
 
-//                                OGPosition = null;
-//                                resetBoxes.Clear();
+//            //                    OGPosition = null;
+//            //                    resetBoxes.Clear();
 
-//                                intersectionBoxes.Clear();
-//                                currentcircuitObject = null;
-//                            }
-//                        }
-//                        //Gate location valid
-//                        else
-//                        {
-//                            List<WireLine> toRemove = new List<WireLine>();
-//                            List<WireLine> toAdd = new List<WireLine>();
-//                            foreach (var selection in selections)
-//                            {
-//                                Gate asGate = selection as Gate;
-//                                WireLine asWire = selection as WireLine;
-//                                if (asGate != null)
-//                                {
-//                                    state.gates.Add(asGate);
-//                                    selection.AddConnections(state.Connections);
-//                                }
-//                                else if (asWire != null)
-//                                {
-//                                    List<WireLine> newWires = asWire.Validate(state.wires, state.Connections);
-//                                    toAdd.AddRange(newWires);
-//                                    toRemove.Add(asWire);
+//            //                    intersectionBoxes.Clear();
+//            //                    currentcircuitObject = null;
+//            //                }
+//            //            }
+//            //            //Gate location valid
+//            //            else
+//            //            {
+//            //                List<WireLine> toRemove = new List<WireLine>();
+//            //                List<WireLine> toAdd = new List<WireLine>();
+//            //                foreach (var selection in selections)
+//            //                {
+//            //                    Gate asGate = selection as Gate;
+//            //                    WireLine asWire = selection as WireLine;
+//            //                    if (asGate != null)
+//            //                    {
+//            //                        state.gates.Add(asGate);
+//            //                        selection.AddConnections(state.Connections);
+//            //                    }
+//            //                    else if (asWire != null)
+//            //                    {
+//            //                        List<WireLine> newWires = asWire.Validate(state.wires, state.Connections);
+//            //                        toAdd.AddRange(newWires);
+//            //                        toRemove.Add(asWire);
 
-//                                }
-//                                else
-//                                {
-//                                    throw new NotImplementedException();
-//                                }
+//            //                    }
+//            //                    else
+//            //                    {
+//            //                        throw new NotImplementedException();
+//            //                    }
 
-//                            }
+//            //                }
 
-//                            foreach (var x in toRemove)
-//                            {
-//                                selections.Remove(x);
-//                            }
-//                            foreach (var x in toAdd)
-//                            {
-//                                selections.Add(x);
-//                            }
+//            //                foreach (var x in toRemove)
+//            //                {
+//            //                    selections.Remove(x);
+//            //                }
+//            //                foreach (var x in toAdd)
+//            //                {
+//            //                    selections.Add(x);
+//            //                }
 
 
-//                            if (!circuitObjectMoved && !additiveSelection)
-//                            {
-//                                selections.Clear();
-//                                selections.Add(currentcircuitObject);
-//                            }
+//            //                if (!circuitObjectMoved && !additiveSelection)
+//            //                {
+//            //                    selections.Clear();
+//            //                    selections.Add(currentcircuitObject);
+//            //                }
 
-//                            if (circuitObjectMoved)
-//                            {
-//                                string message;
+//            //                if (circuitObjectMoved)
+//            //                {
+//            //                    string message;
 
-//                                if (OGPosition == null)
-//                                {
-//                                    message = $"Created Gate at {selections.First().StartPoint}";
-//                                }
-//                                else
-//                                {
-//                                    if (selections.Count == 0)
-//                                    {
-//                                        message = "Moved selections";
-//                                    }
-//                                    else if (selections.First() is WireLine)
-//                                    {
-//                                        message = $"Moved wire from {OGPosition}-{selections.First().StartPoint}";
-//                                    }
-//                                    else if (selections.First() is Gate)
-//                                    {
-//                                        message = $"Moved gate from {OGPosition}-{selections.First().StartPoint}";
-//                                    }
-//                                    else
-//                                    {
-//                                        message = "Moved selections";
-//                                    }
-//                                }
-//                                stateStack.RegisterChange(message);
-//                            }
+//            //                    if (OGPosition == null)
+//            //                    {
+//            //                        message = $"Created Gate at {selections.First().StartPoint}";
+//            //                    }
+//            //                    else
+//            //                    {
+//            //                        if (selections.Count == 0)
+//            //                        {
+//            //                            message = "Moved selections";
+//            //                        }
+//            //                        else if (selections.First() is WireLine)
+//            //                        {
+//            //                            message = $"Moved wire from {OGPosition}-{selections.First().StartPoint}";
+//            //                        }
+//            //                        else if (selections.First() is Gate)
+//            //                        {
+//            //                            message = $"Moved gate from {OGPosition}-{selections.First().StartPoint}";
+//            //                        }
+//            //                        else
+//            //                        {
+//            //                            message = "Moved selections";
+//            //                        }
+//            //                    }
+//            //                    stateStack.RegisterChange(message);
+//            //                }
 
-//                            OGPosition = null;
-//                            resetBoxes.Clear();
+//            //                OGPosition = null;
+//            //                resetBoxes.Clear();
 
-//                            currentcircuitObject = null;
-//                        }
-//                        circuitObjectMoved = false;
-//                    }
-//                }
-//            }
+//            //                currentcircuitObject = null;
+//            //            }
+//            //            circuitObjectMoved = false;
+//            //        }
+//            //    }
+//            //}
 //        }
 
 //        public bool MouseMove(Vec2 position, BoardState propogator)

@@ -120,7 +120,6 @@ namespace WireForm.Input.States.Selection
                         wire.EndPoint += totalOffset;
                     }
                 }
-                inputControls.State.AttachAll(selections);
             }
 
 

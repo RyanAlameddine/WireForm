@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WireForm.Circuitry;
 using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
@@ -53,6 +54,28 @@ namespace WireForm.Input.States.Selection
                 circuitProperties = new List<CircuitProp>();
             }
             return circuitProperties;
+        }
+
+        /// <summary>
+        /// Propogates hotkey through all selected CircuitObjects
+        /// </summary>
+        protected bool ExecuteHotkey(InputControls inputControls)
+        {
+            bool toRefresh = false;
+            foreach(var selection in selections)
+            {
+                var actions = CircuitActionAttribute.GetActions(selection, inputControls.State, inputControls.RegisterChange, inputControls.Refresh);
+                foreach (var action in actions)
+                {
+                    if (action.attribute.Hotkey == inputControls.Key)
+                    {
+                        toRefresh = true;
+                        action.action.Invoke(this, null);
+
+                    }
+                }
+            }
+            return toRefresh;
         }
 
         public override void Draw(BoardState currentState, PainterScope painter)
