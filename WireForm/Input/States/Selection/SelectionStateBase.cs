@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WireForm.Circuitry;
+using WireForm.Circuitry.CircuitAttributes;
 using WireForm.Circuitry.Data;
 using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
@@ -15,14 +17,42 @@ namespace WireForm.Input.States.Selection
 {
     /// <summary>
     /// Base class for selection states which handles drawing of selections
+    /// Handles the loading of Circuit Properties
     /// </summary>
-    abstract class SelectionStateBase : InputHandlerState
+    abstract class SelectionStateBase : InputState
     {
         protected readonly HashSet<CircuitObject> selections;
 
         public SelectionStateBase(HashSet<CircuitObject> selections)
         {
             this.selections = selections;
+        }
+
+        /// <summary>
+        /// The last object whose [CircuitProperties] were loaded
+        /// </summary>
+        protected CircuitObject previousObject = null;
+        /// <summary>
+        /// Returns a list of updated CircuitProperties to be passed into the InputControls
+        /// </summary>
+        protected List<CircuitProp> GetUpdatedCircuitProperties()
+        {
+            List<CircuitProp> circuitProperties = null;
+            var gates = selections.Where((x) => x is Gate);
+            if(gates.Count() == 1)
+            {
+                var newObject = gates.First();
+                if(newObject != previousObject)
+                {
+                    circuitProperties = CircuitPropertyAttribute.GetProperties(newObject);
+                    previousObject = newObject;
+                }
+            }else if(previousObject != null)
+            {
+                previousObject = null;
+                circuitProperties = new List<CircuitProp>();
+            }
+            return circuitProperties;
         }
 
         public override void Draw(BoardState currentState, PainterScope painter)

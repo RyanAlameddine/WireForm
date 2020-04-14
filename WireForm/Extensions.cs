@@ -48,12 +48,25 @@ namespace WireForm
         /// </summary>
         public static void AttachAll(this BoardState state, HashSet<CircuitObject> circuitObjects)
         {
+            List<WireLine> toAdd = new List<WireLine>();
+            List<WireLine> toRemove = new List<WireLine>();
             foreach (CircuitObject circuitObject in circuitObjects)
             {
-                if (circuitObject is WireLine wire) state.wires.Add(wire);
-                else if (circuitObject is Gate gate) state.gates.Add(gate);
-                circuitObject.AddConnections(state.Connections);
+                if (circuitObject is WireLine wire)
+                {
+                    List<WireLine> newWires = wire.Validate(state.wires, state.Connections);
+                    toAdd.AddRange(newWires);
+                    toRemove.Add(wire);
+                }
+                else if (circuitObject is Gate gate)
+                {
+                    state.gates.Add(gate);
+                    circuitObject.AddConnections(state.Connections);
+                }
             }
+
+            foreach (var wire in toRemove) circuitObjects.Remove(wire);
+            foreach (var wire in toAdd   ) circuitObjects.Add   (wire);
         }
 
         public static Vec2 GetMultiplier(this Direction direction)

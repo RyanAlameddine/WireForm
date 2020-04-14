@@ -42,75 +42,71 @@ namespace WireForm
 
         #region Input
 
-        void MakeControls(out InputControls inputControls)
+        bool runInputEvent(Func<InputControls, bool> inputEvent)
         {
-            inputControls = new InputControls(stateStack.CurrentState, (Vec2)drawingPanel.PointToClient(Cursor.Position), drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            return runInputEvent(inputEvent, Keys.None, ModifierKeys);
         }
-
-        private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
+        bool runInputEvent(Func<InputControls, bool> inputEvent, Keys key, Keys modifiers)
         {
-            //bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
+            var mousePoint = (Vec2)drawingPanel.PointToClient(Cursor.Position);
+            var inputControls = new InputControls(stateStack.CurrentState, mousePoint, key, modifiers, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            bool toRefresh = inputEvent(inputControls);
 
-            bool toRefresh = false;
-
-            MakeControls(out var inputControls);
-            if      (e.Button == MouseButtons.Left ) toRefresh = inputManager.MouseLeftDown (inputControls, (Vec2)e.Location);
-            else if (e.Button == MouseButtons.Right) toRefresh = inputManager.MouseRightDown(inputControls, (Vec2)e.Location);
-
-
-            if (inputControls.circuitActionsOutput != null)
+            //Process [CircuitActions]
+            if (inputControls.CircuitActionsOutput != null)
             {
                 GateMenu.Items.Clear();
-                for (int i = 0; i < inputControls.circuitActionsOutput.Count; i++)
+                for (int i = 0; i < inputControls.CircuitActionsOutput.Count; i++)
                 {
-                    GateMenu.Items.Add(inputControls.circuitActionsOutput[i].attribute.Name, null, inputControls.circuitActionsOutput[i].action);
+                    GateMenu.Items.Add(inputControls.CircuitActionsOutput[i].attribute.Name, null, inputControls.CircuitActionsOutput[i].action);
                 }
 
-                GateMenu.Show(this, (Point)MathHelper.ViewportToLocalPoint((Vec2)e.Location));
+                GateMenu.Show(this, (Point)mousePoint);
             }
 
-            if(inputControls.circuitPropertiesOutput != null)
+            //Process [CircuitProperties]
+            if (inputControls.CircuitPropertiesOutput != null)
             {
                 SelectionSettings.Items.Clear();
                 SelectionSettingValue.Items.Clear();
-                circuitProperties = inputControls.circuitPropertiesOutput;
-                    //circuitProperties.AddRange(CircuitPropertyAttribute.GetProperties(obj, stateStack, this
+                circuitProperties = inputControls.CircuitPropertiesOutput;
+                //circuitProperties.AddRange(CircuitPropertyAttribute.GetProperties(obj, stateStack, this
                 foreach (var property in circuitProperties)
                 {
                     SelectionSettings.Items.Add(property.Name);
                 }
             }
 
-            if (toRefresh)
-            {
-                //SettingsUpdate();
-                drawingPanel.Refresh();
-            }
+            if (toRefresh) drawingPanel.Refresh();
+
+            return toRefresh;
+        }
+
+        private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            //bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
+
+            //bool toRefresh = false;
+
+            if      (e.Button == MouseButtons.Left ) runInputEvent(inputManager.MouseLeftDown);
+            else if (e.Button == MouseButtons.Right) runInputEvent(inputManager.MouseRightDown);
+
+            //if (toRefresh)
+            //{
+            //    //SettingsUpdate();
+            //    drawingPanel.Refresh();
+            //}
         }
 
         private void drawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            bool toRefresh = false;
-
-            MakeControls(out var inputControls);
-            if      (e.Button == MouseButtons.Left ) toRefresh = inputManager.MouseLeftUp (inputControls, (Vec2)e.Location);
-            else if (e.Button == MouseButtons.Right) toRefresh = inputManager.MouseRightUp(inputControls, (Vec2)e.Location);
-
-            if (toRefresh)
-            {
-                drawingPanel.Refresh();
-            }
+            if      (e.Button == MouseButtons.Left ) runInputEvent(inputManager.MouseLeftUp);
+            else if (e.Button == MouseButtons.Right) runInputEvent(inputManager.MouseRightUp);
         }
 
         private void drawingPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            MakeControls(out var inputControls);
-            bool toRefresh = inputManager.MouseMove(inputControls, (Vec2)e.Location);
-
-            if (toRefresh)
-            {
-                drawingPanel.Refresh();
-            }
+            runInputEvent(inputManager.MouseMove);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -118,10 +114,12 @@ namespace WireForm
             if (e.KeyChar == '+' || e.KeyChar == '=')
             {
                 GraphicsManager.SizeScale *= 1.1f;
+                drawingPanel.Refresh();
             }
             if (e.KeyChar == '-')
             {
                 GraphicsManager.SizeScale *= .9f;
+                drawingPanel.Refresh();
             }
             if (e.KeyChar == 'p')
             {
@@ -134,8 +132,8 @@ namespace WireForm
                     }
                 }
                 FlowPropagator.Propogate(stateStack.CurrentState, sources);
+                drawingPanel.Refresh();
             }
-            drawingPanel.Refresh();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -152,12 +150,13 @@ namespace WireForm
                 toolBox_SelectedIndexChanged(this, new EventArgs());
             }
 
-            MakeControls(out var inputControls);
+            runInputEvent(inputManager.KeyDown, e.KeyCode, e.Modifiers);
+            //MakeControls(out var inputControls);
 
-            if (inputManager.KeyDown(inputControls, e))
-            {
-                drawingPanel.Refresh();
-            }
+            //if (inputManager.KeyDown(inputControls, e.KeyCode, e.Modifiers))
+            //{
+            //    drawingPanel.Refresh();
+            //}
         }
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
@@ -177,7 +176,7 @@ namespace WireForm
 
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
-            MakeControls(out var inputControls);
+            //MakeControls(out var inputControls);
             //inputManager.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
             drawingPanel_MouseDown(sender, e);
         }
@@ -281,32 +280,27 @@ namespace WireForm
 
         private void undoButton_Click(object sender, EventArgs e)
         {
-            MakeControls(out var inputControls);
-            if (inputManager.Undo(inputControls)) drawingPanel.Refresh();
+            runInputEvent(inputManager.Undo);
         }
 
         private void redoButton_Click(object sender, EventArgs e)
         {
-            MakeControls(out var inputControls);
-            if (inputManager.Redo(inputControls)) drawingPanel.Refresh();
+            runInputEvent(inputManager.Redo);
         }
 
         private void copyButton_Click(object sender, EventArgs e)
         {
-            MakeControls(out var inputControls);
-            if (inputManager.Copy(inputControls)) drawingPanel.Refresh();
+            runInputEvent(inputManager.Copy);
         }
 
         private void cutButton_Click(object sender, EventArgs e)
         {
-            MakeControls(out var inputControls);
-            if (inputManager.Cut(inputControls)) drawingPanel.Refresh();
+            runInputEvent(inputManager.Cut);
         }
 
         private void pasteButton_Click(object sender, EventArgs e)
-        { 
-            MakeControls(out var inputControls);
-            if (inputManager.Paste(inputControls)) drawingPanel.Refresh();        
+        {
+            runInputEvent(inputManager.Paste);
         }
         #endregion
     }

@@ -100,18 +100,18 @@ namespace WireForm.Input.States.Selection
 
         public override InputReturns MouseLeftUp(InputControls inputControls)
         {
-            if(intersectedBoxes.Count > 0)
+            if (intersectedBoxes.Count > 0)
             {
                 //If the objects were just created and are placed in an invalid state, they have nowhere
                 //to be reset to and thus should be destroyed
-                if (!resettable) 
+                if (!resettable)
                 {
                     selections.Clear();
                     return (true, new SelectionToolState(selections));
                 }
 
                 Vec2 totalOffset = startPosition - selectedObject.StartPoint;
-                foreach(var selection in selections)
+                foreach (var selection in selections)
                 {
                     selection.StartPoint += totalOffset;
 
@@ -120,10 +120,19 @@ namespace WireForm.Input.States.Selection
                         wire.EndPoint += totalOffset;
                     }
                 }
+                inputControls.State.AttachAll(selections);
             }
 
+
             inputControls.State.AttachAll(selections);
+
+            //If it has moved, register movement
+            if (intersectedBoxes.Count == 0 && startPosition != selectedObject.StartPoint)
+                inputControls.RegisterChange(resettable ? "Moved selections" : "Placed selections");
+
             return (true, new SelectionToolState(selections));
         }
+
+
     }
 }

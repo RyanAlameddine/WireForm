@@ -81,7 +81,7 @@
             this.gateBox.Name = "gateBox";
             this.gateBox.Size = new System.Drawing.Size(180, 28);
             this.gateBox.TabIndex = 1;
-            this.gateBox.Visible = false;
+            this.gateBox.Visible = true;
             this.gateBox.SelectedIndexChanged += new System.EventHandler(this.GateBox_SelectedIndexChanged);
             // 
             // gatePicBox
@@ -111,7 +111,7 @@
             this.SelectionSettings.Name = "SelectionSettings";
             this.SelectionSettings.Size = new System.Drawing.Size(180, 344);
             this.SelectionSettings.TabIndex = 6;
-            this.SelectionSettings.Visible = false;
+            this.SelectionSettings.Visible = true;
             this.SelectionSettings.SelectedIndexChanged += new System.EventHandler(this.SelectionSettings_SelectedIndexChanged);
             // 
             // SelectionSettingValue
@@ -124,7 +124,7 @@
             this.SelectionSettingValue.Name = "SelectionSettingValue";
             this.SelectionSettingValue.Size = new System.Drawing.Size(180, 28);
             this.SelectionSettingValue.TabIndex = 7;
-            this.SelectionSettingValue.Visible = false;
+            this.SelectionSettingValue.Visible = true;
             this.SelectionSettingValue.SelectedIndexChanged += new System.EventHandler(this.SelectionSettingsValue_SelectedIndexChanged);
             // 
             // menuStrip

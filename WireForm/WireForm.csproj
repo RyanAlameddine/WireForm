@@ -92,7 +92,7 @@
     <Compile Include="Input\States\Selection\SelectingState.cs" />
     <Compile Include="Input\States\Selection\SelectionStateBase.cs" />
     <Compile Include="Input\States\Selection\SelectionToolState.cs" />
-    <Compile Include="Input\InputHandlerState.cs" />
+    <Compile Include="Input\InputState.cs" />
     <Compile Include="MathUtils\Collision\BoxCollider.cs" />
     <Compile Include="MathUtils\MathHelper.cs" />
     <Compile Include="GraphicsUtils\WirePainter.cs" />

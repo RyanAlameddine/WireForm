@@ -13,7 +13,7 @@ namespace WireForm.Input.States.Selection
 {
     /// <summary>
     /// The state where the Selection tool is selected and the program sits idle.
-    /// Also inputControls the right click action which loads CircuitActions.
+    /// Also controls the right click action which loads CircuitActions.
     /// </summary>
     class SelectionToolState : SelectionStateBase
     {
@@ -37,8 +37,7 @@ namespace WireForm.Input.States.Selection
                     selections.Add(clickedcircuitObject);
                 }
 
-                //Load circuitProperties
-                inputControls.circuitPropertiesOutput = CircuitPropertyAttribute.GetProperties(clickedcircuitObject);
+                inputControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
 
                 return (true, new MovingSelectionState(inputControls.MousePosition, selections, clickedcircuitObject, inputControls.State, true));
             }
@@ -61,9 +60,8 @@ namespace WireForm.Input.States.Selection
                 }
 
                 var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, inputControls.State, inputControls.RegisterChange, inputControls.Refresh);
-                inputControls.circuitActionsOutput = new List<(CircuitActionAttribute attribute, EventHandler action)>();
-                inputControls.circuitActionsOutput.AddRange(actions);
-
+                inputControls.CircuitActionsOutput = new List<(CircuitActionAttribute attribute, EventHandler action)>();
+                inputControls.CircuitActionsOutput.AddRange(actions);
                 return (true, this);
             }
             return (false, this);
@@ -104,7 +102,13 @@ namespace WireForm.Input.States.Selection
             }
             selections.Clear();
 
-            return (clipBoard.Count > 0, this);
+            if(clipBoard.Count == 0)
+            {
+                return (false, this);
+            }
+
+            inputControls.RegisterChange("Cut selections");
+            return (true, this);
         }
 
         public override InputReturns Paste(InputControls inputControls, HashSet<CircuitObject> clipBoard)

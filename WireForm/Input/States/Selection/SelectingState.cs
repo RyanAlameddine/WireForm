@@ -52,6 +52,7 @@ namespace WireForm.Input.States.Selection
             selections.Clear();
             selections.UnionWith(newSelections);
             selections.UnionWith(additiveSelections);
+            inputControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
             return (true, this);
         }
 

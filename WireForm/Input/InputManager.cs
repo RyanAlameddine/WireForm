@@ -14,7 +14,7 @@ namespace WireForm.Input
 {
     internal sealed class InputManager
     {
-        InputHandlerState state;
+        InputState state;
         readonly HashSet<CircuitObject> clipBoard;
 
         public InputManager()
@@ -31,62 +31,28 @@ namespace WireForm.Input
         private bool Eval(InputReturns returnValue)
         {
             if (state != returnValue.state) 
-                Debug.WriteLine($"{state}->{returnValue.state}");
+                Debug.WriteLine($"{state.GetType().Name}->{returnValue.state.GetType().Name}");
             state = returnValue.state;
             return returnValue.toRefresh;
         }
 
-        public bool KeyDown(InputControls inputControls, KeyEventArgs keyEventArgs)
-        {
-            return Eval(state.KeyDown(inputControls, keyEventArgs));
-        }
+        //Mouse Operations
+        public bool MouseLeftDown (InputControls inputControls) => Eval(state.MouseLeftDown (inputControls));
+        public bool MouseRightDown(InputControls inputControls) => Eval(state.MouseRightDown(inputControls));
+        public bool MouseMove     (InputControls inputControls) => Eval(state.MouseMove     (inputControls));
+        public bool MouseLeftUp   (InputControls inputControls) => Eval(state.MouseLeftUp   (inputControls));
+        public bool MouseRightUp  (InputControls inputControls) => Eval(state.MouseRightUp  (inputControls));
 
-        public bool MouseLeftDown(InputControls inputControls, Vec2 mousePosition)
-        {
-            return Eval(state.MouseLeftDown(inputControls));
-        }
-        public bool MouseRightDown(InputControls inputControls, Vec2 mousePosition)
-        {
-            return Eval(state.MouseRightDown(inputControls));
-        }
+        //Keyboard Operations
+        public bool KeyDown(InputControls inputControls) => Eval(state.KeyDown(inputControls));
 
-        public bool MouseMove(InputControls inputControls, Vec2 mousePosition)
-        {
-            return Eval(state.MouseMove(inputControls));
-        }
+        //History Operations
+        public bool Undo(InputControls inputControls) => Eval(state.Undo(inputControls));
+        public bool Redo(InputControls inputControls) => Eval(state.Redo(inputControls));
 
-        public bool MouseLeftUp(InputControls inputControls, Vec2 mousePosition)
-        {
-            return Eval(state.MouseLeftUp(inputControls));
-        }
-        public bool MouseRightUp(InputControls inputControls, Vec2 mousePosition)
-        {
-            return Eval(state.MouseRightUp(inputControls));
-        }
-
-        public bool Undo(InputControls inputControls)
-        {
-            return Eval(state.Undo(inputControls));
-        }
-
-        public bool Redo(InputControls inputControls)
-        {
-            return Eval(state.Redo(inputControls));
-        }
-
-        public bool Copy(InputControls inputControls)
-        {
-            return Eval(state.Copy(inputControls, clipBoard));
-        }
-
-        public bool Cut(InputControls inputControls)
-        {
-            return Eval(state.Cut(inputControls, clipBoard));
-        }
-
-        public bool Paste(InputControls inputControls)
-        {
-            return Eval(state.Paste(inputControls, clipBoard));
-        }
+        //Clipboard operations
+        public bool Copy (InputControls inputControls) => Eval(state.Copy (inputControls, clipBoard));
+        public bool Cut  (InputControls inputControls) => Eval(state.Cut  (inputControls, clipBoard));
+        public bool Paste(InputControls inputControls) => Eval(state.Paste(inputControls, clipBoard));
     }
 }
