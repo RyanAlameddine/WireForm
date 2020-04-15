@@ -280,416 +280,416 @@
 //                    //    mouseBox = new BoxCollider(mousePointAbsolute.X, mousePointAbsolute.Y, 0, 0);
 //                    //}
 //                    //toRefresh = true;
-//                //}
-//                //else if (mouseRightDown)
+//                    //}
+//                    //else if (mouseRightDown)
+//                    //{
+//                    //    if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var circuitObjects, false))
+//                    //    {
+//                    //        CircuitObject clickedcircuitObject = null;
+//                    //        foreach (var v in circuitObjects)
+//                    //        {
+//                    //            clickedcircuitObject = v;
+//                    //        }
+
+//                    //        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, stateStack, form.drawingPanel);
+
+//                    //        ///Add refreshing to the actions if necessary
+//                    //        gateMenu.Items.Clear();
+//                    //        for (int i = 0; i < actions.Count; i++)
+//                    //        {
+//                    //            gateMenu.Items.Add(actions[i].attribute.Name, null, actions[i].action);
+//                    //        }
+
+//                    //        gateMenu.Show(form, (Point)position);
+//                    //        toRefresh = true;
+//                    //    }
+//                    //}
+//                }
+
+//                return toRefresh;
+//            }
+
+//            public void MouseUp(StateStack stateStack, MouseButtons button)
+//            {
+//                BoardState state = stateStack.CurrentState;
+//                //Tool - WirePainter
+//                if (tool == Tool.WirePainter)
+//                {
+//                    if (button == MouseButtons.Left)
+//                    {
+//                        if (!mouseLeftDown)
+//                        {
+//                            return;
+//                        }
+//                        mouseLeftDown = false;
+//                        //Validate Wires
+//                        state.wires.Remove(secondaryCurrentLine);
+//                        currentLine.Validate(state.wires, state.Connections);
+//                        state.wires.Add(secondaryCurrentLine);
+//                        secondaryCurrentLine.Validate(state.wires, state.Connections);
+//                        stateStack.RegisterChange($"Created wire from {currentLine.StartPoint}-{secondaryCurrentLine.EndPoint}");
+//                    }
+//                    else if (button == MouseButtons.Right)
+//                    {
+//                        if (!mouseRightDown)
+//                        {
+//                            Cursor.Current = Cursors.Default;
+//                            return;
+//                        }
+//                        mouseRightDown = false;
+//                        stateStack.RegisterChange("Erased wires");
+//                    }
+//                }
+//                //Tool - GateController
+//                //else if (tool == Tool.GateController)
 //                //{
-//                //    if (new BoxCollider(mousePointGridded.X, mousePointGridded.Y, 0, 0).GetIntersections(state, true, out _, out var circuitObjects, false))
+//                //    mouseRightDown = false;
+//                //    if (button == MouseButtons.Left)
 //                //    {
-//                //        CircuitObject clickedcircuitObject = null;
-//                //        foreach (var v in circuitObjects)
+//                //        mouseLeftDown = false;
+//                //        //Controlling mouse box
+//                //        if (currentcircuitObject == null)
 //                //        {
-//                //            clickedcircuitObject = v;
+//                //            mouseBox = null;
 //                //        }
-
-//                //        var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, stateStack, form.drawingPanel);
-
-//                //        ///Add refreshing to the actions if necessary
-//                //        gateMenu.Items.Clear();
-//                //        for (int i = 0; i < actions.Count; i++)
+//                //        //Controlling gates
+//                //        else
 //                //        {
-//                //            gateMenu.Items.Add(actions[i].attribute.Name, null, actions[i].action);
-//                //        }
+//                //            bool intersected = false;
+//                //            foreach (var selection in selections)
+//                //            {
+//                //                if (!(selection is WireLine) && selection.HitBox.GetIntersections(state, false, out _, out _))
+//                //                {
+//                //                    intersected = true;
+//                //                }
+//                //            }
 
-//                //        gateMenu.Show(form, (Point)position);
-//                //        toRefresh = true;
+
+//                //            //Gate location invalid
+//                //            if (intersected)
+//                //            {
+//                //                //New gate - delete gate
+//                //                if (OGPosition == null)
+//                //                {
+//                //                    selections.Clear();
+//                //                    intersectionBoxes.Clear();
+//                //                    currentcircuitObject = null;
+//                //                }
+//                //                else
+//                //                {
+//                //                    //Pre-existing gate - move gates back to how they were originally
+
+//                //                    Vec2 toOffset = currentcircuitObject.StartPoint - (Vec2)OGPosition;
+
+//                //                    foreach (var selection in selections)
+//                //                    {
+//                //                        selection.StartPoint -= toOffset;
+
+//                //                        Gate asGate = selection as Gate;
+//                //                        WireLine asWire = selection as WireLine;
+//                //                        if (asGate != null)
+//                //                        {
+//                //                            state.gates.Add(asGate);
+//                //                        }
+//                //                        else if (asWire != null)
+//                //                        {
+//                //                            asWire.EndPoint -= toOffset;
+//                //                            state.wires.Add(asWire);
+//                //                        }
+//                //                        else
+//                //                        {
+//                //                            throw new NotImplementedException();
+//                //                        }
+//                //                        selection.AddConnections(state.Connections);
+
+//                //                    }
+
+//                //                    OGPosition = null;
+//                //                    resetBoxes.Clear();
+
+//                //                    intersectionBoxes.Clear();
+//                //                    currentcircuitObject = null;
+//                //                }
+//                //            }
+//                //            //Gate location valid
+//                //            else
+//                //            {
+//                //                List<WireLine> toRemove = new List<WireLine>();
+//                //                List<WireLine> toAdd = new List<WireLine>();
+//                //                foreach (var selection in selections)
+//                //                {
+//                //                    Gate asGate = selection as Gate;
+//                //                    WireLine asWire = selection as WireLine;
+//                //                    if (asGate != null)
+//                //                    {
+//                //                        state.gates.Add(asGate);
+//                //                        selection.AddConnections(state.Connections);
+//                //                    }
+//                //                    else if (asWire != null)
+//                //                    {
+//                //                        List<WireLine> newWires = asWire.Validate(state.wires, state.Connections);
+//                //                        toAdd.AddRange(newWires);
+//                //                        toRemove.Add(asWire);
+
+//                //                    }
+//                //                    else
+//                //                    {
+//                //                        throw new NotImplementedException();
+//                //                    }
+
+//                //                }
+
+//                //                foreach (var x in toRemove)
+//                //                {
+//                //                    selections.Remove(x);
+//                //                }
+//                //                foreach (var x in toAdd)
+//                //                {
+//                //                    selections.Add(x);
+//                //                }
+
+
+//                //                if (!circuitObjectMoved && !additiveSelection)
+//                //                {
+//                //                    selections.Clear();
+//                //                    selections.Add(currentcircuitObject);
+//                //                }
+
+//                //                if (circuitObjectMoved)
+//                //                {
+//                //                    string message;
+
+//                //                    if (OGPosition == null)
+//                //                    {
+//                //                        message = $"Created Gate at {selections.First().StartPoint}";
+//                //                    }
+//                //                    else
+//                //                    {
+//                //                        if (selections.Count == 0)
+//                //                        {
+//                //                            message = "Moved selections";
+//                //                        }
+//                //                        else if (selections.First() is WireLine)
+//                //                        {
+//                //                            message = $"Moved wire from {OGPosition}-{selections.First().StartPoint}";
+//                //                        }
+//                //                        else if (selections.First() is Gate)
+//                //                        {
+//                //                            message = $"Moved gate from {OGPosition}-{selections.First().StartPoint}";
+//                //                        }
+//                //                        else
+//                //                        {
+//                //                            message = "Moved selections";
+//                //                        }
+//                //                    }
+//                //                    stateStack.RegisterChange(message);
+//                //                }
+
+//                //                OGPosition = null;
+//                //                resetBoxes.Clear();
+
+//                //                currentcircuitObject = null;
+//                //            }
+//                //            circuitObjectMoved = false;
+//                //        }
 //                //    }
 //                //}
 //            }
 
-//            return toRefresh;
-//        }
-
-//        public void MouseUp(StateStack stateStack, MouseButtons button)
-//        {
-//            BoardState state = stateStack.CurrentState;
-//            //Tool - WirePainter
-//            if (tool == Tool.WirePainter)
+//            public bool MouseMove(Vec2 position, BoardState propogator)
 //            {
-//                if (button == MouseButtons.Left)
+
+//                //Refresh if updated
+//                bool toRefresh = false;
+
+//                ///Position of the mouse in local coordinates rounded to the nearest grid point
+//                Vec2 mousePointGridded = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+//                ///Position of the mouse in local coordinates unrounded
+//                Vec2 mousePointAbsolute = position * (1 / GraphicsManager.SizeScale);
+
+
+//                //Tool - WirePainter
+//                if (tool == Tool.WirePainter)
 //                {
-//                    if (!mouseLeftDown)
+//                    if (mouseLeftDown)
 //                    {
-//                        return;
-//                    }
-//                    mouseLeftDown = false;
-//                    //Validate Wires
-//                    state.wires.Remove(secondaryCurrentLine);
-//                    currentLine.Validate(state.wires, state.Connections);
-//                    state.wires.Add(secondaryCurrentLine);
-//                    secondaryCurrentLine.Validate(state.wires, state.Connections);
-//                    stateStack.RegisterChange($"Created wire from {currentLine.StartPoint}-{secondaryCurrentLine.EndPoint}");
-//                }
-//                else if (button == MouseButtons.Right)
-//                {
-//                    if (!mouseRightDown)
-//                    {
-//                        Cursor.Current = Cursors.Default;
-//                        return;
-//                    }
-//                    mouseRightDown = false;
-//                    stateStack.RegisterChange("Erased wires");
-//                }
-//            }
-//            //Tool - GateController
-//            //else if (tool == Tool.GateController)
-//            //{
-//            //    mouseRightDown = false;
-//            //    if (button == MouseButtons.Left)
-//            //    {
-//            //        mouseLeftDown = false;
-//            //        //Controlling mouse box
-//            //        if (currentcircuitObject == null)
-//            //        {
-//            //            mouseBox = null;
-//            //        }
-//            //        //Controlling gates
-//            //        else
-//            //        {
-//            //            bool intersected = false;
-//            //            foreach (var selection in selections)
-//            //            {
-//            //                if (!(selection is WireLine) && selection.HitBox.GetIntersections(state, false, out _, out _))
-//            //                {
-//            //                    intersected = true;
-//            //                }
-//            //            }
+//                        //Update WireLine
+//                        toRefresh = mousePointGridded != secondaryCurrentLine.EndPoint;
+//                        currentLine.EndPoint = mousePointGridded;
 
-
-//            //            //Gate location invalid
-//            //            if (intersected)
-//            //            {
-//            //                //New gate - delete gate
-//            //                if (OGPosition == null)
-//            //                {
-//            //                    selections.Clear();
-//            //                    intersectionBoxes.Clear();
-//            //                    currentcircuitObject = null;
-//            //                }
-//            //                else
-//            //                {
-//            //                    //Pre-existing gate - move gates back to how they were originally
-
-//            //                    Vec2 toOffset = currentcircuitObject.StartPoint - (Vec2)OGPosition;
-
-//            //                    foreach (var selection in selections)
-//            //                    {
-//            //                        selection.StartPoint -= toOffset;
-
-//            //                        Gate asGate = selection as Gate;
-//            //                        WireLine asWire = selection as WireLine;
-//            //                        if (asGate != null)
-//            //                        {
-//            //                            state.gates.Add(asGate);
-//            //                        }
-//            //                        else if (asWire != null)
-//            //                        {
-//            //                            asWire.EndPoint -= toOffset;
-//            //                            state.wires.Add(asWire);
-//            //                        }
-//            //                        else
-//            //                        {
-//            //                            throw new NotImplementedException();
-//            //                        }
-//            //                        selection.AddConnections(state.Connections);
-
-//            //                    }
-
-//            //                    OGPosition = null;
-//            //                    resetBoxes.Clear();
-
-//            //                    intersectionBoxes.Clear();
-//            //                    currentcircuitObject = null;
-//            //                }
-//            //            }
-//            //            //Gate location valid
-//            //            else
-//            //            {
-//            //                List<WireLine> toRemove = new List<WireLine>();
-//            //                List<WireLine> toAdd = new List<WireLine>();
-//            //                foreach (var selection in selections)
-//            //                {
-//            //                    Gate asGate = selection as Gate;
-//            //                    WireLine asWire = selection as WireLine;
-//            //                    if (asGate != null)
-//            //                    {
-//            //                        state.gates.Add(asGate);
-//            //                        selection.AddConnections(state.Connections);
-//            //                    }
-//            //                    else if (asWire != null)
-//            //                    {
-//            //                        List<WireLine> newWires = asWire.Validate(state.wires, state.Connections);
-//            //                        toAdd.AddRange(newWires);
-//            //                        toRemove.Add(asWire);
-
-//            //                    }
-//            //                    else
-//            //                    {
-//            //                        throw new NotImplementedException();
-//            //                    }
-
-//            //                }
-
-//            //                foreach (var x in toRemove)
-//            //                {
-//            //                    selections.Remove(x);
-//            //                }
-//            //                foreach (var x in toAdd)
-//            //                {
-//            //                    selections.Add(x);
-//            //                }
-
-
-//            //                if (!circuitObjectMoved && !additiveSelection)
-//            //                {
-//            //                    selections.Clear();
-//            //                    selections.Add(currentcircuitObject);
-//            //                }
-
-//            //                if (circuitObjectMoved)
-//            //                {
-//            //                    string message;
-
-//            //                    if (OGPosition == null)
-//            //                    {
-//            //                        message = $"Created Gate at {selections.First().StartPoint}";
-//            //                    }
-//            //                    else
-//            //                    {
-//            //                        if (selections.Count == 0)
-//            //                        {
-//            //                            message = "Moved selections";
-//            //                        }
-//            //                        else if (selections.First() is WireLine)
-//            //                        {
-//            //                            message = $"Moved wire from {OGPosition}-{selections.First().StartPoint}";
-//            //                        }
-//            //                        else if (selections.First() is Gate)
-//            //                        {
-//            //                            message = $"Moved gate from {OGPosition}-{selections.First().StartPoint}";
-//            //                        }
-//            //                        else
-//            //                        {
-//            //                            message = "Moved selections";
-//            //                        }
-//            //                    }
-//            //                    stateStack.RegisterChange(message);
-//            //                }
-
-//            //                OGPosition = null;
-//            //                resetBoxes.Clear();
-
-//            //                currentcircuitObject = null;
-//            //            }
-//            //            circuitObjectMoved = false;
-//            //        }
-//            //    }
-//            //}
-//        }
-
-//        public bool MouseMove(Vec2 position, BoardState propogator)
-//        {
-
-//            //Refresh if updated
-//            bool toRefresh = false;
-
-//            ///Position of the mouse in local coordinates rounded to the nearest grid point
-//            Vec2 mousePointGridded = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
-//            ///Position of the mouse in local coordinates unrounded
-//            Vec2 mousePointAbsolute = position * (1 / GraphicsManager.SizeScale);
-
-
-//            //Tool - WirePainter
-//            if (tool == Tool.WirePainter)
-//            {
-//                if (mouseLeftDown)
-//                {
-//                    //Update WireLine
-//                    toRefresh = mousePointGridded != secondaryCurrentLine.EndPoint;
-//                    currentLine.EndPoint = mousePointGridded;
-
-//                    //Define how curvature is drawn
-//                    if (currentLine.StartPoint.X == currentLine.EndPoint.X)
-//                    {
-//                        currentLine.IsHorizontal = false;
-//                        secondaryCurrentLine.IsHorizontal = true;
-//                    }
-//                    if (currentLine.StartPoint.Y == currentLine.EndPoint.Y)
-//                    {
-//                        currentLine.IsHorizontal = true;
-//                        secondaryCurrentLine.IsHorizontal = false;
-//                    }
-
-//                    if (currentLine.IsHorizontal)
-//                    {
-//                        var currentLineNewEnd = new Vec2(currentLine.EndPoint.X, currentLine.StartPoint.Y);
-//                        secondaryCurrentLine.StartPoint = currentLineNewEnd;
-//                        secondaryCurrentLine.EndPoint = new Vec2(secondaryCurrentLine.StartPoint.X, currentLine.EndPoint.Y);
-//                        currentLine.EndPoint = currentLineNewEnd;
-//                    }
-//                    else
-//                    {
-//                        var currentLineNewEnd = new Vec2(currentLine.StartPoint.X, currentLine.EndPoint.Y);
-//                        secondaryCurrentLine.StartPoint = currentLineNewEnd;
-//                        secondaryCurrentLine.EndPoint = new Vec2(currentLine.EndPoint.X, secondaryCurrentLine.StartPoint.Y);
-//                        currentLine.EndPoint = currentLineNewEnd;
-//                    }
-//                }
-//                else if (mouseRightDown)
-//                {
-//                    //Remove wires
-//                    if (mousePointGridded != currentLine.EndPoint)
-//                    {
-//                        for (int i = 0; i < propogator.wires.Count; i++)
+//                        //Define how curvature is drawn
+//                        if (currentLine.StartPoint.X == currentLine.EndPoint.X)
 //                        {
-//                            if (mousePointGridded.IsContainedIn(propogator.wires[i]))
-//                            {
-//                                toRefresh = true;
-//                                WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
+//                            currentLine.IsHorizontal = false;
+//                            secondaryCurrentLine.IsHorizontal = true;
+//                        }
+//                        if (currentLine.StartPoint.Y == currentLine.EndPoint.Y)
+//                        {
+//                            currentLine.IsHorizontal = true;
+//                            secondaryCurrentLine.IsHorizontal = false;
+//                        }
 
-//                                i = -1;
+//                        if (currentLine.IsHorizontal)
+//                        {
+//                            var currentLineNewEnd = new Vec2(currentLine.EndPoint.X, currentLine.StartPoint.Y);
+//                            secondaryCurrentLine.StartPoint = currentLineNewEnd;
+//                            secondaryCurrentLine.EndPoint = new Vec2(secondaryCurrentLine.StartPoint.X, currentLine.EndPoint.Y);
+//                            currentLine.EndPoint = currentLineNewEnd;
+//                        }
+//                        else
+//                        {
+//                            var currentLineNewEnd = new Vec2(currentLine.StartPoint.X, currentLine.EndPoint.Y);
+//                            secondaryCurrentLine.StartPoint = currentLineNewEnd;
+//                            secondaryCurrentLine.EndPoint = new Vec2(currentLine.EndPoint.X, secondaryCurrentLine.StartPoint.Y);
+//                            currentLine.EndPoint = currentLineNewEnd;
+//                        }
+//                    }
+//                    else if (mouseRightDown)
+//                    {
+//                        //Remove wires
+//                        if (mousePointGridded != currentLine.EndPoint)
+//                        {
+//                            for (int i = 0; i < propogator.wires.Count; i++)
+//                            {
+//                                if (mousePointGridded.IsContainedIn(propogator.wires[i]))
+//                                {
+//                                    toRefresh = true;
+//                                    WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
+
+//                                    i = -1;
+//                                }
 //                            }
 //                        }
 //                    }
 //                }
-//            }
-//            //Tool - GateController
-//            //else if (tool == Tool.GateController)
-//            //{
-//            //    if (mouseLeftDown)
-//            //    {
-//            //        //Drag mouse box
-//            //        //if (currentcircuitObject == null)
-//            //        //{
-//            //        //    if (mouseBox == null) return false;
-//            //        //    mouseBox.Width = mousePointAbsolute.X - mouseBox.X;
-//            //        //    mouseBox.Height = mousePointAbsolute.Y - mouseBox.Y;
+//                //Tool - GateController
+//                //else if (tool == Tool.GateController)
+//                //{
+//                //    if (mouseLeftDown)
+//                //    {
+//                //        //Drag mouse box
+//                //        //if (currentcircuitObject == null)
+//                //        //{
+//                //        //    if (mouseBox == null) return false;
+//                //        //    mouseBox.Width = mousePointAbsolute.X - mouseBox.X;
+//                //        //    mouseBox.Height = mousePointAbsolute.Y - mouseBox.Y;
 
-//            //        //    //Find all selections
-//            //        //    mouseBox.GetNormalized().GetIntersections(propogator, true, out _, out var gates);
-//            //        //    selections = gates;
-//            //        //    if (additiveSelection)
-//            //        //    {
-//            //        //        selections.UnionWith(preSelections);
-//            //        //    }
+//                //        //    //Find all selections
+//                //        //    mouseBox.GetNormalized().GetIntersections(propogator, true, out _, out var gates);
+//                //        //    selections = gates;
+//                //        //    if (additiveSelection)
+//                //        //    {
+//                //        //        selections.UnionWith(preSelections);
+//                //        //    }
 
-//            //        //    toRefresh = true;
-//            //        //}
-//            //        ////Move current Gate
-//            //        //else if (mousePointGridded != currentcircuitObject.StartPoint)
-//            //        //{
-//            //        //    toRefresh = true;
+//                //        //    toRefresh = true;
+//                //        //}
+//                //        ////Move current Gate
+//                //        //else if (mousePointGridded != currentcircuitObject.StartPoint)
+//                //        //{
+//                //        //    toRefresh = true;
 
-//            //        //    Vec2 offset = mousePointGridded - currentcircuitObject.StartPoint;
+//                //        //    Vec2 offset = mousePointGridded - currentcircuitObject.StartPoint;
 
-//            //        //    //Offset selections by mouse movement and draw intersection boxes
-//            //        //    if (offset != Vec2.Zero)
-//            //        //    {
-//            //        //        circuitObjectMoved = true;
-//            //        //        intersectionBoxes.Clear();
-//            //        //        foreach (var selection in selections)
-//            //        //        {
-//            //        //            selection.StartPoint += offset;
-//            //        //            WireLine asWire = selection as WireLine;
-//            //        //            if (asWire != null)
-//            //        //            {
-//            //        //                asWire.EndPoint += offset;
-//            //        //            }
-//            //        //            else
-//            //        //            {
-//            //        //                if (selection.HitBox.GetIntersections(propogator, false, out var intersects, out _))
-//            //        //                {
-//            //        //                    intersectionBoxes.UnionWith(intersects);
-//            //        //                }
-//            //        //            }
-//            //        //        }
-//            //        //    }
-//            //        //}
-//            //    }
-//            //}
+//                //        //    //Offset selections by mouse movement and draw intersection boxes
+//                //        //    if (offset != Vec2.Zero)
+//                //        //    {
+//                //        //        circuitObjectMoved = true;
+//                //        //        intersectionBoxes.Clear();
+//                //        //        foreach (var selection in selections)
+//                //        //        {
+//                //        //            selection.StartPoint += offset;
+//                //        //            WireLine asWire = selection as WireLine;
+//                //        //            if (asWire != null)
+//                //        //            {
+//                //        //                asWire.EndPoint += offset;
+//                //        //            }
+//                //        //            else
+//                //        //            {
+//                //        //                if (selection.HitBox.GetIntersections(propogator, false, out var intersects, out _))
+//                //        //                {
+//                //        //                    intersectionBoxes.UnionWith(intersects);
+//                //        //                }
+//                //        //            }
+//                //        //        }
+//                //        //    }
+//                //        //}
+//                //    }
+//                //}
 
-//            return toRefresh;
-//        }
-
-//        /// <summary>
-//        /// Check through selection list to confirm that everything still exists
-//        /// </summary>
-//        public bool RefreshSelections(BoardState state)
-//        {
-//            int count = selections.Count;
-//            bool nullcco = currentcircuitObject == null;
-//            selections.RemoveWhere((x) =>
-//            {
-//                var gate = x as Gate;
-//                var wire = x as WireLine;
-//                if (wire != null)
-//                {
-//                    return !state.wires.Contains(wire);
-//                }
-//                else if (gate != null)
-//                {
-//                    return !state.gates.Contains(gate);
-//                }
-//                else
-//                {
-//                    throw new Exception("Invalid object selected");
-//                }
-//            });
-//            if (!selections.Contains(currentcircuitObject))
-//            {
-//                if (selections.Count == 0)
-//                {
-//                    currentcircuitObject = null;
-//                }
-//                else if (!nullcco)
-//                {
-//                    currentcircuitObject = selections.First();
-//                }
+//                return toRefresh;
 //            }
 
-//            return count != selections.Count;
-//        }
-
-//        public bool KeyDown(StateStack stateStack, KeyEventArgs e, Form1 form)
-//        {
-//            BoardState state = stateStack.CurrentState;
-
-//            //object hotkeys
-//            bool hit = false;
-//            if (currentcircuitObject == null)
+//            /// <summary>
+//            /// Check through selection list to confirm that everything still exists
+//            /// </summary>
+//            public bool RefreshSelections(BoardState state)
 //            {
-//                foreach (CircuitObject selection in selections)
+//                int count = selections.Count;
+//                bool nullcco = currentcircuitObject == null;
+//                selections.RemoveWhere((x) =>
 //                {
-//                    var actions = CircuitActionAttribute.GetActions(selection, stateStack, form.drawingPanel);
-//                    foreach (var action in actions)
+//                    var gate = x as Gate;
+//                    var wire = x as WireLine;
+//                    if (wire != null)
 //                    {
-//                        if (action.attribute.Hotkey == e.KeyCode)
-//                        {
-//                            hit = true;
-//                            action.action.Invoke(this, null);
-
-//                        }
+//                        return !state.wires.Contains(wire);
+//                    }
+//                    else if (gate != null)
+//                    {
+//                        return !state.gates.Contains(gate);
+//                    }
+//                    else
+//                    {
+//                        throw new Exception("Invalid object selected");
+//                    }
+//                });
+//                if (!selections.Contains(currentcircuitObject))
+//                {
+//                    if (selections.Count == 0)
+//                    {
+//                        currentcircuitObject = null;
+//                    }
+//                    else if (!nullcco)
+//                    {
+//                        currentcircuitObject = selections.First();
 //                    }
 //                }
+
+//                return count != selections.Count;
 //            }
-//            bool toRefresh = hit ? RefreshSelections(state) : false;
+
+//        //    public bool KeyDown(StateStack stateStack, KeyEventArgs e, Form1 form)
+//        //    {
+//        //        BoardState state = stateStack.CurrentState;
+
+//            //        //object hotkeys
+//            //        bool hit = false;
+//            //        if (currentcircuitObject == null)
+//            //        {
+//            //            foreach (CircuitObject selection in selections)
+//            //            {
+//            //                var actions = CircuitActionAttribute.GetActions(selection, stateStack, form.drawingPanel);
+//            //                foreach (var action in actions)
+//            //                {
+//            //                    if (action.attribute.Hotkey == e.KeyCode)
+//            //                    {
+//            //                        hit = true;
+//            //                        action.action.Invoke(this, null);
+
+//            //                    }
+//            //                }
+//            //            }
+//            //        }
+//            //        bool toRefresh = hit ? RefreshSelections(state) : false;
 
 
-//            return toRefresh;
+//            //        return toRefresh;
+//            //    }
+//            //}
+//        public enum Tool
+//        {
+//            WirePainter,
+//            GateController
 //        }
 //    }
-//    public enum Tool
-//    {
-//        WirePainter,
-//        GateController
-//    }
-//}

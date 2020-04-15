@@ -86,6 +86,35 @@ namespace WireForm.Input.States.Selection
             return toRefresh;
         }
 
+
+        /// <summary>
+        /// Check through selection list to confirm that everything still exists
+        /// If even one item is removed, returns true. Else returns false
+        /// </summary>
+        public bool RefreshSelections(BoardState state)
+        {
+            int count = selections.Count;
+            selections.RemoveWhere((x) =>
+            {
+                var gate = x as Gate;
+                var wire = x as WireLine;
+                if (wire != null)
+                {
+                    return !state.wires.Contains(wire);
+                }
+                else if (gate != null)
+                {
+                    return !state.gates.Contains(gate);
+                }
+                else
+                {
+                    throw new Exception("Invalid object selected");
+                }
+            });
+
+            return count != selections.Count;
+        }
+
         public override void Draw(BoardState currentState, PainterScope painter)
         {
             foreach (CircuitObject selection in selections)
