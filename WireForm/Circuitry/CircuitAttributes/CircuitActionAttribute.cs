@@ -13,7 +13,7 @@ namespace WireForm.Circuitry.CircuitAttributes
 {
     /// <summary>
     /// Circuit Actions are functions which can be performed on a certain object, often found in the right-click menu.
-    /// This attribute usually must be placed on a method which takes in nothing as a paramter, or the current BoardState.
+    /// This attribute will usually be placed on a method with no parameters, or one parameter: the current BoardState.
     /// 
     /// It may also be placed on a property if the property already has a [CircuitProperty].
     /// In this case, an action will be generated which cycles through the range of the [CircuitProperty].
@@ -21,24 +21,31 @@ namespace WireForm.Circuitry.CircuitAttributes
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class CircuitActionAttribute : Attribute
     {
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public Keys Hotkey { get; private set; }
+        public Keys Key { get; }
+        public Keys Modifiers { get; }
         public CircuitActionAttribute(string Name)
         {
             this.Name = Name;
         }
 
-        public CircuitActionAttribute(string Name, Keys Hotkey)
+        public CircuitActionAttribute(string Name, Keys key)
             : this(Name)
         {
-            this.Hotkey = Hotkey;
+            this.Key = key;
         }
 
-        /// <param name="target">The target object on which the actions are found and run</param>
-        public static List<(CircuitActionAttribute attribute, EventHandler action)> GetActions(CircuitObject target, BoardState state, Action<string> registerChange, Action refresh)
+        public CircuitActionAttribute(string Name, Keys key, Keys modifiers)
+            : this(Name)
         {
-            var actions = new List<(CircuitActionAttribute attribute, EventHandler action)>();
+            this.Key = key;
+            this.Modifiers = modifiers;
+        }
+
+        public static List<CircuitAct> GetActions(CircuitObject target)
+        {
+            var actions = new List<CircuitAct>();
 
             //Find and register all methods which are circuit actions
             var methods = target.GetType().GetMethods();
@@ -48,33 +55,9 @@ namespace WireForm.Circuitry.CircuitAttributes
                 {
                     //If method has IgnoreCircuitAttribute, continue
                     if (method.GetCustomAttributes(typeof(HideCircuitAttributesAttribute), true).Length != 0) continue;
-                    
-                    string message = GetMessage(attribute, target);
 
-                    EventHandler action;
-
-                    //add the methods to the event handler, including a possible parameter (the current state), and registering the change to the stateStack
-                    if (method.GetParameters().Length > 0)
-                    {
-                        action = (sender, args) =>
-                        {
-                            method.Invoke(target, new object[] { state });
-                            registerChange(message);
-                        };
-                    }
-                    else
-                    {
-                        action = (sender, args) =>
-                        {
-                            method.Invoke(target, null);
-                            registerChange(message);
-                        };
-                    }
-                    action += (sender, args) =>
-                    {
-                        refresh();
-                    };
-                    actions.Add((attribute, action));
+                    Action<BoardState> action = (state) => method.Invoke(target, method.GetParameters().Length == 1 ? new[] { state } : null);
+                    actions.Add(new CircuitAct(action, attribute));
                 }
             }
 
@@ -84,48 +67,49 @@ namespace WireForm.Circuitry.CircuitAttributes
 
             foreach (var property in properties)
             {
-                var actionAttribute   = property.GetCustomAttribute<CircuitActionAttribute>(true);
+                var actionAttribute = property.GetCustomAttribute<CircuitActionAttribute>(true);
                 var propertyAttribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
-                ///If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
+                //If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
                 if (actionAttribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
                 if (propertyAttribute == null) throw new NotImplementedException("All [CircuitAction] attributes on a property must also have a [CircuitProperty] attribute.");
 
-                string message = GetMessage(actionAttribute, target);
+                var prop = new CircuitProp(property, target, propertyAttribute.ValueRange, propertyAttribute.ValueNames, propertyAttribute.RequireReconnect, property.Name);
 
-                EventHandler action;
-
-                var prop = new CircuitProp(property, target, propertyAttribute.ValueRange, propertyAttribute.ValueNames, propertyAttribute.RequireRefresh, property.Name);
-
-                action = (sender, args) =>
+                //Increments the property's value and resets to valueRange.min if it goes over the valueRange.max
+                Action<BoardState> action = (state) =>
                 {
                     int value = prop.Get();
-                    if(++value > prop.valueRange.max)
+                    if (++value > prop.valueRange.max)
                         value = prop.valueRange.min;
                     prop.Set(value, state.Connections);
-                    registerChange(message);
-                    refresh();
                 };
 
-                actions.Add((actionAttribute, action));
+                actions.Add(new CircuitAct(action, actionAttribute));
             }
 
             return actions;
         }
+    }
 
-        private static string GetMessage(CircuitActionAttribute attribute, CircuitObject target)
+    public readonly struct CircuitAct
+    {
+        private readonly Action<BoardState> action;
+
+        public readonly string Name;
+        public readonly Keys Key;
+        public readonly Keys Modifiers;
+
+        internal CircuitAct(Action<BoardState> action, CircuitActionAttribute attribute)
         {
-            //Append necessary info to the message
-            string message = attribute.Name;
-            if (target is WireLine)
-            {
-                message += $" wire at {target.StartPoint}";
-            }
-            else if (target is Gate)
-            {
-                message += $" {target.GetType().Name} at {target.StartPoint}";
-            }
+            this.action = action;
+            this.Key = attribute.Key;
+            this.Modifiers = attribute.Modifiers;
+            this.Name = attribute.Name;
+        }
 
-            return message;
+        public void Invoke(BoardState state)
+        {
+            action(state);
         }
     }
 }

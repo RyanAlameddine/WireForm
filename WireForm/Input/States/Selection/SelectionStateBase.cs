@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WireForm.Circuitry;
 using WireForm.Circuitry.CircuitAttributes;
@@ -64,17 +62,27 @@ namespace WireForm.Input.States.Selection
             bool toRefresh = false;
             foreach(var selection in selections)
             {
-                var actions = CircuitActionAttribute.GetActions(selection, inputControls.State, inputControls.RegisterChange, inputControls.Refresh);
+                var actions = CircuitActionAttribute.GetActions(selection);
                 foreach (var action in actions)
                 {
-                    if (action.attribute.Hotkey == inputControls.Key)
+                    if (action.Key == inputControls.Key && action.Modifiers == inputControls.Modifiers)
                     {
                         toRefresh = true;
-                        action.action.Invoke(this, null);
-
+                        action.Invoke(inputControls.State);
                     }
                 }
             }
+            string hotkey;
+            if(inputControls.Modifiers == Keys.None)
+            {
+                hotkey = inputControls.Key.ToString();
+            }
+            else
+            {
+                string modifiers = inputControls.Modifiers.ToString().Replace(", ", "+");
+                hotkey= $"{modifiers}+{inputControls.Key}";
+            }
+            if(toRefresh) inputControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
             return toRefresh;
         }
 

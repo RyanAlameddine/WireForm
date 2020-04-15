@@ -10,6 +10,10 @@ using WireForm.MathUtils;
 
 namespace WireForm.Input
 {
+    /// <summary>
+    /// Base class for all input states. Contains a set of functions involving mouse input, keyboard input, etc.
+    /// which all take in and output input information through InputControls
+    /// </summary>
     internal abstract class InputState
     {
         public virtual void Draw(BoardState currentState, PainterScope painter) { }

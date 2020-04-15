@@ -25,7 +25,7 @@ namespace WireForm.Input
         /// <summary>
         /// null if no update is required
         /// </summary>
-        public List<(CircuitActionAttribute attribute, EventHandler action)> CircuitActionsOutput { get; set; } = null;
+        public List<CircuitAct> CircuitActionsOutput { get; set; } = null;
 
         /// <summary>
         /// null if no update is required

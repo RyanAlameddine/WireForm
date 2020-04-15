@@ -12,12 +12,12 @@ namespace WireForm.Circuitry.CircuitAttributes
     {
         public readonly (int min, int max) ValueRange;
         public readonly string[] ValueNames;
-        public readonly bool RequireRefresh;
+        public readonly bool RequireReconnect;
 
-        /// <param name="RequireRefresh">true if the Circuit Property requires the gate to be refreshed (connections reset) on edit</param>
-        public CircuitPropertyAttribute(int min, int max, bool RequireRefresh)
+        /// <param name="RequireReconnect">true if the Circuit Property requires the gate to be reconnected (connections reset) on edit</param>
+        public CircuitPropertyAttribute(int min, int max, bool RequireReconnect)
         {
-            this.RequireRefresh = RequireRefresh;
+            this.RequireReconnect = RequireReconnect;
             ValueRange = (min, max);
             int valueCount = max - min + 1;
             ValueNames = new string[valueCount];
@@ -27,10 +27,10 @@ namespace WireForm.Circuitry.CircuitAttributes
             }
         }
 
-        /// <param name="RequireRefresh">true if the Circuit Property requires the gate to be refreshed (connections reset) on edit. Usually only true if the property affects the gatepins at runtime</param>
-        public CircuitPropertyAttribute(int min, int max, bool RequireRefresh, string[] ValueNames)
+        /// <param name="RequireReconnect">true if the Circuit Property requires the gate to be reconnected (connections reset) on edit. Usually only true if the property affects the gatepins at runtime</param>
+        public CircuitPropertyAttribute(int min, int max, bool RequireReconnect, string[] ValueNames)
         {
-            this.RequireRefresh = RequireRefresh;
+            this.RequireReconnect = RequireReconnect;
             ValueRange = (min, max);
             this.ValueNames = ValueNames;
             if (ValueRange.max < ValueRange.min)
@@ -53,7 +53,7 @@ namespace WireForm.Circuitry.CircuitAttributes
                 var attribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
                 ///If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
                 if (attribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
-                circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, attribute.RequireRefresh, property.Name));
+                circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, attribute.RequireReconnect, property.Name));
             }
             return circuitProps;
         }
@@ -67,19 +67,19 @@ namespace WireForm.Circuitry.CircuitAttributes
     {
         private readonly PropertyInfo info;
         private readonly CircuitObject circuitObject;
+
         public readonly (int min, int max) valueRange;
         public readonly string[] valueNames;
-
+        public readonly bool RequireReconnect;
         public readonly string Name;
-        public readonly bool RequireRefresh;
 
-        public CircuitProp(PropertyInfo info, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, bool RequireRefresh, string Name)
+        internal CircuitProp(PropertyInfo info, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, bool RequireReconnect, string Name)
         {
             this.info = info;
             this.circuitObject = circuitObject;
             this.valueRange = valueRange;
             this.valueNames = valueNames;
-            this.RequireRefresh = RequireRefresh;
+            this.RequireReconnect = RequireReconnect;
             this.Name = Name;
         }
 
@@ -94,7 +94,7 @@ namespace WireForm.Circuitry.CircuitAttributes
             {
                 throw new Exception("Selected value is not in range");
             }
-            if (RequireRefresh)
+            if (RequireReconnect)
             {
                 circuitObject.RemoveConnections(connections);
                 info.SetValue(circuitObject, value);

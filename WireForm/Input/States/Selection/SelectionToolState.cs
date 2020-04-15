@@ -65,8 +65,8 @@ namespace WireForm.Input.States.Selection
                     clickedcircuitObject = v;
                 }
 
-                var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, inputControls.State, inputControls.RegisterChange, inputControls.Refresh);
-                inputControls.CircuitActionsOutput = new List<(CircuitActionAttribute attribute, EventHandler action)>();
+                var actions = CircuitActionAttribute.GetActions(clickedcircuitObject);
+                inputControls.CircuitActionsOutput = new List<CircuitAct>();
                 inputControls.CircuitActionsOutput.AddRange(actions);
                 return (true, this);
             }

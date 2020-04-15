@@ -58,7 +58,14 @@ namespace WireForm
                 GateMenu.Items.Clear();
                 for (int i = 0; i < inputControls.CircuitActionsOutput.Count; i++)
                 {
-                    GateMenu.Items.Add(inputControls.CircuitActionsOutput[i].attribute.Name, null, inputControls.CircuitActionsOutput[i].action);
+                    var act = inputControls.CircuitActionsOutput[i];
+                    EventHandler actionEvent = (s, e) =>
+                    {
+                        act.Invoke(inputControls.State);
+                        inputControls.RegisterChange($"Executed action {act.Name} on selection");
+                        drawingPanel.Refresh();
+                    };
+                    GateMenu.Items.Add(act.Name, null, actionEvent);
                 }
 
                 GateMenu.Show(this, (Point)mousePoint);
