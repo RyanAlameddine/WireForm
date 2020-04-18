@@ -15,21 +15,24 @@ namespace WireForm.Input.States.Selection
     /// The state where the Selection tool is selected and the program sits idle.
     /// Also controls the right click action which loads CircuitActions.
     /// </summary>
-    class SelectionToolState : SelectionStateBase
+    public class SelectionToolState : SelectionStateBase
     {
+        public SelectionToolState() : base(new HashSet<CircuitObject>()) { }
         public SelectionToolState(HashSet<CircuitObject> selections) : base(selections) { }
+        
+        public override bool IsClean() => true;
 
-        public override InputReturns KeyDown(InputControls inputControls)
+        public override InputReturns KeyDown(StateControls stateControls)
         {
-            bool toRefresh = ExecuteHotkey(inputControls);
+            bool toRefresh = ExecuteHotkey(stateControls);
             return (toRefresh, this);
         }
 
-        public override InputReturns MouseLeftDown(InputControls inputControls)
+        public override InputReturns MouseLeftDown(StateControls stateControls)
         {
-            Vec2 localPoint = MathHelper.ViewportToLocalPoint(inputControls.MousePosition);
+            Vec2 localPoint = MathHelper.ViewportToLocalPoint(stateControls.MousePosition);
             //true if you click a gate
-            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(inputControls.State, true, out _, out var circuitObjects, false))
+            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(stateControls.State, true, out _, out var circuitObjects, false))
             {
                 CircuitObject clickedcircuitObject = null;
                 //Select first selected object
@@ -43,20 +46,20 @@ namespace WireForm.Input.States.Selection
                     selections.Add(clickedcircuitObject);
                 }
 
-                inputControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
+                stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
 
-                return (true, new MovingSelectionState(inputControls.MousePosition, selections, clickedcircuitObject, inputControls.State, true));
+                return (true, new MovingSelectionState(stateControls.MousePosition, selections, clickedcircuitObject, stateControls.State, true));
             }
             //Begin dragging selection box
             selections.Clear();
             return (true, new SelectingState(localPoint, selections));
         }
 
-        public override InputReturns MouseRightDown(InputControls inputControls)
+        public override InputReturns MouseRightDown(StateControls stateControls)
         {
-            Vec2 localPoint = MathHelper.ViewportToLocalPoint(inputControls.MousePosition);
+            Vec2 localPoint = MathHelper.ViewportToLocalPoint(stateControls.MousePosition);
             //true if you click a gate
-            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(inputControls.State, true, out _, out var circuitObjects, false))
+            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(stateControls.State, true, out _, out var circuitObjects, false))
             {
                 CircuitObject clickedcircuitObject = null;
                 //Select first selected object
@@ -66,31 +69,31 @@ namespace WireForm.Input.States.Selection
                 }
 
                 var actions = CircuitActionAttribute.GetActions(clickedcircuitObject);
-                inputControls.CircuitActionsOutput = new List<CircuitAct>();
-                inputControls.CircuitActionsOutput.AddRange(actions);
+                stateControls.CircuitActionsOutput = new List<CircuitAct>();
+                stateControls.CircuitActionsOutput.AddRange(actions);
                 return (true, this);
             }
             return (false, this);
         }
 
 
-        public override InputReturns Undo(InputControls inputControls)
+        public override InputReturns Undo(StateControls stateControls)
         {
             selections.Clear();
-            inputControls.Reverse();
+            stateControls.Reverse();
 
             return (true, this);
         }
 
-        public override InputReturns Redo(InputControls inputControls)
+        public override InputReturns Redo(StateControls stateControls)
         {
             selections.Clear();
-            inputControls.Advance();
+            stateControls.Advance();
 
             return (true, this);
         }
 
-        public override InputReturns Copy(InputControls inputControls, HashSet<CircuitObject> clipBoard)
+        public override InputReturns Copy(StateControls stateControls, HashSet<CircuitObject> clipBoard)
         {
             clipBoard.Clear();
             clipBoard.UnionWith(selections);
@@ -98,12 +101,12 @@ namespace WireForm.Input.States.Selection
             return (false, this);
         }
 
-        public override InputReturns Cut(InputControls inputControls, HashSet<CircuitObject> clipBoard)
+        public override InputReturns Cut(StateControls stateControls, HashSet<CircuitObject> clipBoard)
         {
             clipBoard.Clear();
             foreach (var selection in selections)
             {
-                selection.Delete(inputControls.State);
+                selection.Delete(stateControls.State);
                 clipBoard.Add(selection.Copy());
             }
             selections.Clear();
@@ -113,11 +116,11 @@ namespace WireForm.Input.States.Selection
                 return (false, this);
             }
 
-            inputControls.RegisterChange("Cut selections");
+            stateControls.RegisterChange("Cut selections");
             return (true, this);
         }
 
-        public override InputReturns Paste(InputControls inputControls, HashSet<CircuitObject> clipBoard)
+        public override InputReturns Paste(StateControls stateControls, HashSet<CircuitObject> clipBoard)
         {
             selections.Clear();
 
@@ -132,7 +135,7 @@ namespace WireForm.Input.States.Selection
 
             if(selections.Count > 0)
             {
-                var newState = new MovingSelectionState(inputControls.MousePosition, selections, currentObject, inputControls.State, false);
+                var newState = new MovingSelectionState(stateControls.MousePosition, selections, currentObject, stateControls.State, false);
                 return (true, newState);
             }
 

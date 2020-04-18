@@ -17,10 +17,21 @@ namespace WireForm.Input.States.Selection
         private readonly Vec2 offset;
         private readonly Vec2 startPosition;
         private readonly CircuitObject selectedObject;
+
+        /// <summary>
+        /// false if the object has just been created (like from a paste operation) and has no place to reset to if
+        /// placed in an invalid location
+        /// </summary>
         private readonly bool resettable;
 
+        /// <summary>
+        /// Blue boxes notifying the user where their selections will reset to if placed in an invalid location
+        /// </summary>
         private readonly HashSet<BoxCollider> resetBoxes = new HashSet<BoxCollider>();
 
+        /// <summary>
+        /// Red boxes notifying the user where their selections are in an invalid location
+        /// </summary>
         private readonly HashSet<BoxCollider> intersectedBoxes = new HashSet<BoxCollider>();
 
         /// <param name="resettable">
@@ -65,15 +76,14 @@ namespace WireForm.Input.States.Selection
             }
         }
 
-        public override InputReturns MouseMove(InputControls inputControls)
+        public override InputReturns MouseMove(StateControls stateControls)
         {
-            Vec2 newPosition = MathHelper.ViewportToLocalPoint(inputControls.MousePosition) + offset;
+            Vec2 newPosition = MathHelper.ViewportToLocalPoint(stateControls.MousePosition) + offset;
             Vec2 gridPoint = newPosition.Round();
 
             if (gridPoint == selectedObject.StartPoint) return (false, this);
 
             Vec2 change = gridPoint - selectedObject.StartPoint;
-            //Debug.WriteLine(change);
 
             intersectedBoxes.Clear();
             //Drag all objects to their new positions
@@ -88,7 +98,7 @@ namespace WireForm.Input.States.Selection
                 //Calculate intersections with other gates
                 else
                 {
-                    if (selection.HitBox.GetIntersections(inputControls.State, false, out var intersects, out _))
+                    if (selection.HitBox.GetIntersections(stateControls.State, false, out var intersects, out _))
                     {
                         intersectedBoxes.UnionWith(intersects);
                     }
@@ -98,7 +108,7 @@ namespace WireForm.Input.States.Selection
             return (true, this);
         }
 
-        public override InputReturns MouseLeftUp(InputControls inputControls)
+        public override InputReturns MouseLeftUp(StateControls stateControls)
         {
             if (intersectedBoxes.Count > 0)
             {
@@ -123,11 +133,11 @@ namespace WireForm.Input.States.Selection
             }
 
 
-            inputControls.State.AttachAll(selections);
+            stateControls.State.AttachAll(selections);
 
             //If it has moved, register movement
             if (intersectedBoxes.Count == 0 && startPosition != selectedObject.StartPoint)
-                inputControls.RegisterChange(resettable ? "Moved selections" : "Placed selections");
+                stateControls.RegisterChange(resettable ? "Moved selections" : "Placed selections");
 
             return (true, new SelectionToolState(selections));
         }

@@ -12,33 +12,40 @@ namespace WireForm.Input
 {
     /// <summary>
     /// Base class for all input states. Contains a set of functions involving mouse input, keyboard input, etc.
-    /// which all take in and output input information through InputControls
+    /// which all take in and output input information through StateControls
     /// </summary>
-    internal abstract class InputState
+    public abstract class InputState
     {
+        /// <summary>
+        /// Returns true if the current state is completely clean, meaning the state manager can manually switch it 
+        /// to a new state at will without notifying the current state.
+        /// </summary>
+        public virtual bool IsClean() => false;
+
         public virtual void Draw(BoardState currentState, PainterScope painter) { }
 
         //Mouse Operations
-        public virtual InputReturns MouseLeftDown (InputControls inputControls) => (false, this);
-        public virtual InputReturns MouseRightDown(InputControls inputControls) => (false, this);
-        public virtual InputReturns MouseMove     (InputControls inputControls) => (false, this);
-        public virtual InputReturns MouseLeftUp   (InputControls inputControls) => (false, this);
-        public virtual InputReturns MouseRightUp  (InputControls inputControls) => (false, this);
+        public virtual InputReturns MouseLeftDown (StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseRightDown(StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseMove     (StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseLeftUp   (StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseRightUp  (StateControls stateControls) => (false, this);
 
         //Keyboard Operations
-        public virtual InputReturns KeyDown(InputControls inputControls) => (false, this);
+        public virtual InputReturns KeyDown(StateControls stateControls) => (false, this);
+        public virtual InputReturns KeyUp  (StateControls stateControls) => (false, this);
 
         //History Operations
-        public virtual InputReturns Undo(InputControls inputControls) => (false, this);
-        public virtual InputReturns Redo(InputControls inputControls) => (false, this);
+        public virtual InputReturns Undo(StateControls stateControls) => (false, this);
+        public virtual InputReturns Redo(StateControls stateControls) => (false, this);
                                                                          
         //Clipboard operations
-        public virtual InputReturns Copy (InputControls inputControls, HashSet<CircuitObject> clipBoard) => (false, this);
-        public virtual InputReturns Cut  (InputControls inputControls, HashSet<CircuitObject> clipBoard) => (false, this);
-        public virtual InputReturns Paste(InputControls inputControls, HashSet<CircuitObject> clipBoard) => (false, this);
+        public virtual InputReturns Copy (StateControls stateControls, HashSet<CircuitObject> clipBoard) => (false, this);
+        public virtual InputReturns Cut  (StateControls stateControls, HashSet<CircuitObject> clipBoard) => (false, this);
+        public virtual InputReturns Paste(StateControls stateControls, HashSet<CircuitObject> clipBoard) => (false, this);
     }
 
-    internal struct InputReturns
+    public  struct InputReturns
     {
         public readonly bool toRefresh;
         public readonly InputState state;

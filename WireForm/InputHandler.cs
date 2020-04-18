@@ -150,47 +150,47 @@
 //            ///Position of the mouse in local coordinates unrounded
 //            Vec2 mousePointAbsolute = position * (1 / GraphicsManager.SizeScale);
 
-//            if (button == MouseButtons.Left)
-//            {
-//                if (mouseLeftDown) return false;
-//                mouseLeftDown = true;
-//            }
-//            else if (button == MouseButtons.Right)
-//            {
-//                if (mouseRightDown) return false;
-//                mouseRightDown = true;
-//            }
+//            //if (button == MouseButtons.Left)
+//            //{
+//            //    if (mouseLeftDown) return false;
+//            //    mouseLeftDown = true;
+//            //}
+//            //else if (button == MouseButtons.Right)
+//            //{
+//            //    if (mouseRightDown) return false;
+//            //    mouseRightDown = true;
+//            //}
 
 //            ///Tool - WirePainter
-//            if (tool == Tool.WirePainter)
-//            {
-//                if (button == MouseButtons.Left)
-//                {
-//                    //Create Line
-//                    currentLine = new WireLine(mousePointGridded, mousePointGridded, true);
-//                    secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false);
+//            //if (tool == Tool.WirePainter)
+//            //{
+//            //    if (button == MouseButtons.Left)
+//            //    {
+//            //        //Create Line
+//            //        currentLine = new WireLine(mousePointGridded, mousePointGridded, true);
+//            //        secondaryCurrentLine = new WireLine(mousePointGridded, mousePointGridded, false);
 
-//                    //Register Line to draw
-//                    state.wires.Add(secondaryCurrentLine);
-//                    state.wires.Add(currentLine);
-//                    toRefresh = true;
-//                }
-//                else if (!mouseLeftDown && button == MouseButtons.Right)
-//                {
-//                    Cursor.Current = Cursors.WaitCursor;
-//                    //Erase Lines
-//                    for (int i = 0; i < state.wires.Count; i++)
-//                    {
-//                        if (mousePointGridded.IsContainedIn(state.wires[i]))
-//                        {
-//                            WireLine.RemovePointFromWire(mousePointGridded, state.Connections, state.wires, i);
+//            //        //Register Line to draw
+//            //        state.wires.Add(secondaryCurrentLine);
+//            //        state.wires.Add(currentLine);
+//            //        toRefresh = true;
+//            //    }
+//            //    else if (!mouseLeftDown && button == MouseButtons.Right)
+//            //    {
+//            //        Cursor.Current = Cursors.WaitCursor;
+//            //        //Erase Lines
+//            //        for (int i = 0; i < state.wires.Count; i++)
+//            //        {
+//            //            if (mousePointGridded.IsContainedIn(state.wires[i]))
+//            //            {
+//            //                WireLine.RemovePointFromWire(mousePointGridded, state.Connections, state.wires, i);
 
-//                            i = -1;
-//                        }
-//                    }
-//                    toRefresh = true;
-//                }
-//            }
+//            //                i = -1;
+//            //            }
+//            //        }
+//            //        toRefresh = true;
+//            //    }
+//            //}
 //            ///Tool - GateController
 //            else if (tool == Tool.GateController)
 //            {
@@ -304,42 +304,42 @@
 //                    //        toRefresh = true;
 //                    //    }
 //                    //}
-//                }
+//            //    }
 
-//                return toRefresh;
-//            }
+//            //    return toRefresh;
+//            //}
 
-//            public void MouseUp(StateStack stateStack, MouseButtons button)
-//            {
-//                BoardState state = stateStack.CurrentState;
-//                //Tool - WirePainter
-//                if (tool == Tool.WirePainter)
-//                {
-//                    if (button == MouseButtons.Left)
-//                    {
-//                        if (!mouseLeftDown)
-//                        {
-//                            return;
-//                        }
-//                        mouseLeftDown = false;
-//                        //Validate Wires
-//                        state.wires.Remove(secondaryCurrentLine);
-//                        currentLine.Validate(state.wires, state.Connections);
-//                        state.wires.Add(secondaryCurrentLine);
-//                        secondaryCurrentLine.Validate(state.wires, state.Connections);
-//                        stateStack.RegisterChange($"Created wire from {currentLine.StartPoint}-{secondaryCurrentLine.EndPoint}");
-//                    }
-//                    else if (button == MouseButtons.Right)
-//                    {
-//                        if (!mouseRightDown)
-//                        {
-//                            Cursor.Current = Cursors.Default;
-//                            return;
-//                        }
-//                        mouseRightDown = false;
-//                        stateStack.RegisterChange("Erased wires");
-//                    }
-//                }
+//            //public void MouseUp(StateStack stateStack, MouseButtons button)
+//            //{
+//            //    BoardState state = stateStack.CurrentState;
+//            //    //Tool - WirePainter
+//            //    if (tool == Tool.WirePainter)
+//            //    {
+//            //        if (button == MouseButtons.Left)
+//            //        {
+//            //            if (!mouseLeftDown)
+//            //            {
+//            //                return;
+//            //            }
+//            //            mouseLeftDown = false;
+//            //            //Validate Wires
+//            //            state.wires.Remove(secondaryCurrentLine);
+//            //            currentLine.Validate(state.wires, state.Connections);
+//            //            state.wires.Add(secondaryCurrentLine);
+//            //            secondaryCurrentLine.Validate(state.wires, state.Connections);
+//            //            stateStack.RegisterChange($"Created wire from {currentLine.StartPoint}-{secondaryCurrentLine.EndPoint}");
+//            //        }
+//            //        else if (button == MouseButtons.Right)
+//            //        {
+//            //            if (!mouseRightDown)
+//            //            {
+//            //                Cursor.Current = Cursors.Default;
+//            //                return;
+//            //            }
+//            //            mouseRightDown = false;
+//            //            stateStack.RegisterChange("Erased wires");
+//            //        }
+//            //    }
 //                //Tool - GateController
 //                //else if (tool == Tool.GateController)
 //                //{
@@ -494,74 +494,74 @@
 //                //        }
 //                //    }
 //                //}
-//            }
+//            //}
 
-//            public bool MouseMove(Vec2 position, BoardState propogator)
-//            {
+//            //public bool MouseMove(Vec2 position, BoardState propogator)
+//            //{
 
-//                //Refresh if updated
-//                bool toRefresh = false;
+//            //    //Refresh if updated
+//            //    bool toRefresh = false;
 
-//                ///Position of the mouse in local coordinates rounded to the nearest grid point
-//                Vec2 mousePointGridded = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
-//                ///Position of the mouse in local coordinates unrounded
-//                Vec2 mousePointAbsolute = position * (1 / GraphicsManager.SizeScale);
+//            //    ///Position of the mouse in local coordinates rounded to the nearest grid point
+//            //    Vec2 mousePointGridded = ((position + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
+//            //    ///Position of the mouse in local coordinates unrounded
+//            //    Vec2 mousePointAbsolute = position * (1 / GraphicsManager.SizeScale);
 
 
-//                //Tool - WirePainter
-//                if (tool == Tool.WirePainter)
-//                {
-//                    if (mouseLeftDown)
-//                    {
-//                        //Update WireLine
-//                        toRefresh = mousePointGridded != secondaryCurrentLine.EndPoint;
-//                        currentLine.EndPoint = mousePointGridded;
+//            //    //Tool - WirePainter
+//            //    if (tool == Tool.WirePainter)
+//            //    {
+//            //        if (mouseLeftDown)
+//            //        {
+//            //            //Update WireLine
+//            //            toRefresh = mousePointGridded != secondaryCurrentLine.EndPoint;
+//            //            currentLine.EndPoint = mousePointGridded;
 
-//                        //Define how curvature is drawn
-//                        if (currentLine.StartPoint.X == currentLine.EndPoint.X)
-//                        {
-//                            currentLine.IsHorizontal = false;
-//                            secondaryCurrentLine.IsHorizontal = true;
-//                        }
-//                        if (currentLine.StartPoint.Y == currentLine.EndPoint.Y)
-//                        {
-//                            currentLine.IsHorizontal = true;
-//                            secondaryCurrentLine.IsHorizontal = false;
-//                        }
+//            //            //Define how curvature is drawn
+//            //            if (currentLine.StartPoint.X == currentLine.EndPoint.X)
+//            //            {
+//            //                currentLine.IsHorizontal = false;
+//            //                secondaryCurrentLine.IsHorizontal = true;
+//            //            }
+//            //            if (currentLine.StartPoint.Y == currentLine.EndPoint.Y)
+//            //            {
+//            //                currentLine.IsHorizontal = true;
+//            //                secondaryCurrentLine.IsHorizontal = false;
+//            //            }
 
-//                        if (currentLine.IsHorizontal)
-//                        {
-//                            var currentLineNewEnd = new Vec2(currentLine.EndPoint.X, currentLine.StartPoint.Y);
-//                            secondaryCurrentLine.StartPoint = currentLineNewEnd;
-//                            secondaryCurrentLine.EndPoint = new Vec2(secondaryCurrentLine.StartPoint.X, currentLine.EndPoint.Y);
-//                            currentLine.EndPoint = currentLineNewEnd;
-//                        }
-//                        else
-//                        {
-//                            var currentLineNewEnd = new Vec2(currentLine.StartPoint.X, currentLine.EndPoint.Y);
-//                            secondaryCurrentLine.StartPoint = currentLineNewEnd;
-//                            secondaryCurrentLine.EndPoint = new Vec2(currentLine.EndPoint.X, secondaryCurrentLine.StartPoint.Y);
-//                            currentLine.EndPoint = currentLineNewEnd;
-//                        }
-//                    }
-//                    else if (mouseRightDown)
-//                    {
-//                        //Remove wires
-//                        if (mousePointGridded != currentLine.EndPoint)
-//                        {
-//                            for (int i = 0; i < propogator.wires.Count; i++)
-//                            {
-//                                if (mousePointGridded.IsContainedIn(propogator.wires[i]))
-//                                {
-//                                    toRefresh = true;
-//                                    WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
+//            //            if (currentLine.IsHorizontal)
+//            //            {
+//            //                var currentLineNewEnd = new Vec2(currentLine.EndPoint.X, currentLine.StartPoint.Y);
+//            //                secondaryCurrentLine.StartPoint = currentLineNewEnd;
+//            //                secondaryCurrentLine.EndPoint = new Vec2(secondaryCurrentLine.StartPoint.X, currentLine.EndPoint.Y);
+//            //                currentLine.EndPoint = currentLineNewEnd;
+//            //            }
+//            //            else
+//            //            {
+//            //                var currentLineNewEnd = new Vec2(currentLine.StartPoint.X, currentLine.EndPoint.Y);
+//            //                secondaryCurrentLine.StartPoint = currentLineNewEnd;
+//            //                secondaryCurrentLine.EndPoint = new Vec2(currentLine.EndPoint.X, secondaryCurrentLine.StartPoint.Y);
+//            //                currentLine.EndPoint = currentLineNewEnd;
+//            //            }
+//            //        }
+//            //        else if (mouseRightDown)
+//            //        {
+//            //            //Remove wires
+//            //            if (mousePointGridded != currentLine.EndPoint)
+//            //            {
+//            //                for (int i = 0; i < propogator.wires.Count; i++)
+//            //                {
+//            //                    if (mousePointGridded.IsContainedIn(propogator.wires[i]))
+//            //                    {
+//            //                        toRefresh = true;
+//            //                        WireLine.RemovePointFromWire(mousePointGridded, propogator.Connections, propogator.wires, i);
 
-//                                    i = -1;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
+//            //                        i = -1;
+//            //                    }
+//            //                }
+//            //            }
+//            //        }
+//                //}
 //                //Tool - GateController
 //                //else if (tool == Tool.GateController)
 //                //{
@@ -617,79 +617,79 @@
 //                //    }
 //                //}
 
-//                return toRefresh;
-//            }
+//                //    return toRefresh;
+//                //}
 
-//            /// <summary>
-//            /// Check through selection list to confirm that everything still exists
-//            /// </summary>
-//            public bool RefreshSelections(BoardState state)
-//            {
-//                int count = selections.Count;
-//                bool nullcco = currentcircuitObject == null;
-//                selections.RemoveWhere((x) =>
-//                {
-//                    var gate = x as Gate;
-//                    var wire = x as WireLine;
-//                    if (wire != null)
-//                    {
-//                        return !state.wires.Contains(wire);
-//                    }
-//                    else if (gate != null)
-//                    {
-//                        return !state.gates.Contains(gate);
-//                    }
-//                    else
-//                    {
-//                        throw new Exception("Invalid object selected");
-//                    }
-//                });
-//                if (!selections.Contains(currentcircuitObject))
-//                {
-//                    if (selections.Count == 0)
-//                    {
-//                        currentcircuitObject = null;
-//                    }
-//                    else if (!nullcco)
-//                    {
-//                        currentcircuitObject = selections.First();
-//                    }
-//                }
+//                ///// <summary>
+//                ///// Check through selection list to confirm that everything still exists
+//                ///// </summary>
+//                //public bool RefreshSelections(BoardState state)
+//                //{
+//                //    int count = selections.Count;
+//                //    bool nullcco = currentcircuitObject == null;
+//                //    selections.RemoveWhere((x) =>
+//                //    {
+//                //        var gate = x as Gate;
+//                //        var wire = x as WireLine;
+//                //        if (wire != null)
+//                //        {
+//                //            return !state.wires.Contains(wire);
+//                //        }
+//                //        else if (gate != null)
+//                //        {
+//                //            return !state.gates.Contains(gate);
+//                //        }
+//                //        else
+//                //        {
+//                //            throw new Exception("Invalid object selected");
+//                //        }
+//                //    });
+//                //    if (!selections.Contains(currentcircuitObject))
+//                //    {
+//                //        if (selections.Count == 0)
+//                //        {
+//                //            currentcircuitObject = null;
+//                //        }
+//                //        else if (!nullcco)
+//                //        {
+//                //            currentcircuitObject = selections.First();
+//                //        }
+//                //    }
 
-//                return count != selections.Count;
-//            }
+//                //    return count != selections.Count;
+//                //}
 
-//        //    public bool KeyDown(StateStack stateStack, KeyEventArgs e, Form1 form)
-//        //    {
-//        //        BoardState state = stateStack.CurrentState;
+//                //    public bool KeyDown(StateStack stateStack, KeyEventArgs e, Form1 form)
+//                //    {
+//                //        BoardState state = stateStack.CurrentState;
 
-//            //        //object hotkeys
-//            //        bool hit = false;
-//            //        if (currentcircuitObject == null)
-//            //        {
-//            //            foreach (CircuitObject selection in selections)
-//            //            {
-//            //                var actions = CircuitActionAttribute.GetActions(selection, stateStack, form.drawingPanel);
-//            //                foreach (var action in actions)
-//            //                {
-//            //                    if (action.attribute.Hotkey == e.KeyCode)
-//            //                    {
-//            //                        hit = true;
-//            //                        action.action.Invoke(this, null);
+//                //        //object hotkeys
+//                //        bool hit = false;
+//                //        if (currentcircuitObject == null)
+//                //        {
+//                //            foreach (CircuitObject selection in selections)
+//                //            {
+//                //                var actions = CircuitActionAttribute.GetActions(selection, stateStack, form.drawingPanel);
+//                //                foreach (var action in actions)
+//                //                {
+//                //                    if (action.attribute.Hotkey == e.KeyCode)
+//                //                    {
+//                //                        hit = true;
+//                //                        action.action.Invoke(this, null);
 
-//            //                    }
-//            //                }
-//            //            }
-//            //        }
-//            //        bool toRefresh = hit ? RefreshSelections(state) : false;
+//                //                    }
+//                //                }
+//                //            }
+//                //        }
+//                //        bool toRefresh = hit ? RefreshSelections(state) : false;
 
 
-//            //        return toRefresh;
-//            //    }
-//            //}
-//        public enum Tool
-//        {
-//            WirePainter,
-//            GateController
-//        }
-//    }
+//                //        return toRefresh;
+//                //    }
+//                //}
+//    //    public enum Tool
+//    //    {
+//    //        WirePainter,
+//    //        GateController
+//    //    }
+//    //}

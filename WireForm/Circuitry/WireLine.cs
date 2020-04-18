@@ -47,7 +47,14 @@ namespace WireForm.Circuitry
             Data = new BitArray(1);
         }
 
-        public List<WireLine> Validate(List<WireLine> wires, Dictionary<Vec2, List<BoardObject>> connections)
+        /// <summary>
+        /// Inserts wire into given list of wires, accounting for many cases such as a wire contained inside another wire,
+        /// a wire which intersects other wires, a wire which is an extension of another wire, etc.
+        /// At the end, it returns a list of references to the newly created wires.
+        /// Note: The original wire this function was run on might not end up being added into the wires list depending on the case,
+        /// so please only refer to the list of WireLines which are returned.
+        /// </summary>
+        public List<WireLine> InsertAndAttach(List<WireLine> wires, Dictionary<Vec2, List<BoardObject>> connections)
         {
             List<WireLine> createdWires = new List<WireLine>();
             wires.Remove(this);
@@ -66,9 +73,9 @@ namespace WireForm.Circuitry
                         {
                             wires[i].RemoveConnections(connections);
                             wires[i] = wire1;
-                            var new1 = wires[i].Validate(wires, connections);
+                            var new1 = wires[i].InsertAndAttach(wires, connections);
                             wires.Add(wire2);
-                            var new2 = wires[wires.Count - 1].Validate(wires, connections);
+                            var new2 = wires[wires.Count - 1].InsertAndAttach(wires, connections);
 
                             createdWires.AddRange(new1);
                             createdWires.AddRange(new2);
@@ -77,7 +84,7 @@ namespace WireForm.Circuitry
                         {
                             //Refresh wire by tapping on it
                             wires[i].RemoveConnections(connections);
-                            createdWires.AddRange(wires[i].Validate(wires, connections));
+                            createdWires.AddRange(wires[i].InsertAndAttach(wires, connections));
                         }
                         return createdWires;
                     }
@@ -105,13 +112,13 @@ namespace WireForm.Circuitry
                             AddConnections(connections);
                             wires.Add(this);
                             wires[i] = wire1;
-                            createdWires.AddRange(wires[i].Validate(wires, connections));
+                            createdWires.AddRange(wires[i].InsertAndAttach(wires, connections));
                             wires.Add(wire2);
-                            createdWires.AddRange(wires[wires.Count - 1].Validate(wires, connections));
+                            createdWires.AddRange(wires[wires.Count - 1].InsertAndAttach(wires, connections));
                             wires.Remove(this);
                             RemoveConnections(connections);
 
-                            createdWires.AddRange(this.Validate(wires, connections));
+                            createdWires.AddRange(this.InsertAndAttach(wires, connections));
                             return createdWires;
                         }
                     }
@@ -131,13 +138,13 @@ namespace WireForm.Circuitry
                             AddConnections(connections);
                             wires.Add(this);
                             wires[i] = wire1;
-                            createdWires.AddRange(wires[i].Validate(wires, connections));
+                            createdWires.AddRange(wires[i].InsertAndAttach(wires, connections));
                             wires.Add(wire2);
-                            createdWires.AddRange(wires[wires.Count - 1].Validate(wires, connections));
+                            createdWires.AddRange(wires[wires.Count - 1].InsertAndAttach(wires, connections));
                             wires.Remove(this);
                             RemoveConnections(connections);
 
-                            createdWires.AddRange(this.Validate(wires, connections));
+                            createdWires.AddRange(this.InsertAndAttach(wires, connections));
                             return createdWires;
                         }
                     }
@@ -151,9 +158,9 @@ namespace WireForm.Circuitry
                         if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             wires.Add(wire1);
-                            createdWires.AddRange(wire1.Validate(wires, connections));
+                            createdWires.AddRange(wire1.InsertAndAttach(wires, connections));
                             wires.Add(wire2);
-                            createdWires.AddRange(wire2.Validate(wires, connections));
+                            createdWires.AddRange(wire2.InsertAndAttach(wires, connections));
                             return createdWires;
                         }
                     }
@@ -166,9 +173,9 @@ namespace WireForm.Circuitry
                         if (wire1.StartPoint != wire1.EndPoint && wire2.StartPoint != wire2.EndPoint)
                         {
                             wires.Add(wire1);
-                            createdWires.AddRange(wire1.Validate(wires, connections));
+                            createdWires.AddRange(wire1.InsertAndAttach(wires, connections));
                             wires.Add(wire2);
-                            createdWires.AddRange(wire2.Validate(wires, connections));
+                            createdWires.AddRange(wire2.InsertAndAttach(wires, connections));
                             return createdWires;
                         }
                     }
@@ -229,9 +236,9 @@ namespace WireForm.Circuitry
                         WireLine toEnd = new WireLine(EndPoint, wires[i].EndPoint, wires[i].IsHorizontal);
 
                         wires.Add(toStart);
-                        createdWires.AddRange(toStart.Validate(wires, connections));
+                        createdWires.AddRange(toStart.InsertAndAttach(wires, connections));
                         wires.Add(toEnd);
-                        createdWires.AddRange(toEnd.Validate(wires, connections));
+                        createdWires.AddRange(toEnd.InsertAndAttach(wires, connections));
                     }
                     else
                     {
@@ -239,9 +246,9 @@ namespace WireForm.Circuitry
                         WireLine toEnd = new WireLine(StartPoint, wires[i].EndPoint, wires[i].IsHorizontal);
 
                         wires.Add(toStart);
-                        createdWires.AddRange(toStart.Validate(wires, connections));
+                        createdWires.AddRange(toStart.InsertAndAttach(wires, connections));
                         wires.Add(toEnd);
-                        createdWires.AddRange(toEnd.Validate(wires, connections));
+                        createdWires.AddRange(toEnd.InsertAndAttach(wires, connections));
                     }
                     return createdWires;
                 }
@@ -320,7 +327,7 @@ namespace WireForm.Circuitry
                 wires[i].RemoveConnections(connections);
                 wires[i] = new WireLine(chkThis, eqThat, wires[i].IsHorizontal);
             }
-            createdWires.AddRange(wires[i].Validate(wires, connections));
+            createdWires.AddRange(wires[i].InsertAndAttach(wires, connections));
             return true;
         }
 
@@ -391,21 +398,21 @@ namespace WireForm.Circuitry
             if (point == wires[i].StartPoint)
             {
                 wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].IsHorizontal);
-                wires[i].Validate(wires, connections);
+                wires[i].InsertAndAttach(wires, connections);
             }
             else if (point == wires[i].EndPoint)
             {
                 wires[i] = new WireLine(wires[i].StartPoint, startsEnd, wires[i].IsHorizontal);
-                wires[i].Validate(wires, connections);
+                wires[i].InsertAndAttach(wires, connections);
             }
             else
             {
                 var temp = wires[i].StartPoint;
                 wires[i] = new WireLine(endsStart, wires[i].EndPoint, wires[i].IsHorizontal);
-                wires[i].Validate(wires, connections);
+                wires[i].InsertAndAttach(wires, connections);
                 WireLine newWire = new WireLine(temp, startsEnd, xpri);
                 wires.Add(newWire);
-                newWire.Validate(wires, connections);
+                newWire.InsertAndAttach(wires, connections);
             }
         }
 

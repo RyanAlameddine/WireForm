@@ -86,13 +86,16 @@
     <Compile Include="GraphicsUtils\GraphicsManager.cs" />
     <Compile Include="GraphicsUtils\PainterScope.cs" />
     <Compile Include="InputHandler.cs" />
-    <Compile Include="Input\InputControls.cs" />
-    <Compile Include="Input\InputManager.cs" />
+    <Compile Include="Input\StateControls.cs" />
+    <Compile Include="Input\InputStateManager.cs" />
     <Compile Include="Input\States\Selection\MovingSelectionState.cs" />
     <Compile Include="Input\States\Selection\SelectingState.cs" />
     <Compile Include="Input\States\Selection\SelectionStateBase.cs" />
     <Compile Include="Input\States\Selection\SelectionToolState.cs" />
     <Compile Include="Input\InputState.cs" />
+    <Compile Include="Input\States\Wire\RemovingWireState.cs" />
+    <Compile Include="Input\States\Wire\DrawingWireState.cs" />
+    <Compile Include="Input\States\Wire\WireToolState.cs" />
     <Compile Include="MathUtils\Collision\BoxCollider.cs" />
     <Compile Include="MathUtils\MathHelper.cs" />
     <Compile Include="GraphicsUtils\WirePainter.cs" />
@@ -102,7 +105,7 @@
     <Compile Include="SaveManager.cs" />
     <Compile Include="MathUtils\Vec2.cs" />
     <Compile Include="Circuitry\WireLine.cs" />
-    <Compile Include="StateStack.cs" />
+    <Compile Include="BoardStack.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

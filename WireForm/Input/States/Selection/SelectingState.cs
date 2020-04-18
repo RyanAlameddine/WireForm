@@ -22,6 +22,9 @@ namespace WireForm.Input.States.Selection
     {
         private readonly HashSet<CircuitObject> additiveSelections;
 
+        /// <summary>
+        /// Mouse selection box
+        /// </summary>
         private readonly BoxCollider mouseBox;
 
         public SelectingState(Vec2 position, HashSet<CircuitObject> additiveSelections) : base(additiveSelections)
@@ -39,24 +42,23 @@ namespace WireForm.Input.States.Selection
             base.Draw(state, painter);
         }
 
-        public override InputReturns MouseMove(InputControls inputControls)
+        public override InputReturns MouseMove(StateControls stateControls)
         {
-            Vec2 localPoint = MathHelper.ViewportToLocalPoint(inputControls.MousePosition);
-            //Debug.WriteLine($"{mouseBox.Position}, {localPoint}");
+            Vec2 localPoint = MathHelper.ViewportToLocalPoint(stateControls.MousePosition);
 
             mouseBox.Width = localPoint.X - mouseBox.X;
             mouseBox.Height = localPoint.Y - mouseBox.Y;
 
-
-            mouseBox.GetNormalized().GetIntersections(inputControls.State, true, out _, out var newSelections);
+            //Update selection box and load intersections into selections
+            mouseBox.GetNormalized().GetIntersections(stateControls.State, true, out _, out var newSelections);
             selections.Clear();
             selections.UnionWith(newSelections);
             selections.UnionWith(additiveSelections);
-            inputControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
+            stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
             return (true, this);
         }
 
-        public override InputReturns MouseLeftUp(InputControls inputControls)
+        public override InputReturns MouseLeftUp(StateControls stateControls)
         {
             return (true, new SelectionToolState(selections));
         }

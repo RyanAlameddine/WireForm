@@ -10,6 +10,8 @@ using WireForm.Circuitry.Gates;
 using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.Input;
+using WireForm.Input.States.Selection;
+using WireForm.Input.States.Wire;
 using WireForm.MathUtils;
 
 namespace WireForm
@@ -17,8 +19,8 @@ namespace WireForm
 
     public partial class Form1 : Form
     {
-        readonly StateStack stateStack = new StateStack();
-        readonly InputManager inputManager = new InputManager();
+        readonly BoardStack stateStack = new BoardStack();
+        readonly InputStateManager stateManager = new InputStateManager();
 
         //public static int value = 0;
         public Form1()
@@ -42,27 +44,27 @@ namespace WireForm
 
         #region Input
 
-        bool runInputEvent(Func<InputControls, bool> inputEvent)
+        bool runInputEvent(Func<StateControls, bool> inputEvent)
         {
             return runInputEvent(inputEvent, Keys.None, ModifierKeys);
         }
-        bool runInputEvent(Func<InputControls, bool> inputEvent, Keys key, Keys modifiers)
+        bool runInputEvent(Func<StateControls, bool> inputEvent, Keys key, Keys modifiers)
         {
             var mousePoint = (Vec2)drawingPanel.PointToClient(Cursor.Position);
-            var inputControls = new InputControls(stateStack.CurrentState, mousePoint, key, modifiers, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
-            bool toRefresh = inputEvent(inputControls);
+            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key, modifiers, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            bool toRefresh = inputEvent(stateControls);
 
             //Process [CircuitActions]
-            if (inputControls.CircuitActionsOutput != null)
+            if (stateControls.CircuitActionsOutput != null)
             {
                 GateMenu.Items.Clear();
-                for (int i = 0; i < inputControls.CircuitActionsOutput.Count; i++)
+                for (int i = 0; i < stateControls.CircuitActionsOutput.Count; i++)
                 {
-                    var act = inputControls.CircuitActionsOutput[i];
+                    var act = stateControls.CircuitActionsOutput[i];
                     EventHandler actionEvent = (s, e) =>
                     {
-                        act.Invoke(inputControls.State);
-                        inputControls.RegisterChange($"Executed action {act.Name} on selection");
+                        act.Invoke(stateControls.State);
+                        stateControls.RegisterChange($"Executed action {act.Name} on selection");
                         drawingPanel.Refresh();
                     };
                     GateMenu.Items.Add(act.Name, null, actionEvent);
@@ -72,12 +74,12 @@ namespace WireForm
             }
 
             //Process [CircuitProperties]
-            if (inputControls.CircuitPropertiesOutput != null)
+            if (stateControls.CircuitPropertiesOutput != null)
             {
                 SelectionSettings.Items.Clear();
                 SelectionSettingValue.Items.Clear();
-                circuitProperties = inputControls.CircuitPropertiesOutput;
-                //circuitProperties.AddRange(CircuitPropertyAttribute.GetProperties(obj, stateStack, this
+                circuitProperties = stateControls.CircuitPropertiesOutput;
+
                 foreach (var property in circuitProperties)
                 {
                     SelectionSettings.Items.Add(property.Name);
@@ -91,33 +93,35 @@ namespace WireForm
 
         private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            //bool toRefresh = inputHandler.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, ModifierKeys.HasFlag(Keys.Shift), null);
-
-            //bool toRefresh = false;
-
-            if      (e.Button == MouseButtons.Left ) runInputEvent(inputManager.MouseLeftDown);
-            else if (e.Button == MouseButtons.Right) runInputEvent(inputManager.MouseRightDown);
-
-            //if (toRefresh)
-            //{
-            //    //SettingsUpdate();
-            //    drawingPanel.Refresh();
-            //}
+            if      (e.Button == MouseButtons.Left ) runInputEvent(stateManager.MouseLeftDown);
+            else if (e.Button == MouseButtons.Right) runInputEvent(stateManager.MouseRightDown);
         }
 
         private void drawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            if      (e.Button == MouseButtons.Left ) runInputEvent(inputManager.MouseLeftUp);
-            else if (e.Button == MouseButtons.Right) runInputEvent(inputManager.MouseRightUp);
+            if      (e.Button == MouseButtons.Left ) runInputEvent(stateManager.MouseLeftUp);
+            else if (e.Button == MouseButtons.Right) runInputEvent(stateManager.MouseRightUp);
         }
 
         private void drawingPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            runInputEvent(inputManager.MouseMove);
+            runInputEvent(stateManager.MouseMove);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
+            //If W is pressed, change to Wire tool
+            if (e.KeyChar == 'w')
+            {
+                toolBox.SelectedIndex = 0;
+                toolBox_SelectedIndexChanged(this, new EventArgs());
+            }
+            if (e.KeyChar == 'g')
+            {
+                toolBox.SelectedIndex = 1;
+                toolBox_SelectedIndexChanged(this, new EventArgs());
+            }
+
             if (e.KeyChar == '+' || e.KeyChar == '=')
             {
                 GraphicsManager.SizeScale *= 1.1f;
@@ -145,26 +149,9 @@ namespace WireForm
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            //If W is pressed, change to Wire tool
-            if(e.KeyCode == Keys.W)
-            {
-                toolBox.SelectedIndex = 0;
-                toolBox_SelectedIndexChanged(this, new EventArgs());
-            }
-            if (e.KeyCode == Keys.G)
-            {
-                toolBox.SelectedIndex = 1; 
-                toolBox_SelectedIndexChanged(this, new EventArgs());
-            }
-
-            runInputEvent(inputManager.KeyDown, e.KeyCode, e.Modifiers);
-            //MakeControls(out var inputControls);
-
-            //if (inputManager.KeyDown(inputControls, e.KeyCode, e.Modifiers))
-            //{
-            //    drawingPanel.Refresh();
-            //}
+            runInputEvent(stateManager.KeyDown, e.KeyCode, e.Modifiers);
         }
+
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
 
@@ -183,7 +170,7 @@ namespace WireForm
 
         private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
         {
-            //MakeControls(out var inputControls);
+            //MakeControls(out var stateControls);
             //inputManager.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
             drawingPanel_MouseDown(sender, e);
         }
@@ -197,7 +184,7 @@ namespace WireForm
         private void drawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            GraphicsManager.Paint(e.Graphics, new Vec2(Width, Height), stateStack.CurrentState, inputManager);
+            GraphicsManager.Paint(e.Graphics, new Vec2(Width, Height), stateStack.CurrentState, stateManager);
         }
 
         private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -248,16 +235,34 @@ namespace WireForm
         #endregion CircuitProperties
 
         #region FormInput
+        enum Tool
+        {
+            WirePainter,
+            GateController,
+        }
+        Tool tool = Tool.GateController;
         private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //inputHandler.tool = (Tool) toolBox.SelectedIndex;
-            //gateBox.Visible                = inputHandler.tool == Tool.GateController;
-            //SelectionSettings.Visible      = inputHandler.tool == Tool.GateController;
-            //SelectionSettingValue.Visible  = inputHandler.tool == Tool.GateController;
-            //gatePicBox.Visible             = inputHandler.tool == Tool.GateController;
+            var newTool = (Tool)toolBox.SelectedIndex;
+            if (newTool == tool) return;
+            tool = (Tool)toolBox.SelectedIndex;
+            gateBox.Visible = tool == Tool.GateController;
+            SelectionSettings.Visible = tool == Tool.GateController;
+            SelectionSettingValue.Visible = tool == Tool.GateController;
+            gatePicBox.Visible = tool == Tool.GateController;
 
-            //inputHandler.selections.Clear();
-            //drawingPanel.Refresh();
+            switch (tool)
+            {
+
+                case Tool.WirePainter:
+                    stateManager.ChangeTool(new WireToolState());
+                    break;
+                case Tool.GateController:
+                    stateManager.ChangeTool(new SelectionToolState());
+                    break;
+            }
+
+            drawingPanel.Refresh();
         }
 
         private void newButton_Click(object sender, EventArgs e)
@@ -287,27 +292,27 @@ namespace WireForm
 
         private void undoButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(inputManager.Undo);
+            runInputEvent(stateManager.Undo);
         }
 
         private void redoButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(inputManager.Redo);
+            runInputEvent(stateManager.Redo);
         }
 
         private void copyButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(inputManager.Copy);
+            runInputEvent(stateManager.Copy);
         }
 
         private void cutButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(inputManager.Cut);
+            runInputEvent(stateManager.Cut);
         }
 
         private void pasteButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(inputManager.Paste);
+            runInputEvent(stateManager.Paste);
         }
         #endregion
     }

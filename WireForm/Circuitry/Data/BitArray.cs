@@ -41,6 +41,9 @@ namespace WireForm.Circuitry.Data
             }
         }
 
+        /// <summary>
+        /// Gets all colors of the bits
+        /// </summary>
         public Color[] BitColors()
         {
             Color[] colors = new Color[Length];
@@ -51,6 +54,9 @@ namespace WireForm.Circuitry.Data
             return colors;
         }
 
+        /// <summary>
+        /// Gets the color of the bit at a specified index
+        /// </summary>
         public Color GetBitColor(int index)
         {
             return BitValues[index].Selected switch
@@ -64,6 +70,9 @@ namespace WireForm.Circuitry.Data
             };
         }
 
+        /// <summary>
+        /// Binary not operator
+        /// </summary>
         public static BitArray operator !(BitArray values)
         {
             BitArray newBits = new BitArray(values.Length);
@@ -74,6 +83,9 @@ namespace WireForm.Circuitry.Data
             return newBits;
         }
 
+        /// <summary>
+        /// Binary and operator
+        /// </summary>
         public static BitArray operator &(BitArray values1, BitArray values2)
         {
             int minLength = ErrorOverflow(values1, values2, out var newBits);
@@ -84,6 +96,9 @@ namespace WireForm.Circuitry.Data
             return newBits;
         }
 
+        /// <summary>
+        /// Binary or operator
+        /// </summary>
         public static BitArray operator |(BitArray values1, BitArray values2)
         {
             int minLength = ErrorOverflow(values1, values2, out var newBits);
@@ -94,6 +109,9 @@ namespace WireForm.Circuitry.Data
             return newBits;
         }
 
+        /// <summary>
+        /// Binary xor operator
+        /// </summary>
         public static BitArray operator ^(BitArray values1, BitArray values2)
         {
             int minLength = ErrorOverflow(values1, values2, out var newBits);
@@ -115,12 +133,12 @@ namespace WireForm.Circuitry.Data
 
         /// <summary>
         /// Finds the amount of bits shared between the two arrays, then errors out the output bits for the rest of the indicies
-        /// E.g. values1 = { 0, 1 }
-        ///      values2 = { 1, 1, 0 }
+        /// E.g. values1 = { 0, 0, 1, 1 }
+        ///      values2 = { 0, 1, 1, 0, 0, 1 }
         ///      ---------------------
-        ///      newBits = { -, -, Error }
+        ///      newBits = { 0, 0, 0, 0, Error, Error }
         /// </summary>
-        /// <returns>length before erroring</returns>
+        /// <returns>the length of the array before it begins erroring</returns>
         private static int ErrorOverflow(BitArray values1, BitArray values2, out BitArray newBits)
         {
             int min = Math.Min(values1.Length, values2.Length);

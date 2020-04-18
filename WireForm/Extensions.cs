@@ -54,7 +54,7 @@ namespace WireForm
             {
                 if (circuitObject is WireLine wire)
                 {
-                    List<WireLine> newWires = wire.Validate(state.wires, state.Connections);
+                    List<WireLine> newWires = wire.InsertAndAttach(state.wires, state.Connections);
                     toAdd.AddRange(newWires);
                     toRemove.Add(wire);
                 }

@@ -12,9 +12,9 @@ using WireForm.Circuitry.Utilities;
 
 namespace WireForm
 {
-    public sealed class StateStack
+    public sealed class BoardStack
     {
-        private StateStackNode currentNode;
+        private BoardStackNode currentNode;
         private BoardState currentState;
         public BoardState CurrentState
         {
@@ -29,10 +29,10 @@ namespace WireForm
         /// </summary>
         private string savePath = "";
 
-        public StateStack()
+        public BoardStack()
         {
             currentState = new BoardState();
-            currentNode = new StateStackNode(null, null, currentState.Copy(), "Created Board");
+            currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
         }
 
         /// <summary>
@@ -41,13 +41,13 @@ namespace WireForm
         public void RegisterChange(string message)
         {
             Debug.WriteLine(message);
-            currentNode.Next = new StateStackNode(null, currentNode, currentState.Copy(), message);
+            currentNode.Next = new BoardStackNode(null, currentNode, currentState.Copy(), message);
             currentNode = currentNode.Next;
             Propogate();
         }
 
         /// <summary>
-        /// Advance forward in the state stack
+        /// Advance forward in the board stack
         /// </summary>
         public void Advance()
         {
@@ -60,7 +60,7 @@ namespace WireForm
         }
 
         /// <summary>
-        /// Move backwards through the state stack
+        /// Move backwards through the board stack
         /// </summary>
         public void Reverse()
         {
@@ -86,14 +86,14 @@ namespace WireForm
 
 
             SaveManager.Load(File.ReadAllText(fileName), out currentState);
-            currentNode = new StateStackNode(null, null, currentState.Copy(), "Created Board");
+            currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
             savePath = fileName;
             Propogate();
         }
 
         public void Clear()
         {
-            currentNode = new StateStackNode(null, null, new BoardState(), "Created Board");
+            currentNode = new BoardStackNode(null, null, new BoardState(), "Created Board");
             currentState = currentNode.State;
             savePath = "";
         }
@@ -137,15 +137,15 @@ namespace WireForm
             FlowPropagator.Propogate(currentState, sources);
         }
 
-        private class StateStackNode
+        private class BoardStackNode
         {
-            public StateStackNode Next;
-            public StateStackNode Previous;
+            public BoardStackNode Next;
+            public BoardStackNode Previous;
 
             public BoardState State;
             public string Message;
 
-            public StateStackNode(StateStackNode next, StateStackNode previous, BoardState state, string message)
+            public BoardStackNode(BoardStackNode next, BoardStackNode previous, BoardState state, string message)
             {
                 Next = next;
                 Previous = previous;

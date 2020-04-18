@@ -18,7 +18,7 @@ namespace WireForm.Input.States.Selection
     /// Base class for selection states which handles drawing of selections
     /// Handles the loading of Circuit Properties
     /// </summary>
-    abstract class SelectionStateBase : InputState
+    public abstract class SelectionStateBase : InputState
     {
         protected readonly HashSet<CircuitObject> selections;
 
@@ -31,8 +31,9 @@ namespace WireForm.Input.States.Selection
         /// The last object whose [CircuitProperties] were loaded
         /// </summary>
         protected CircuitObject previousObject = null;
+
         /// <summary>
-        /// Returns a list of updated CircuitProperties to be passed into the InputControls
+        /// Returns a list of updated CircuitProperties to be passed into the StateControls
         /// </summary>
         protected List<CircuitProp> GetUpdatedCircuitProperties()
         {
@@ -55,9 +56,9 @@ namespace WireForm.Input.States.Selection
         }
 
         /// <summary>
-        /// Propogates hotkey through all selected CircuitObjects
+        /// Propogates hotkey through all selected CircuitObjects and runs any valid [CircuitProperties]
         /// </summary>
-        protected bool ExecuteHotkey(InputControls inputControls)
+        protected bool ExecuteHotkey(StateControls stateControls)
         {
             bool toRefresh = false;
             foreach(var selection in selections)
@@ -65,24 +66,24 @@ namespace WireForm.Input.States.Selection
                 var actions = CircuitActionAttribute.GetActions(selection);
                 foreach (var action in actions)
                 {
-                    if (action.Key == inputControls.Key && action.Modifiers == inputControls.Modifiers)
+                    if (action.Key == stateControls.Key && action.Modifiers == stateControls.Modifiers)
                     {
                         toRefresh = true;
-                        action.Invoke(inputControls.State);
+                        action.Invoke(stateControls.State);
                     }
                 }
             }
             string hotkey;
-            if(inputControls.Modifiers == Keys.None)
+            if(stateControls.Modifiers == Keys.None)
             {
-                hotkey = inputControls.Key.ToString();
+                hotkey = stateControls.Key.ToString();
             }
             else
             {
-                string modifiers = inputControls.Modifiers.ToString().Replace(", ", "+");
-                hotkey= $"{modifiers}+{inputControls.Key}";
+                string modifiers = stateControls.Modifiers.ToString().Replace(", ", "+");
+                hotkey= $"{modifiers}+{stateControls.Key}";
             }
-            if(toRefresh) inputControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
+            if(toRefresh) stateControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
             return toRefresh;
         }
 
@@ -117,6 +118,7 @@ namespace WireForm.Input.States.Selection
 
         public override void Draw(BoardState currentState, PainterScope painter)
         {
+            //Draws selected gates and wires because they are technically no longer on the board
             foreach (CircuitObject selection in selections)
             {
                 if (selection is Gate gate)

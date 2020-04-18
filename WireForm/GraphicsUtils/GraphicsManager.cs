@@ -19,7 +19,7 @@ namespace WireForm.GraphicsUtils
             set { scale = value > 5 ? value : 5; } 
         }
 
-        public static void Paint(Graphics gfx, Vec2 viewportSize, BoardState state, InputManager inputManager)
+        public static void Paint(Graphics gfx, Vec2 viewportSize, BoardState state, InputStateManager inputManager)
         {
             PainterScope painter = new PainterScope(gfx, scale);
 
