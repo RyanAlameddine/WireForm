@@ -9,6 +9,9 @@ using WireForm.MathUtils;
 
 namespace WireForm.Input.States.Wire
 {
+    /// <summary>
+    /// State for removing wires holding the right click button
+    /// </summary>
     class RemovingWireState : InputState
     {
         public RemovingWireState(List<WireLine> wires, Vec2 griddedMousePoint, Dictionary<Vec2, List<BoardObject>> connections)

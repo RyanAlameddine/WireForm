@@ -10,6 +10,9 @@ using WireForm.MathUtils;
 
 namespace WireForm.Input.States.Wire
 {
+    /// <summary>
+    /// State for drawing new wires holding the left click button
+    /// </summary>
     class DrawingWireState : InputState
     {
         /// <summary>
