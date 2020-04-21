@@ -19,13 +19,12 @@ namespace Wireform
             }
         }
 
-        /// <summary>
-        /// if saveToNew is "", pressing the save button will be treated as SaveAs
-        /// </summary>
-        private string savePath = "";
+        private ISaveable saveable;
+        string locationIdentifier;
 
-        public BoardStack()
+        public BoardStack(ISaveable saveable)
         {
+            this.saveable = saveable;
             currentState = new BoardState();
             currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
         }
@@ -67,22 +66,11 @@ namespace Wireform
             }
         }
 
-        public void Load(string path)
+        public void Load()
         {
-            //openFileDialog.Filter = "Json|*.json";
-            //openFileDialog.Title  = "Load your wireForm";
-            //openFileDialog.ShowDialog();
-
-            //var fileName = openFileDialog.FileName;
-            if (path == "")
-            {
-                return;
-            }
-
-
-            SaveManager.Load(File.ReadAllText(path), out currentState);
+            string json = saveable.GetJson(out locationIdentifier);
+            SaveManager.Load(json, out currentState);
             currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
-            savePath = path;
             Propogate();
         }
 
@@ -90,36 +78,17 @@ namespace Wireform
         {
             currentNode = new BoardStackNode(null, null, new BoardState(), "Created Board");
             currentState = currentNode.State;
-            savePath = "";
+            locationIdentifier = "";
         }
 
-        /// <summary>
-        /// IMPORTANT: Returns false if auto-saving failed. If false, please run SaveAs with path
-        /// </summary>
-        public bool Save()
+        public void Save()
         {
-            if (savePath == "")
-            {
-                return false;
-            }
-
-            SaveAs(savePath);
-            return true;
+            locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), locationIdentifier);
         }
 
-        public void SaveAs(string path)
+        public void SaveAs()
         {
-            //saveFileDialog.Filter = "Json|*.json";
-            //saveFileDialog.Title = "Save your wireForm";
-            //saveFileDialog.ShowDialog();
-            //var fileName = saveFileDialog.FileName;
-            //if (fileName == "")
-            //{
-            //    return;
-            //}
-            savePath = path;
-
-            SaveManager.Save(path, currentState);
+            locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), "");
         }
 
         public void Propogate()

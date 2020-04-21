@@ -9,9 +9,9 @@ using Wireform.MathUtils;
 
 namespace Wireform
 {
-    public class SaveManager
+    internal class SaveManager
     {
-        public static void Save(string path, BoardState propogator)
+        public static string Serialize(BoardState propogator)
         {
             string output = JsonConvert.SerializeObject(propogator, Formatting.Indented,
                 new JsonSerializerSettings()
@@ -19,8 +19,7 @@ namespace Wireform
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.Auto
                 }) ;
-            Debug.WriteLine(output);
-            File.WriteAllText(path, output);
+            return output;
         }
         
         public static void Load(string json, out BoardState state)

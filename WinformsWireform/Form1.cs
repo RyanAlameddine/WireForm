@@ -18,21 +18,18 @@ namespace WinformsWireform
 
     public partial class Form1 : Form
     {
-        readonly BoardStack stateStack = new BoardStack();
-        readonly InputStateManager stateManager = new InputStateManager();
+        readonly BoardStack stateStack;
+        readonly InputStateManager stateManager;
 
         //public static int value = 0;
         public Form1()
         {
             InitializeComponent();
-            this.SetStyle(
-                ControlStyles.AllPaintingInWmPaint |
-                ControlStyles.UserPaint |
-                ControlStyles.DoubleBuffer,
-                true);
-            typeof(Panel).InvokeMember("DoubleBuffered",
-                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-                null, drawingPanel, new object[] { true });
+
+            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, drawingPanel, new object[] { true });
+
+            stateStack = new BoardStack(new LocalSaveable(openFileDialog, saveFileDialog));
+            stateManager = new InputStateManager();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -278,41 +275,38 @@ namespace WinformsWireform
 
         private void openButton_Click(object sender, EventArgs e)
         {
-            openFileDialog.Filter = "Json|*.json";
-            openFileDialog.Title = "Load your wireForm";
-            openFileDialog.ShowDialog();
+            //openFileDialog.Filter = "Json|*.json";
+            //openFileDialog.Title = "Load your wireForm";
+            //openFileDialog.ShowDialog();
 
-            var fileName = openFileDialog.FileName;
-            stateStack.Load(fileName);
+            //var fileName = openFileDialog.FileName;
+            stateStack.Load();
         }
 
         private void save_Click(object sender, EventArgs e)
         {
-            if (!stateStack.Save())
-            {
-                saveFileDialog.Filter = "Json|*.json";
-                saveFileDialog.Title = "Save your wireForm";
-                saveFileDialog.ShowDialog();
-                var fileName = saveFileDialog.FileName;
-                if (fileName == "")
-                {
-                    return;
-                }
-                stateStack.SaveAs(fileName);
-            }
+                //saveFileDialog.Filter = "Json|*.json";
+                //saveFileDialog.Title = "Save your wireForm";
+                //saveFileDialog.ShowDialog();
+                //var fileName = saveFileDialog.FileName;
+                //if (fileName == "")
+                //{
+                //    return;
+                //}
+            stateStack.Save();
         }
 
         private void saveAsButton_Click(object sender, EventArgs e)
         {
-            saveFileDialog.Filter = "Json|*.json";
-            saveFileDialog.Title = "Save your wireForm";
-            saveFileDialog.ShowDialog();
-            var fileName = saveFileDialog.FileName;
-            if (fileName == "")
-            {
-                return;
-            }
-            stateStack.SaveAs(fileName);
+            //saveFileDialog.Filter = "Json|*.json";
+            //saveFileDialog.Title = "Save your wireForm";
+            //saveFileDialog.ShowDialog();
+            //var fileName = saveFileDialog.FileName;
+            //if (fileName == "")
+            //{
+            //    return;
+            //}
+            stateStack.SaveAs();
         }
 
         private void undoButton_Click(object sender, EventArgs e)
