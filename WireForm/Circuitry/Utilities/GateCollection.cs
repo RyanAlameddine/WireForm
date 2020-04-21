@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using WireForm.MathUtils;
+using Wireform.MathUtils;
 
-namespace WireForm.Circuitry.Utilities
+namespace Wireform.Circuitry.Utilities
 {
     /// <summary>
     /// Loads all Gate classes and allows you to create instances of said classes

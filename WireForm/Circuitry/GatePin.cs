@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Circuitry
+namespace Wireform.Circuitry
 {
     public class GatePin : BoardObject
     {

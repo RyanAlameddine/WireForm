@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WireForm.Circuitry.Data
+namespace Wireform.Circuitry.Data
 {
     class BitArrayConverter : JsonConverter
     {

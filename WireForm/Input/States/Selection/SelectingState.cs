@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.Data;
+using Wireform.GraphicsUtils;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Input.States.Selection
+namespace Wireform.Input.States.Selection
 {
     /// <summary>
     /// The state in which a selection box is being drawn.

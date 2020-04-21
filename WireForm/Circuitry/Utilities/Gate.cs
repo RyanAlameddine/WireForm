@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Data;
+using Wireform.GraphicsUtils;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Utilities
+namespace Wireform.Circuitry.Utilities
 {
     public abstract class Gate : CircuitObject
     {
@@ -81,7 +81,7 @@ namespace WireForm.Circuitry.Utilities
             }
         }
 
-        [CircuitAction("Rotate", System.Windows.Forms.Keys.R)]
+        [CircuitAction("Rotate", 'r')]
         [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
         public virtual Direction Direction { get; set; } = Direction.Right;
 

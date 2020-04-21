@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.MathUtils;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.MathUtils;
 
-namespace WireForm.Circuitry
+namespace Wireform.Circuitry
 {
     public 
         class FlowPropagator

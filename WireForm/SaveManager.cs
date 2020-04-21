@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.MathUtils;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.MathUtils;
 
-namespace WireForm
+namespace Wireform
 {
     public class SaveManager
     {

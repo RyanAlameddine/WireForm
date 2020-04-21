@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.MathUtils;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Data;
+using Wireform.MathUtils;
 
-namespace WireForm.Input
+namespace Wireform.Input
 {
     public class StateControls
     {
@@ -30,12 +26,12 @@ namespace WireForm.Input
         /// <summary>
         /// If this control is being created for a keyboard event, should contain the key of note
         /// </summary>
-        public Keys Key { get; }
+        public char Hotkey { get; }
 
         /// <summary>
         /// The key modifiers currently being pressed down
         /// </summary>
-        public Keys Modifiers { get; }
+        public Modifier Modifiers { get; }
 
         /// <summary>
         /// The function which registers a change to the stateStack
@@ -76,11 +72,11 @@ namespace WireForm.Input
         /// </summary>
         public List<CircuitProp> CircuitPropertiesOutput { get; set; } = null;
 
-        public StateControls(BoardState state, Vec2 mousePosition, Keys key, Keys modifiers, Action refresh, Action<string> registerChange, Action reverse, Action advance)
+        public StateControls(BoardState state, Vec2 mousePosition, char hotkey, Modifier modifiers, Action refresh, Action<string> registerChange, Action reverse, Action advance)
         {
             this.State = state;
             this.MousePosition = mousePosition;
-            this.Key = key;
+            this.Hotkey = hotkey;
             this.Modifiers = modifiers;
             this.Refresh = refresh;
             this.RegisterChange = registerChange;

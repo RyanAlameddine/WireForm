@@ -1,4 +1,4 @@
-﻿namespace WireForm
+﻿namespace WinformsWireform
 {
     partial class Form1
     {

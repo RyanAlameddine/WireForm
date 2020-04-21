@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
+using Wireform.Circuitry.Data;
+using Wireform.Input;
 
-namespace WireForm.Circuitry.CircuitAttributes
+namespace Wireform.Circuitry.CircuitAttributes
 {
     /// <summary>
     /// Circuit Actions are functions which can be performed on a certain object, often found in the right-click menu.
@@ -23,23 +18,23 @@ namespace WireForm.Circuitry.CircuitAttributes
     {
         public string Name { get; }
 
-        public Keys Key { get; }
-        public Keys Modifiers { get; }
+        public char Hotkey { get; }
+        public Modifier Modifiers { get; }
         public CircuitActionAttribute(string Name)
         {
             this.Name = Name;
         }
 
-        public CircuitActionAttribute(string Name, Keys key)
+        public CircuitActionAttribute(string Name, char hotkey)
             : this(Name)
         {
-            this.Key = key;
+            this.Hotkey = hotkey;
         }
 
-        public CircuitActionAttribute(string Name, Keys key, Keys modifiers)
+        public CircuitActionAttribute(string Name, char hotkey, Modifier modifiers)
             : this(Name)
         {
-            this.Key = key;
+            this.Hotkey = hotkey;
             this.Modifiers = modifiers;
         }
 
@@ -105,13 +100,13 @@ namespace WireForm.Circuitry.CircuitAttributes
         private readonly Action<BoardState> action;
 
         public readonly string Name;
-        public readonly Keys Key;
-        public readonly Keys Modifiers;
+        public readonly char Hotkey;
+        public readonly Modifier Modifiers;
 
         internal CircuitAct(Action<BoardState> action, CircuitActionAttribute attribute)
         {
             this.action = action;
-            this.Key = attribute.Key;
+            this.Hotkey = attribute.Hotkey;
             this.Modifiers = attribute.Modifiers;
             this.Name = attribute.Name;
         }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.MathUtils;
+using Wireform.MathUtils;
 
-namespace WireForm.Circuitry.Data
+namespace Wireform.Circuitry.Data
 {
     /// <summary>
     /// An object which sits on the circuit board

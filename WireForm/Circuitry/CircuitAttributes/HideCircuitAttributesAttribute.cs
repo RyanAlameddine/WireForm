@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WireForm.Circuitry.CircuitAttributes
+namespace Wireform.Circuitry.CircuitAttributes
 {
     /// <summary>
     /// Hides a circuit property or action

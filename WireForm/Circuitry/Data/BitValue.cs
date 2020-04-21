@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WireForm.Circuitry.Data
+namespace Wireform.Circuitry.Data
 {
     public struct BitValue
     {

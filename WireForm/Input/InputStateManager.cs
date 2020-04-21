@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.GraphicsUtils;
-using WireForm.Input.States.Selection;
-using WireForm.Input.States.Wire;
-using WireForm.MathUtils;
+﻿using System.Collections.Generic;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.GraphicsUtils;
+using Wireform.Input.States.Selection;
+using Wireform.Input.States.Wire;
 
-namespace WireForm.Input
+namespace Wireform.Input
 {
     /// <summary>
-    /// A class which manages all input which can communicate with the WireForm.
+    /// A class which manages all input which can communicate with the Wireform.
     /// Each operation function takes in the current StateControls and outputs a boolean 
     /// for whether or not the operation requires a drawing refresh.
     /// </summary>

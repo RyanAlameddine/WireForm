@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.MathUtils;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.MathUtils;
 
-namespace WireForm.Input.States.Wire
+namespace Wireform.Input.States.Wire
 {
     /// <summary>
     /// State for removing wires holding the right click button

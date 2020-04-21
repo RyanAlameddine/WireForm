@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Data;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Circuitry
+namespace Wireform.Circuitry
 {
     public sealed class WireLine : CircuitObject
     {

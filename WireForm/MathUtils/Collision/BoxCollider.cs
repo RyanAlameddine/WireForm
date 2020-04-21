@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
 
-namespace WireForm.MathUtils.Collision
+namespace Wireform.MathUtils.Collision
 {
     public class BoxCollider : IEquatable<BoxCollider>
     {

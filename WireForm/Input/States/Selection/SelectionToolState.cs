@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using WireForm.Circuitry;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Data;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Input.States.Selection
+namespace Wireform.Input.States.Selection
 {
     /// <summary>
     /// The state where the Selection tool is selected and the program sits idle.
@@ -34,7 +29,7 @@ namespace WireForm.Input.States.Selection
             Vec2 localPoint = stateControls.LocalMousePosition;
             //if the shift key is held down, additive selection is activated. This will allow you to
             //edit the current set of selections (add/remove selections) without starting over.
-            bool additiveSelection = stateControls.Modifiers.HasFlag(Keys.Shift);
+            bool additiveSelection = stateControls.Modifiers.HasFlag(Modifier.Shift);
             //true if you click a gate
             if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(stateControls.State, true, out _, out var circuitObjects, false))
             {

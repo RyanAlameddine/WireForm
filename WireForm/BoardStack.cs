@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
 
-namespace WireForm
+namespace Wireform
 {
     public sealed class BoardStack
     {
@@ -72,22 +67,22 @@ namespace WireForm
             }
         }
 
-        public void Load(OpenFileDialog openFileDialog)
+        public void Load(string path)
         {
-            openFileDialog.Filter = "Json|*.json";
-            openFileDialog.Title  = "Load your wireForm";
-            openFileDialog.ShowDialog();
+            //openFileDialog.Filter = "Json|*.json";
+            //openFileDialog.Title  = "Load your wireForm";
+            //openFileDialog.ShowDialog();
 
-            var fileName = openFileDialog.FileName;
-            if(fileName == "")
+            //var fileName = openFileDialog.FileName;
+            if (path == "")
             {
                 return;
             }
 
 
-            SaveManager.Load(File.ReadAllText(fileName), out currentState);
+            SaveManager.Load(File.ReadAllText(path), out currentState);
             currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
-            savePath = fileName;
+            savePath = path;
             Propogate();
         }
 
@@ -98,30 +93,33 @@ namespace WireForm
             savePath = "";
         }
 
-        public void Save(SaveFileDialog saveFileDialog)
+        /// <summary>
+        /// IMPORTANT: Returns false if auto-saving failed. If false, please run SaveAs with path
+        /// </summary>
+        public bool Save()
         {
             if (savePath == "")
             {
-                SaveAs(saveFileDialog);
-                if (savePath == "") return;
+                return false;
             }
 
-            SaveManager.Save(savePath, currentState);
+            SaveAs(savePath);
+            return true;
         }
 
-        public void SaveAs(SaveFileDialog saveFileDialog)
+        public void SaveAs(string path)
         {
-            saveFileDialog.Filter = "Json|*.json";
-            saveFileDialog.Title = "Save your wireForm";
-            saveFileDialog.ShowDialog();
-            var fileName = saveFileDialog.FileName;
-            if (fileName == "")
-            {
-                return;
-            }
-            savePath = fileName;
+            //saveFileDialog.Filter = "Json|*.json";
+            //saveFileDialog.Title = "Save your wireForm";
+            //saveFileDialog.ShowDialog();
+            //var fileName = saveFileDialog.FileName;
+            //if (fileName == "")
+            //{
+            //    return;
+            //}
+            savePath = path;
 
-            Save(saveFileDialog);
+            SaveManager.Save(path, currentState);
         }
 
         public void Propogate()

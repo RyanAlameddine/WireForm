@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry;
-using WireForm.GraphicsUtils;
+using Wireform.Circuitry;
+using Wireform.GraphicsUtils;
 
-namespace WireForm.MathUtils
+namespace Wireform.MathUtils
 {
     public static class MathHelper
     {

@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WireForm.Circuitry.Utilities;
-using WireForm.MathUtils;
+using Wireform.Circuitry.Utilities;
+using Wireform.MathUtils;
 
-namespace WireForm.Circuitry.Data
+namespace Wireform.Circuitry.Data
 {
     public class BoardState
     {

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.GraphicsUtils;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Gates.Logic
+namespace Wireform.Circuitry.Gates.Logic
 {
     class NorGate : Gate
     {

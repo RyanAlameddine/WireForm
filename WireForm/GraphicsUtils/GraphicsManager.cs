@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.Input;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.Input;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.GraphicsUtils
+namespace Wireform.GraphicsUtils
 {
-    internal static class GraphicsManager
+    public static class GraphicsManager
     {
         private static float scale = 50f;
         public static float SizeScale
@@ -19,9 +19,9 @@ namespace WireForm.GraphicsUtils
             set { scale = value > 5 ? value : 5; } 
         }
 
-        public static void Paint(Graphics gfx, Vec2 viewportSize, BoardState state, InputStateManager inputManager)
+        public static void Paint(PainterScope painter, Vec2 viewportSize, BoardState state, InputStateManager inputManager)
         {
-            PainterScope painter = new PainterScope(gfx, scale);
+            //PainterScope painter = new PainterScope(gfx, scale);
 
             int xSize = (int)(viewportSize.X / SizeScale);
             int step = MathHelper.Ceiling(xSize / 50f);

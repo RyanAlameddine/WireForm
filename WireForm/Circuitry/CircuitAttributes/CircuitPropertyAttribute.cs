@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Windows.Forms;
-using WireForm.Circuitry.Data;
-using WireForm.MathUtils;
+using Wireform.Circuitry.Data;
+using Wireform.MathUtils;
 
-namespace WireForm.Circuitry.CircuitAttributes
+namespace Wireform.Circuitry.CircuitAttributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class CircuitPropertyAttribute : Attribute

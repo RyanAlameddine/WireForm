@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.MathUtils;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.MathUtils;
 
-namespace WireForm.Circuitry.Utilities
+namespace Wireform.Circuitry.Utilities
 {
     public enum Direction
     {

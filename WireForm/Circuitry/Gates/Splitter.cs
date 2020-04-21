@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.GraphicsUtils;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Gates.Logic
+namespace Wireform.Circuitry.Gates.Logic
 {
     class Splitter : Gate
     {
@@ -209,7 +209,7 @@ namespace WireForm.Circuitry.Gates.Logic
             }
         }
 
-        [CircuitAction("Toggle", System.Windows.Forms.Keys.T)]
+        [CircuitAction("Toggle", 't')]
         public void Toggle()
         {
             if (splitDirection == 0)

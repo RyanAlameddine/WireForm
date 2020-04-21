@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry.Utilities;
-using WireForm.MathUtils;
+using Wireform.Circuitry.Utilities;
+using Wireform.MathUtils;
 
-namespace WireForm.GraphicsUtils
+namespace Wireform.GraphicsUtils
 {
     /// <summary>
     /// A tool used to draw on the circuit board.
@@ -20,7 +20,7 @@ namespace WireForm.GraphicsUtils
     {
         private float zoom; // = 50f
 
-        private Graphics gfx;
+        private Painter painter;
 
         private Vec2 offset;
 
@@ -29,9 +29,9 @@ namespace WireForm.GraphicsUtils
         /// <summary>
         /// Creates an empty painter
         /// </summary>
-        public PainterScope(Graphics gfx, float zoom)
+        public PainterScope(Painter painter, float zoom)
         {
-            this.gfx = gfx;
+            this.painter = painter;
             this.zoom = zoom;
             this.offset = Vec2.Zero;
             this.multiplier = new Vec2(1, 1);
@@ -62,16 +62,6 @@ namespace WireForm.GraphicsUtils
         public void SetLocalMultiplier(Direction direction)
         {
             multiplier = direction.GetMultiplier();
-        }
-
-        Pen getPen(Color color, int width)
-        {
-            return new Pen(color, width * zoom / 50f);
-        }
-
-        Brush getEmptyBrush(Color color)
-        {
-            return (new Pen(color, 1)).Brush;
         }
 
         /// <summary>
@@ -157,7 +147,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref startPoint);
             ScalePoint(ref endPoint);
 
-            gfx.DrawLine(getPen(color, penWidth), startPoint.X, startPoint.Y, endPoint.X, endPoint.Y);
+            painter.DrawLine(color, penWidth, startPoint, endPoint);
         }
 
         public void DrawArc(Color color, int penWidth, Vec2 startPoint, Vec2 size, float startAngle, float sweepAngle)
@@ -168,14 +158,11 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
 
-            gfx.DrawArc(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y, startAngle, sweepAngle);
+            painter.DrawArc(color, penWidth, startPoint, size, startAngle, sweepAngle);
         }
 
         public void DrawArcC(Color color, int penWidth, Vec2 centralPoint, Vec2 size, float startAngle, float sweepAngle)
         {
-            //CenterPoint(ref centralPoint, size);
-            //DrawArc(color, penWidth, centralPoint, size, startAngle, sweepAngle);
-            //sweepAngle = 360;
             MultiplyArc(ref startAngle, ref sweepAngle);
             OffsetPosition(ref centralPoint, ref size);
             CenterPoint(ref centralPoint, size);
@@ -183,7 +170,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
 
-            gfx.DrawArc(getPen(color, penWidth), centralPoint.X, centralPoint.Y, size.X, size.Y, startAngle, sweepAngle);
+            painter.DrawArc(color, penWidth, centralPoint, size, startAngle, sweepAngle);
         }
 
         public void DrawEllipse(Color color, int penWidth, Vec2 startPoint, Vec2 size)
@@ -193,7 +180,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
 
-            gfx.DrawEllipse(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
+            painter.DrawEllipse(color, penWidth, startPoint, size);
         }
 
         public void DrawEllipseC(Color color, int penWidth, Vec2 centralPoint, Vec2 size)
@@ -204,7 +191,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
 
-            gfx.DrawEllipse(getPen(color, penWidth), centralPoint.X, centralPoint.Y, size.X, size.Y);
+            painter.DrawEllipse(color, penWidth, centralPoint, size);
         }
 
         public void FillEllipse(Color color, Vec2 startPoint, Vec2 size)
@@ -214,7 +201,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
 
-            gfx.FillEllipse(getEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
+            painter.FillEllipse(color, startPoint, size);
         }
 
         public void FillEllipseC(Color color, Vec2 centralPoint, Vec2 size)
@@ -226,7 +213,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
 
-            gfx.FillEllipse(getEmptyBrush(color), centralPoint.X, centralPoint.Y, size.X, size.Y);
+            painter.FillEllipse(color, centralPoint, size);
         }
 
         public void DrawRectangle(Color color, int penWidth, Vec2 startPoint, Vec2 size)
@@ -236,7 +223,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
 
-            gfx.DrawRectangle(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
+            painter.DrawRectangle(color, penWidth, startPoint, size);
         }
 
         public void FillRectangle(Color color, Vec2 startPoint, Vec2 size)
@@ -246,7 +233,7 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
 
-            gfx.FillRectangle(getEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
+            painter.FillRectangle(color, startPoint, size);
         }
 
         public void FillRectangleC(Color color, Vec2 centralPoint, Vec2 size)
@@ -257,31 +244,27 @@ namespace WireForm.GraphicsUtils
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
 
-            gfx.FillRectangle(getEmptyBrush(color), centralPoint.X, centralPoint.Y, size.X, size.Y);
+            painter.FillRectangle(color, centralPoint, size);
         }
 
         public void DrawString(string s, Color color, Vec2 startPoint, float scaleDivider)
         {
-            Font font = new Font(FontFamily.GenericMonospace, zoom / scaleDivider, FontStyle.Bold);
-
-            var size = gfx.MeasureString(s, font);
-            var V2Size = new Vec2(size.Width, size.Height);
+            var size = painter.MeasureString(s, zoom, scaleDivider);
+            var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPositionTL(ref startPoint, ref V2Size);
 
-            gfx.DrawString(s, font, new Pen(color, 10).Brush, startPoint.X * zoom, startPoint.Y * zoom);
+            painter.DrawString(s, color, startPoint * zoom, scaleDivider);
         }
 
         public void DrawStringC(string s, Color color, Vec2 centralPoint, float scaleDivider)
         {
-            Font font = new Font(FontFamily.GenericMonospace, zoom / scaleDivider, FontStyle.Bold);
-
-            var size = gfx.MeasureString(s, font);
-            var V2Size = new Vec2(size.Width, size.Height);
+            var size = painter.MeasureString(s, zoom, scaleDivider);
+            var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPosition(ref centralPoint, ref V2Size);
 
-            gfx.DrawString(s, font, new Pen(color, 10).Brush, centralPoint.X * zoom - size.Width / 2f, centralPoint.Y * zoom - size.Height / 2f);
+            painter.DrawString(s, color, centralPoint * zoom - size / 2f, scaleDivider);
         }
     }
 }

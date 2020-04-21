@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
-using WireForm.Circuitry;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.GraphicsUtils;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Input.States.Selection
+namespace Wireform.Input.States.Selection
 {
     /// <summary>
     /// Base class for selection states which handles drawing of selections
@@ -70,7 +68,7 @@ namespace WireForm.Input.States.Selection
             //Execute matches
             foreach (var action in actions)
             {
-                if (action.Key == stateControls.Key && action.Modifiers == stateControls.Modifiers)
+                if (action.Hotkey == stateControls.Hotkey && action.Modifiers == stateControls.Modifiers)
                 {
                     toRefresh = true;
                     action.Invoke(stateControls.State);
@@ -78,8 +76,8 @@ namespace WireForm.Input.States.Selection
             }
 
             string hotkey;
-            if (stateControls.Modifiers == Keys.None) hotkey = stateControls.Key.ToString();
-            else hotkey = $"{stateControls.Modifiers.ToString().Replace(", ", "+")}+{stateControls.Key}";
+            if (stateControls.Modifiers == Modifier.None) hotkey = stateControls.Hotkey + "";
+            else hotkey = $"{stateControls.Modifiers.ToString().Replace(", ", "+")}+{stateControls.Hotkey}";
 
             if(toRefresh) stateControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
             return toRefresh;

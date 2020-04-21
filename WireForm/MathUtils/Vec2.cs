@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WireForm.MathUtils
+namespace Wireform.MathUtils
 {
     public struct Vec2 : IEquatable<Vec2>
     {

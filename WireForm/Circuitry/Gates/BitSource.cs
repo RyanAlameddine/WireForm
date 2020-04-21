@@ -2,14 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
-using WireForm.MathUtils.Collision;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.GraphicsUtils;
+using Wireform.MathUtils;
+using Wireform.MathUtils.Collision;
 
-namespace WireForm.Circuitry.Gates
+namespace Wireform.Circuitry.Gates
 {
     public class BitSource : Gate
     {
@@ -76,7 +76,7 @@ namespace WireForm.Circuitry.Gates
 
         public BitValue currentValue = BitValue.One;
 
-        [CircuitAction("Toggle", System.Windows.Forms.Keys.T)]
+        [CircuitAction("Toggle", 't')]
         public void Toggle()
         {
             currentValue = !currentValue;

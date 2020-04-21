@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.MathUtils;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.MathUtils;
 
-namespace WireForm.GraphicsUtils
+namespace Wireform.GraphicsUtils
 {
     public static class WirePainter
     {

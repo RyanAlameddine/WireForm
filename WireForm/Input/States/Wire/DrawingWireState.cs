@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.GraphicsUtils;
+using Wireform.MathUtils;
 
-namespace WireForm.Input.States.Wire
+namespace Wireform.Input.States.Wire
 {
     /// <summary>
     /// State for drawing new wires holding the left click button

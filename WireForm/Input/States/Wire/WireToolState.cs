@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireForm.Circuitry.Data;
-using WireForm.GraphicsUtils;
+using Wireform.Circuitry.Data;
+using Wireform.GraphicsUtils;
 
-namespace WireForm.Input.States.Wire
+namespace Wireform.Input.States.Wire
 {
     /// <summary>
     /// The state where the Wire tool is selected and the program sits idle.

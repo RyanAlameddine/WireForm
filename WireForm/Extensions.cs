@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using WireForm.Circuitry;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Utilities;
-using WireForm.MathUtils;
+using Wireform.Circuitry;
+using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Utilities;
+using Wireform.MathUtils;
 
-namespace WireForm
+namespace Wireform
 {
     public static class Extensions
     {
@@ -73,10 +73,10 @@ namespace WireForm
         {
             return direction switch
             {
-                Direction.Up => new Vec2(-1, -1),
-                Direction.Down => new Vec2(1, -1),
-                Direction.Left => new Vec2(-1, 1),
-                Direction.Right => new Vec2(1, 1),
+                Direction.Up    => new Vec2(-1, -1),
+                Direction.Down  => new Vec2( 1, -1),
+                Direction.Left  => new Vec2(-1,  1),
+                Direction.Right => new Vec2( 1,  1),
                 _ => throw new System.Exception("How did I get here"),
             };
         }

@@ -4,18 +4,16 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using WireForm.Circuitry;
-using WireForm.Circuitry.CircuitAttributes;
-using WireForm.Circuitry.Data;
-using WireForm.Circuitry.Gates;
-using WireForm.Circuitry.Utilities;
-using WireForm.GraphicsUtils;
-using WireForm.Input;
-using WireForm.Input.States.Selection;
-using WireForm.Input.States.Wire;
-using WireForm.MathUtils;
+using Wireform;
+using Wireform.Circuitry;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.Gates;
+using Wireform.Circuitry.Utilities;
+using Wireform.GraphicsUtils;
+using Wireform.Input;
+using Wireform.MathUtils;
 
-namespace WireForm
+namespace WinformsWireform
 {
 
     public partial class Form1 : Form
@@ -101,7 +99,11 @@ namespace WireForm
         StateControls MakeControls(Keys key)
         {
             var mousePoint = (Vec2)drawingPanel.PointToClient(Cursor.Position);
-            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key, ModifierKeys, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            Modifier modifierKeys = Modifier.None;
+            if (ModifierKeys.HasFlag(Keys.Control)) modifierKeys |= Modifier.Control;
+            if (ModifierKeys.HasFlag(Keys.Shift  )) modifierKeys |= Modifier.Shift  ;
+            if (ModifierKeys.HasFlag(Keys.Alt    )) modifierKeys |= Modifier.Alt    ;
+            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key.ToString().ToLower()[0], modifierKeys, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
             return stateControls;
         }
 
@@ -207,13 +209,13 @@ namespace WireForm
         private void drawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            GraphicsManager.Paint(e.Graphics, new Vec2(Width, Height), stateStack.CurrentState, stateManager);
+            GraphicsManager.Paint(new PainterScope(new WinformsPainter(e.Graphics, GraphicsManager.SizeScale), GraphicsManager.SizeScale), new Vec2(Width, Height), stateStack.CurrentState, stateManager);
         }
 
         Gate picBoxGate = new BitSource(new Vec2(4, 2.5f), Direction.Right);
         private void GatePicBox_Paint(object sender, PaintEventArgs e)
         {
-            picBoxGate.Draw(new PainterScope(e.Graphics, 15));
+            picBoxGate.Draw(new PainterScope(new WinformsPainter(e.Graphics, 15), 15));
         }
         #endregion Graphics
 
@@ -276,17 +278,41 @@ namespace WireForm
 
         private void openButton_Click(object sender, EventArgs e)
         {
-            stateStack.Load(openFileDialog);
+            openFileDialog.Filter = "Json|*.json";
+            openFileDialog.Title = "Load your wireForm";
+            openFileDialog.ShowDialog();
+
+            var fileName = openFileDialog.FileName;
+            stateStack.Load(fileName);
         }
 
         private void save_Click(object sender, EventArgs e)
         {
-            stateStack.Save(saveFileDialog);
+            if (!stateStack.Save())
+            {
+                saveFileDialog.Filter = "Json|*.json";
+                saveFileDialog.Title = "Save your wireForm";
+                saveFileDialog.ShowDialog();
+                var fileName = saveFileDialog.FileName;
+                if (fileName == "")
+                {
+                    return;
+                }
+                stateStack.SaveAs(fileName);
+            }
         }
 
         private void saveAsButton_Click(object sender, EventArgs e)
         {
-            stateStack.SaveAs(saveFileDialog);
+            saveFileDialog.Filter = "Json|*.json";
+            saveFileDialog.Title = "Save your wireForm";
+            saveFileDialog.ShowDialog();
+            var fileName = saveFileDialog.FileName;
+            if (fileName == "")
+            {
+                return;
+            }
+            stateStack.SaveAs(fileName);
         }
 
         private void undoButton_Click(object sender, EventArgs e)

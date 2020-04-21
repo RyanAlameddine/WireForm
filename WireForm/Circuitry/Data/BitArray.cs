@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace WireForm.Circuitry.Data
+namespace Wireform.Circuitry.Data
 {
     [JsonConverter(typeof(BitArrayConverter))]
     public struct BitArray

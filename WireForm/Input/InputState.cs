@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WireForm.Circuitry.Data;
-using WireForm.GraphicsUtils;
-using WireForm.MathUtils;
+﻿using System.Collections.Generic;
+using Wireform.Circuitry.Data;
+using Wireform.GraphicsUtils;
 
-namespace WireForm.Input
+namespace Wireform.Input
 {
     /// <summary>
     /// Base class for all input states. Contains a set of functions involving mouse input, keyboard input, etc.
