@@ -372,26 +372,26 @@ namespace WireForm.Circuitry
             {
                 if(wires[i].StartPoint.X > wires[i].EndPoint.X)
                 {
-                    startsEnd = point.Plus(new Vec2( 1, 0));
-                    endsStart = point.Plus(new Vec2(-1, 0));
+                    startsEnd = point + new Vec2( 1, 0);
+                    endsStart = point + new Vec2(-1, 0);
                 }
                 else
                 {
-                    startsEnd = point.Plus(new Vec2(-1, 0));
-                    endsStart = point.Plus(new Vec2( 1, 0));
+                    startsEnd = point + new Vec2(-1, 0);
+                    endsStart = point + new Vec2( 1, 0);
                 }
             }
             else
             {
                 if (wires[i].StartPoint.Y > wires[i].EndPoint.Y)
                 {
-                    startsEnd = point.Plus(new Vec2(0,  1));
-                    endsStart = point.Plus(new Vec2(0, -1));
+                    startsEnd = point + new Vec2(0,  1);
+                    endsStart = point + new Vec2(0, -1);
                 }
                 else
                 {
-                    startsEnd = point.Plus(new Vec2(0, -1));
-                    endsStart = point.Plus(new Vec2(0,  1));
+                    startsEnd = point + new Vec2(0, -1);
+                    endsStart = point + new Vec2(0,  1);
                 }
             }
 

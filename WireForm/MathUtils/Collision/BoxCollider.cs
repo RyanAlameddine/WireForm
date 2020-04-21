@@ -18,26 +18,17 @@ namespace WireForm.MathUtils.Collision
 
         public Vec2 Position 
         {
-            get
-            {
-                return new Vec2(X, Y);
-            } 
+            get => new Vec2(X, Y);
         }
 
         public Vec2 Bounds
         {
-            get
-            {
-                return new Vec2(Width, Height);
-            }
+            get => new Vec2(Width, Height);
         }
 
         public static BoxCollider Zero
         {
-            get
-            {
-                return new BoxCollider(0, 0, 0, 0);
-            }
+            get => new BoxCollider(0, 0, 0, 0);
         }
 
         public BoxCollider(float X, float Y, float Width, float Height)
@@ -49,10 +40,7 @@ namespace WireForm.MathUtils.Collision
         }
 
 
-        public bool Intersects(BoxCollider other)
-        {
-            return Intersects(other, out _);
-        }
+        public bool Intersects(BoxCollider other) => Intersects(other, out _);
 
         public bool Intersects(BoxCollider other, out BoxCollider intersection)
         {

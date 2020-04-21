@@ -11,27 +11,6 @@ namespace WireForm.MathUtils
 {
     public static class MathHelper
     {
-
-        public static Vec2 Times(this Vec2 point, float a)
-        {
-            return new Vec2((int) (point.X * a), (int) (point.Y * a));
-        }
-
-        public static Vec2 Plus(this Vec2 point, int a)
-        {
-            return new Vec2(point.X + a, point.Y + a);
-        }
-
-        public static Vec2 Plus(this Vec2 point1, Vec2 point2)
-        {
-            return new Vec2(point1.X + point2.X, point1.Y + point2.Y);
-        }
-
-        public static Vec2 ToInts(this Vec2 point)
-        {
-            return new Vec2((int)point.X, (int)point.Y);
-        }
-
         public static Vec2 Round(this Vec2 point)
         {
             return new Vec2((float) Math.Round(point.X), (float) Math.Round(point.Y));
@@ -110,14 +89,6 @@ namespace WireForm.MathUtils
             }
             return i;
         }
-
-        ///// <summary>
-        ///// Position of the mouse in local coordinates rounded to the nearest grid point
-        ///// </summary>
-        //public static Vec2 LocalGridPoint(Vec2 mousePosition)
-        //{
-        //    return ((mousePosition + (GraphicsManager.SizeScale / 2f)) * (1 / GraphicsManager.SizeScale)).ToInts();
-        //}
 
         /// <summary>
         /// Transforms a Vec2 from viewport coordinates to relative to the local grid
