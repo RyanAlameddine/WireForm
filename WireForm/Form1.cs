@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using WireForm.Circuitry;
@@ -39,19 +40,22 @@ namespace WireForm
         private void Form1_Load(object sender, EventArgs e)
         {
             toolBox.SelectedIndex = 0;
-            gateBox.DataSource = Enum.GetValues(GateEnum.GatesEnum);
+            gateBox.DataSource = GateCollection.GateConstructors.Keys.ToArray();
         }
 
         #region Input
 
         bool runInputEvent(Func<StateControls, bool> inputEvent)
         {
-            return runInputEvent(inputEvent, Keys.None, ModifierKeys);
+            return runInputEvent(inputEvent, Keys.None);
         }
-        bool runInputEvent(Func<StateControls, bool> inputEvent, Keys key, Keys modifiers)
+        /// <summary>
+        /// Function for the Form to interact with the input manager.
+        /// The inputEvent should be a function in the InputStateManager.
+        /// </summary>
+        bool runInputEvent(Func<StateControls, bool> inputEvent, Keys key)
         {
-            var mousePoint = (Vec2)drawingPanel.PointToClient(Cursor.Position);
-            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key, modifiers, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            var stateControls = MakeControls(key);
             bool toRefresh = inputEvent(stateControls);
 
             //Process [CircuitActions]
@@ -70,7 +74,7 @@ namespace WireForm
                     GateMenu.Items.Add(act.Name, null, actionEvent);
                 }
 
-                GateMenu.Show(this, (Point)mousePoint);
+                GateMenu.Show(this, (Point)drawingPanel.PointToClient(Cursor.Position));
             }
 
             //Process [CircuitProperties]
@@ -89,6 +93,16 @@ namespace WireForm
             if (toRefresh) drawingPanel.Refresh();
 
             return toRefresh;
+        }
+
+        /// <summary>
+        /// Helper function which makes StateControls
+        /// </summary>
+        StateControls MakeControls(Keys key)
+        {
+            var mousePoint = (Vec2)drawingPanel.PointToClient(Cursor.Position);
+            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key, ModifierKeys, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            return stateControls;
         }
 
         private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
@@ -110,17 +124,6 @@ namespace WireForm
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //If W is pressed, change to Wire tool
-            if (e.KeyChar == 'w')
-            {
-                toolBox.SelectedIndex = 0;
-                toolBox_SelectedIndexChanged(this, new EventArgs());
-            }
-            if (e.KeyChar == 'g')
-            {
-                toolBox.SelectedIndex = 1;
-                toolBox_SelectedIndexChanged(this, new EventArgs());
-            }
 
             if (e.KeyChar == '+' || e.KeyChar == '=')
             {
@@ -147,14 +150,30 @@ namespace WireForm
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            //If W is pressed, change to Wire tool
+            if (keyData == Keys.W)
+            {
+                toolBox.SelectedIndex = 1;
+                toolBox_SelectedIndexChanged(this, new EventArgs());
+            }
+            else if (keyData == Keys.G)
+            {
+                toolBox.SelectedIndex = 0;
+                toolBox_SelectedIndexChanged(this, new EventArgs());
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            runInputEvent(stateManager.KeyDown, e.KeyCode, e.Modifiers);
+            runInputEvent(stateManager.KeyDown, e.KeyCode);
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-
+            runInputEvent(stateManager.KeyUp, e.KeyCode);
         }
 
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
@@ -168,35 +187,33 @@ namespace WireForm
             drawingPanel.Refresh();
         }
 
-        private void GatePicBox_MouseClick(object sender, MouseEventArgs e)
+        private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //MakeControls(out var stateControls);
-            //inputManager.MouseDown(stateStack, (Vec2)e.Location, this, e.Button, GateMenu, false, gateBox.SelectedIndex);
-            drawingPanel_MouseDown(sender, e);
+            //Create new gate
+            picBoxGate = GateCollection.CreateGate((string)gateBox.SelectedValue, new Vec2(4, 2.5f));
+            gatePicBox.Refresh();
+        }
+
+        private void GatePicBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            //Place created gate onto board
+            StateControls stateControls = MakeControls(Keys.None);
+            Gate newGate = GateCollection.CreateGate((string)gateBox.SelectedValue, Vec2.Zero);
+            stateManager.PlaceNewGate(stateControls, newGate);
         }
         #endregion Input
 
         #region Graphics
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
         private void drawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             GraphicsManager.Paint(e.Graphics, new Vec2(Width, Height), stateStack.CurrentState, stateManager);
         }
 
-        private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            newGate = GateEnum.NewGate(gateBox.SelectedIndex, new Vec2(4, 2.5f));
-            gatePicBox.Refresh();
-        }
-
-        Gate newGate = new BitSource(new Vec2(4, 2.5f), Direction.Right);
+        Gate picBoxGate = new BitSource(new Vec2(4, 2.5f), Direction.Right);
         private void GatePicBox_Paint(object sender, PaintEventArgs e)
         {
-            newGate.Draw(new PainterScope(e.Graphics, 15));
+            picBoxGate.Draw(new PainterScope(e.Graphics, 15));
         }
         #endregion Graphics
 
@@ -272,11 +289,6 @@ namespace WireForm
             stateStack.SaveAs(saveFileDialog);
         }
 
-        private void closeButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
         private void undoButton_Click(object sender, EventArgs e)
         {
             runInputEvent(stateManager.Undo);
@@ -300,6 +312,11 @@ namespace WireForm
         private void pasteButton_Click(object sender, EventArgs e)
         {
             runInputEvent(stateManager.Paste);
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            Close();
         }
         #endregion
     }

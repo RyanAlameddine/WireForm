@@ -69,6 +69,7 @@
     <Compile Include="Circuitry\Gates\Logic\XorGate.cs" />
     <Compile Include="Circuitry\Gates\Logic\OrGate.cs" />
     <Compile Include="Circuitry\Utilities\Direction.cs" />
+    <Compile Include="Circuitry\Utilities\GateCollection.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Circuitry\Data\BoardState.cs" />
     <Compile Include="Form1.cs">
@@ -79,13 +80,11 @@
     </Compile>
     <Compile Include="Circuitry\Gates\BitSource.cs" />
     <Compile Include="Circuitry\Utilities\Gate.cs" />
-    <Compile Include="Circuitry\Utilities\GateEnum.cs" />
     <Compile Include="Circuitry\GatePin.cs" />
     <Compile Include="Circuitry\Gates\Logic\AndGate.cs" />
     <Compile Include="Circuitry\Gates\Logic\NotGate.cs" />
     <Compile Include="GraphicsUtils\GraphicsManager.cs" />
     <Compile Include="GraphicsUtils\PainterScope.cs" />
-    <Compile Include="InputHandler.cs" />
     <Compile Include="Input\StateControls.cs" />
     <Compile Include="Input\InputStateManager.cs" />
     <Compile Include="Input\States\Selection\MovingSelectionState.cs" />

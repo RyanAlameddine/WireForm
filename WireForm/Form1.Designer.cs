@@ -62,12 +62,11 @@
             this.toolBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolBox.FormattingEnabled = true;
             this.toolBox.Items.AddRange(new object[] {
-            "Wire Painter (W)",
-            "Gate Controller (G)"});
-            this.toolBox.Location = new System.Drawing.Point(1000, 18);
-            this.toolBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            "Gate Controller (G)",
+            "Wire Painter (W)"});
+            this.toolBox.Location = new System.Drawing.Point(667, 12);
             this.toolBox.Name = "toolBox";
-            this.toolBox.Size = new System.Drawing.Size(180, 28);
+            this.toolBox.Size = new System.Drawing.Size(121, 21);
             this.toolBox.TabIndex = 0;
             this.toolBox.SelectedIndexChanged += new System.EventHandler(this.toolBox_SelectedIndexChanged);
             // 
@@ -76,25 +75,24 @@
             this.gateBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gateBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.gateBox.FormattingEnabled = true;
-            this.gateBox.Location = new System.Drawing.Point(1000, 60);
-            this.gateBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gateBox.Location = new System.Drawing.Point(667, 39);
             this.gateBox.Name = "gateBox";
-            this.gateBox.Size = new System.Drawing.Size(180, 28);
+            this.gateBox.Size = new System.Drawing.Size(121, 21);
             this.gateBox.TabIndex = 1;
-            this.gateBox.Visible = true;
             this.gateBox.SelectedIndexChanged += new System.EventHandler(this.GateBox_SelectedIndexChanged);
             // 
             // gatePicBox
             // 
             this.gatePicBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gatePicBox.BackColor = System.Drawing.Color.LightGray;
-            this.gatePicBox.Location = new System.Drawing.Point(1000, 95);
+            this.gatePicBox.Location = new System.Drawing.Point(667, 62);
+            this.gatePicBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.gatePicBox.Name = "gatePicBox";
-            this.gatePicBox.Size = new System.Drawing.Size(180, 128);
+            this.gatePicBox.Size = new System.Drawing.Size(120, 83);
             this.gatePicBox.TabIndex = 5;
             this.gatePicBox.TabStop = false;
             this.gatePicBox.Paint += new System.Windows.Forms.PaintEventHandler(this.GatePicBox_Paint);
-            this.gatePicBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.GatePicBox_MouseClick);
+            this.gatePicBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GatePicBox_MouseDown);
             // 
             // GateMenu
             // 
@@ -106,12 +104,11 @@
             // 
             this.SelectionSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectionSettings.FormattingEnabled = true;
-            this.SelectionSettings.ItemHeight = 20;
-            this.SelectionSettings.Location = new System.Drawing.Point(1000, 229);
+            this.SelectionSettings.Location = new System.Drawing.Point(667, 149);
+            this.SelectionSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.SelectionSettings.Name = "SelectionSettings";
-            this.SelectionSettings.Size = new System.Drawing.Size(180, 344);
+            this.SelectionSettings.Size = new System.Drawing.Size(121, 225);
             this.SelectionSettings.TabIndex = 6;
-            this.SelectionSettings.Visible = true;
             this.SelectionSettings.SelectedIndexChanged += new System.EventHandler(this.SelectionSettings_SelectedIndexChanged);
             // 
             // SelectionSettingValue
@@ -119,24 +116,22 @@
             this.SelectionSettingValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectionSettingValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.SelectionSettingValue.FormattingEnabled = true;
-            this.SelectionSettingValue.Location = new System.Drawing.Point(1000, 583);
-            this.SelectionSettingValue.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.SelectionSettingValue.Location = new System.Drawing.Point(667, 379);
             this.SelectionSettingValue.Name = "SelectionSettingValue";
-            this.SelectionSettingValue.Size = new System.Drawing.Size(180, 28);
+            this.SelectionSettingValue.Size = new System.Drawing.Size(121, 21);
             this.SelectionSettingValue.TabIndex = 7;
-            this.SelectionSettingValue.Visible = true;
             this.SelectionSettingValue.SelectedIndexChanged += new System.EventHandler(this.SelectionSettingsValue_SelectedIndexChanged);
             // 
             // menuStrip
             // 
-            this.menuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileButton,
             this.editButton});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1200, 36);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip.Size = new System.Drawing.Size(800, 31);
             this.menuStrip.TabIndex = 8;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -151,7 +146,7 @@
             this.closeButton});
             this.fileButton.Name = "fileButton";
             this.fileButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.fileButton.Size = new System.Drawing.Size(54, 30);
+            this.fileButton.Size = new System.Drawing.Size(54, 29);
             this.fileButton.Text = "File";
             // 
             // newButton
@@ -210,7 +205,7 @@
             this.undoButton,
             this.redoButton});
             this.editButton.Name = "editButton";
-            this.editButton.Size = new System.Drawing.Size(58, 30);
+            this.editButton.Size = new System.Drawing.Size(58, 29);
             this.editButton.Text = "Edit";
             // 
             // copyButton
@@ -257,9 +252,10 @@
             // drawingPanel
             // 
             this.drawingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.drawingPanel.Location = new System.Drawing.Point(0, 36);
+            this.drawingPanel.Location = new System.Drawing.Point(0, 31);
+            this.drawingPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.drawingPanel.Name = "drawingPanel";
-            this.drawingPanel.Size = new System.Drawing.Size(1200, 656);
+            this.drawingPanel.Size = new System.Drawing.Size(800, 419);
             this.drawingPanel.TabIndex = 9;
             this.drawingPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.drawingPanel_Paint);
             this.drawingPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.drawingPanel_MouseDown);
@@ -268,10 +264,10 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.ClientSize = new System.Drawing.Size(1200, 692);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.SelectionSettingValue);
             this.Controls.Add(this.SelectionSettings);
             this.Controls.Add(this.gatePicBox);
@@ -280,11 +276,9 @@
             this.Controls.Add(this.drawingPanel);
             this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);

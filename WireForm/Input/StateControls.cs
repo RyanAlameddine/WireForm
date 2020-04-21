@@ -18,7 +18,7 @@ namespace WireForm.Input
         public BoardState State { get; }
 
         /// <summary>
-        /// The current mouse position in screen coordinates
+        /// The current mouse position in viewport coordinates
         /// </summary>
         public Vec2 MousePosition { get; }
 

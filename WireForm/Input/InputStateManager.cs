@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WireForm.Circuitry.Data;
+using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.Input.States.Selection;
 using WireForm.Input.States.Wire;
@@ -13,6 +14,11 @@ using WireForm.MathUtils;
 
 namespace WireForm.Input
 {
+    /// <summary>
+    /// A class which manages all input which can communicate with the WireForm.
+    /// Each operation function takes in the current StateControls and outputs a boolean 
+    /// for whether or not the operation requires a drawing refresh.
+    /// </summary>
     public class InputStateManager
     {
         /// <summary>
@@ -70,10 +76,13 @@ namespace WireForm.Input
             state.Draw(currentState, painter);
         }
 
-        private bool Eval(InputReturns returnValue)
+        /// <summary>
+        /// Evaluates the returnValue and updates internal state
+        /// </summary>
+        protected bool Eval(InputReturns returnValue)
         {
-            if (state != returnValue.state) 
-                Debug.WriteLine($"{state.GetType().Name}->{returnValue.state.GetType().Name}");
+            //if (state != returnValue.state) 
+            //    Debug.WriteLine($"{state.GetType().Name}->{returnValue.state.GetType().Name}");
             state = returnValue.state;
             return returnValue.toRefresh;
         }
@@ -87,6 +96,7 @@ namespace WireForm.Input
 
         //Keyboard Operations
         public bool KeyDown(StateControls stateControls) => Eval(state.KeyDown(stateControls));
+        public bool KeyUp  (StateControls stateControls) => Eval(state.KeyUp  (stateControls));
 
         //History Operations
         public bool Undo(StateControls stateControls) => Eval(state.Undo(stateControls));
@@ -96,6 +106,17 @@ namespace WireForm.Input
         public bool Copy (StateControls stateControls) => Eval(state.Copy (stateControls, clipBoard));
         public bool Cut  (StateControls stateControls) => Eval(state.Cut  (stateControls, clipBoard));
         public bool Paste(StateControls stateControls) => Eval(state.Paste(stateControls, clipBoard));
+
+        //Special operations
+        /// <summary>
+        /// Special operation that, if the current state IsClean, will change state to MovingSelectionState
+        /// and place the newGate into the selections list.
+        /// </summary>
+        public bool PlaceNewGate(StateControls stateControls, Gate newGate)
+        {
+            if (!state.IsClean()) return false;
+            return Eval(new InputReturns(true, new MovingSelectionState(stateControls.LocalMousePosition, new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false)));
+        }
     }
 
     public enum Tools
