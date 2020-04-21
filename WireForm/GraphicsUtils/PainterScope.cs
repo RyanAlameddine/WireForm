@@ -20,7 +20,7 @@ namespace Wireform.GraphicsUtils
     {
         private float zoom; // = 50f
 
-        private Painter painter;
+        private IPainter painter;
 
         private Vec2 offset;
 
@@ -29,7 +29,7 @@ namespace Wireform.GraphicsUtils
         /// <summary>
         /// Creates an empty painter
         /// </summary>
-        public PainterScope(Painter painter, float zoom)
+        public PainterScope(IPainter painter, float zoom)
         {
             this.painter = painter;
             this.zoom = zoom;
