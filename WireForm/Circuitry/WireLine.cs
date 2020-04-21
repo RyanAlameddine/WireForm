@@ -416,6 +416,13 @@ namespace WireForm.Circuitry
             }
         }
 
+        public override void SetPosition(Vec2 position)
+        {
+            Vec2 offset = position - StartPoint;
+            EndPoint += offset;
+            base.SetPosition(position);
+        }
+
         public override void Delete(BoardState propogator)
         {
             propogator.wires.Remove(this);

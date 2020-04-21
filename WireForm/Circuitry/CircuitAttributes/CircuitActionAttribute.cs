@@ -43,7 +43,11 @@ namespace WireForm.Circuitry.CircuitAttributes
             this.Modifiers = modifiers;
         }
 
-        public static List<CircuitAct> GetActions(CircuitObject target)
+        /// <summary>
+        /// Reflectively loads all [CircuitActions] on a target CircuitObject.
+        /// </summary>
+        /// <param name="cleanup">Function to be run after the action is invoked (refresh selections)</param>
+        public static List<CircuitAct> GetActions(CircuitObject target, Action<BoardState> cleanup)
         {
             var actions = new List<CircuitAct>();
 
@@ -56,7 +60,12 @@ namespace WireForm.Circuitry.CircuitAttributes
                     //If method has IgnoreCircuitAttribute, continue
                     if (method.GetCustomAttributes(typeof(HideCircuitAttributesAttribute), true).Length != 0) continue;
 
-                    Action<BoardState> action = (state) => method.Invoke(target, method.GetParameters().Length == 1 ? new[] { state } : null);
+                    Action<BoardState> action = (state) =>
+                    {
+                        //Invoke method with or without state as parameter
+                        method.Invoke(target, method.GetParameters().Length == 1 ? new[] { state } : null);
+                        cleanup(state);
+                    };
                     actions.Add(new CircuitAct(action, attribute));
                 }
             }

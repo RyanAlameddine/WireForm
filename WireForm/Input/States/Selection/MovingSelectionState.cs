@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using WireForm.Circuitry;
 using WireForm.Circuitry.Data;
+using WireForm.Circuitry.Utilities;
 using WireForm.GraphicsUtils;
 using WireForm.MathUtils;
 using WireForm.MathUtils.Collision;
@@ -39,7 +41,13 @@ namespace WireForm.Input.States.Selection
         /// and thus has a valid start position
         /// </param>
         public MovingSelectionState(Vec2 mousePosition, HashSet<CircuitObject> selections, CircuitObject selectedObject, BoardState state, bool resettable) : base(selections)
-        {            
+        {
+            //Make sure all selections start in a gridded position;
+            foreach (var selection in selections)
+            {
+                selection.SetPosition(selection.StartPoint.Round());
+            }
+
             this.selectedObject = selectedObject;
             this.resettable = resettable;
 
@@ -48,11 +56,14 @@ namespace WireForm.Input.States.Selection
                 resetBoxes.Add(selection.HitBox);
             }
 
+            //Calculate offset from held location to current Mouse position
             Vec2 localPoint = MathHelper.ViewportToLocalPoint(mousePosition);
             startPosition = selectedObject.StartPoint;
             offset = selectedObject.StartPoint - localPoint;
 
-            state.DetatchAll(selections);
+            if(resettable) state.DetatchAll(selections);
+
+            CheckIntersections(state);
         }
 
         public override void Draw(BoardState currentState, PainterScope painter)
@@ -89,27 +100,32 @@ namespace WireForm.Input.States.Selection
             //Drag all objects to their new positions
             foreach(var selection in selections)
             {
-                selection.StartPoint += change;
-                
-                if (selection is WireLine wire)
-                {
-                    wire.EndPoint += change;
-                }
+                selection.OffsetPosition(change);
+            }
+
+            CheckIntersections(stateControls.State);
+
+            return (true, this);
+        }
+
+        private void CheckIntersections(BoardState state)
+        {
+            foreach(var selection in selections)
+            {
                 //Calculate intersections with other gates
-                else
+                if (selection is Gate)
                 {
-                    if (selection.HitBox.GetIntersections(stateControls.State, false, out var intersects, out _))
+                    if (selection.HitBox.GetIntersections(state, false, out var intersects, out _))
                     {
                         intersectedBoxes.UnionWith(intersects);
                     }
                 }
             }
-
-            return (true, this);
         }
 
         public override InputReturns MouseLeftUp(StateControls stateControls)
         {
+            CheckIntersections(stateControls.State);
             if (intersectedBoxes.Count > 0)
             {
                 //If the objects were just created and are placed in an invalid state, they have nowhere
@@ -123,12 +139,7 @@ namespace WireForm.Input.States.Selection
                 Vec2 totalOffset = startPosition - selectedObject.StartPoint;
                 foreach (var selection in selections)
                 {
-                    selection.StartPoint += totalOffset;
-
-                    if (selection is WireLine wire)
-                    {
-                        wire.EndPoint += totalOffset;
-                    }
+                    selection.OffsetPosition(totalOffset);
                 }
             }
 

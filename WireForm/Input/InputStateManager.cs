@@ -8,21 +8,44 @@ using System.Windows.Forms;
 using WireForm.Circuitry.Data;
 using WireForm.GraphicsUtils;
 using WireForm.Input.States.Selection;
+using WireForm.Input.States.Wire;
 using WireForm.MathUtils;
 
 namespace WireForm.Input
 {
     public class InputStateManager
     {
+        /// <summary>
+        /// Returns a set of all the standard Tools and a new instance of each tool state
+        /// This collection exists for convienience only, and is never neccessary to use.
+        /// However, this is what will be checked when a Tools is passed into ChangeTool(Tools);
+        /// </summary>
+        public static IReadOnlyDictionary<Tools, InputState> StandardToolStates 
+        { 
+            get => new Dictionary<Tools, InputState>()
+                {
+                    { Tools.SelectionTool, new SelectionToolState() },
+                    { Tools.WireTool, new WireToolState() },
+                };
+        }
+
         InputState state;
         readonly HashSet<CircuitObject> clipBoard;
 
-        public InputStateManager(InputState startingState = null)
+        public InputStateManager()
         {
             clipBoard = new HashSet<CircuitObject>();
 
-            if (startingState != null) state = startingState;
-            else                       state = new SelectionToolState();
+            state = new SelectionToolState();
+        }
+
+        /// <summary>
+        /// If the current state is clean, inserts the new state (loaded from StandardToolState) and returns true.
+        /// If not, return false.
+        /// </summary>
+        public bool ChangeTool(Tools newState)
+        {
+            return ChangeTool(StandardToolStates[newState]);
         }
 
         /// <summary>
@@ -73,5 +96,11 @@ namespace WireForm.Input
         public bool Copy (StateControls stateControls) => Eval(state.Copy (stateControls, clipBoard));
         public bool Cut  (StateControls stateControls) => Eval(state.Cut  (stateControls, clipBoard));
         public bool Paste(StateControls stateControls) => Eval(state.Paste(stateControls, clipBoard));
+    }
+
+    public enum Tools
+    {
+        SelectionTool,
+        WireTool,
     }
 }

@@ -235,32 +235,19 @@ namespace WireForm
         #endregion CircuitProperties
 
         #region FormInput
-        enum Tool
-        {
-            WirePainter,
-            GateController,
-        }
-        Tool tool = Tool.GateController;
+        Tools tool = Tools.SelectionTool;
         private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var newTool = (Tool)toolBox.SelectedIndex;
+            var newTool = (Tools)toolBox.SelectedIndex;
             if (newTool == tool) return;
-            tool = (Tool)toolBox.SelectedIndex;
-            gateBox.Visible = tool == Tool.GateController;
-            SelectionSettings.Visible = tool == Tool.GateController;
-            SelectionSettingValue.Visible = tool == Tool.GateController;
-            gatePicBox.Visible = tool == Tool.GateController;
 
-            switch (tool)
-            {
+            tool                          = (Tools)toolBox.SelectedIndex;
+            gateBox.Visible               = tool == Tools.SelectionTool;
+            SelectionSettings.Visible     = tool == Tools.SelectionTool;
+            SelectionSettingValue.Visible = tool == Tools.SelectionTool;
+            gatePicBox.Visible            = tool == Tools.SelectionTool;
 
-                case Tool.WirePainter:
-                    stateManager.ChangeTool(new WireToolState());
-                    break;
-                case Tool.GateController:
-                    stateManager.ChangeTool(new SelectionToolState());
-                    break;
-            }
+            stateManager.ChangeTool(tool);
 
             drawingPanel.Refresh();
         }

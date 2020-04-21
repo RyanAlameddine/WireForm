@@ -61,28 +61,26 @@ namespace WireForm.Input.States.Selection
         protected bool ExecuteHotkey(StateControls stateControls)
         {
             bool toRefresh = false;
+            List<CircuitAct> actions = new List<CircuitAct>();
+            //Find all actions
             foreach(var selection in selections)
             {
-                var actions = CircuitActionAttribute.GetActions(selection);
-                foreach (var action in actions)
+                actions.AddRange(CircuitActionAttribute.GetActions(selection, RefreshSelections));
+            }
+            //Execute matches
+            foreach (var action in actions)
+            {
+                if (action.Key == stateControls.Key && action.Modifiers == stateControls.Modifiers)
                 {
-                    if (action.Key == stateControls.Key && action.Modifiers == stateControls.Modifiers)
-                    {
-                        toRefresh = true;
-                        action.Invoke(stateControls.State);
-                    }
+                    toRefresh = true;
+                    action.Invoke(stateControls.State);
                 }
             }
+
             string hotkey;
-            if(stateControls.Modifiers == Keys.None)
-            {
-                hotkey = stateControls.Key.ToString();
-            }
-            else
-            {
-                string modifiers = stateControls.Modifiers.ToString().Replace(", ", "+");
-                hotkey= $"{modifiers}+{stateControls.Key}";
-            }
+            if (stateControls.Modifiers == Keys.None) hotkey = stateControls.Key.ToString();
+            else hotkey = $"{stateControls.Modifiers.ToString().Replace(", ", "+")}+{stateControls.Key}";
+
             if(toRefresh) stateControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
             return toRefresh;
         }
@@ -90,9 +88,8 @@ namespace WireForm.Input.States.Selection
 
         /// <summary>
         /// Check through selection list to confirm that everything still exists
-        /// If even one item is removed, returns true. Else returns false
         /// </summary>
-        public bool RefreshSelections(BoardState state)
+        public void RefreshSelections(BoardState state)
         {
             int count = selections.Count;
             selections.RemoveWhere((x) =>
@@ -112,8 +109,6 @@ namespace WireForm.Input.States.Selection
                     throw new Exception("Invalid object selected");
                 }
             });
-
-            return count != selections.Count;
         }
 
         public override void Draw(BoardState currentState, PainterScope painter)

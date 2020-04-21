@@ -39,9 +39,17 @@ namespace WireForm.MathUtils
         {
             return new Vec2(a.X * b, a.Y * b);
         }
+        public static Vec2 operator /(Vec2 a, float b)
+        {
+            return new Vec2(a.X / b, a.Y / b);
+        }
         public static Vec2 operator +(Vec2 a, float b)
         {
             return new Vec2(a.X + b, a.Y + b);
+        }
+        public static Vec2 operator -(Vec2 a, float b)
+        {
+            return new Vec2(a.X - b, a.Y - b);
         }
         #endregion
 

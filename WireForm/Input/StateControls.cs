@@ -28,7 +28,7 @@ namespace WireForm.Input
         public Action Refresh { get; }
 
         /// <summary>
-        /// The key currently being pressed down
+        /// If this control is being created for a keyboard event, should contain the key of note
         /// </summary>
         public Keys Key { get; }
 

@@ -27,9 +27,10 @@ namespace WireForm.Input.States.Selection
         /// </summary>
         private readonly BoxCollider mouseBox;
 
-        public SelectingState(Vec2 position, HashSet<CircuitObject> additiveSelections) : base(additiveSelections)
+        public SelectingState(Vec2 position, HashSet<CircuitObject> additiveSelections) : base(new HashSet<CircuitObject>())
         {
             this.additiveSelections = additiveSelections;
+            selections.UnionWith(additiveSelections);
             mouseBox = new BoxCollider(position.X, position.Y, 0, 0);
         }
 
