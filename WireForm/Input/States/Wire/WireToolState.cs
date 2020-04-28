@@ -18,5 +18,19 @@ namespace Wireform.Input.States.Wire
         public override InputReturns MouseLeftDown (StateControls stateControls) => (true, new DrawingWireState(stateControls.GriddedMousePosition));
 
         public override InputReturns MouseRightDown(StateControls stateControls) => (true, new RemovingWireState(stateControls.State.wires, stateControls.GriddedMousePosition, stateControls.State.Connections));
+
+        public override InputReturns Undo(StateControls stateControls)
+        {
+            stateControls.Reverse();
+
+            return (true, this);
+        }
+
+        public override InputReturns Redo(StateControls stateControls)
+        {
+            stateControls.Advance();
+
+            return (true, this);
+        }
     }
 }
