@@ -28,6 +28,8 @@ namespace WinformsWireform
 
             locationIdentifier = openFileDialog.FileName;
 
+            if (locationIdentifier == "") return "";
+
             return File.ReadAllText(locationIdentifier);
         }
 
@@ -40,6 +42,7 @@ namespace WinformsWireform
                 saveFileDialog.ShowDialog();
                 locationIdentifier = saveFileDialog.FileName;
             }
+            if (locationIdentifier == "") return "";
 
             File.WriteAllText(locationIdentifier, json);
             return locationIdentifier;
