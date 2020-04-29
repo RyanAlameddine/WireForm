@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace Wireform.MathUtils.Collision
             get => new Vec2(X, Y);
         }
 
+        [JsonIgnore]
         public Vec2 Bounds
         {
             get => new Vec2(Width, Height);

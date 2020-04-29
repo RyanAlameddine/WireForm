@@ -33,7 +33,7 @@ namespace Wireform.Input.States.Selection
         /// <summary>
         /// Returns a list of updated CircuitProperties to be passed into the StateControls
         /// </summary>
-        protected List<CircuitProp> GetUpdatedCircuitProperties()
+        public List<CircuitProp> GetUpdatedCircuitProperties()
         {
             List<CircuitProp> circuitProperties = null;
             var gates = selections.Where((x) => x is Gate);

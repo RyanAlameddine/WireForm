@@ -43,9 +43,15 @@ namespace Wireform.Circuitry.Utilities
             foreach(var type in gateTypes)
             {
                 var name = type.Name;
-                //var type = gateType;
-                Gate constructor(Vec2 position) => (Gate)Activator.CreateInstance(type, position, default);
-                constructors.Add(name, constructor);
+
+                try
+                {
+                    Gate constructor(Vec2 position) => (Gate)Activator.CreateInstance(type, position, default);
+                    constructors.Add(name, constructor);
+                } catch (System.MissingMethodException)
+                {
+                    throw new MissingMethodException("All Gates must have a constructor which takes in only Vec2 (for position), and Direction");
+                }
             }
         }
     }

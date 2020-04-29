@@ -24,6 +24,8 @@ namespace Wireform.Input.States.Selection
             this.additiveSelections = additiveSelections;
             selections.UnionWith(additiveSelections);
             mouseBox = new BoxCollider(position.X, position.Y, 0, 0);
+
+
         }
 
         public override void Draw(BoardState state, PainterScope painter)

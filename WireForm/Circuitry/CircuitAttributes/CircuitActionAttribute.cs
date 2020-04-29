@@ -47,7 +47,7 @@ namespace Wireform.Circuitry.CircuitAttributes
             var actions = new List<CircuitAct>();
 
             //Find and register all methods which are circuit actions
-            var methods = target.GetType().GetMethods();
+            var methods = target.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var method in methods)
             {
                 foreach (var attribute in (CircuitActionAttribute[])method.GetCustomAttributes(typeof(CircuitActionAttribute), true))
@@ -66,7 +66,7 @@ namespace Wireform.Circuitry.CircuitAttributes
             }
 
             //Find and register all properties which are Circuit Actions
-            var properties = target.GetType().GetProperties();
+            var properties = target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             var circuitProps = new List<CircuitProp>();
 
             foreach (var property in properties)

@@ -198,7 +198,7 @@ namespace WinformsWireform
             //Place created gate onto board
             StateControls stateControls = MakeControls(Keys.None);
             Gate newGate = GateCollection.CreateGate((string)gateBox.SelectedValue, Vec2.Zero);
-            stateManager.PlaceNewGate(stateControls, newGate);
+            runInputEvent(stateManager.PlaceNewGate(newGate));
         }
         #endregion Input
 

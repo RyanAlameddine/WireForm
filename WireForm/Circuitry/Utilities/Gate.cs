@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
@@ -12,6 +14,10 @@ namespace Wireform.Circuitry.Utilities
 {
     public abstract class Gate : CircuitObject
     {
+        //TODO: MAKE COLOR ABLE TO BE A CONSTANT
+        //public const Color LineColor = Color.Black;
+        public const int PenWidth = 10;
+
         [JsonIgnore]
         private Vec2 position;
         /// <summary>
@@ -36,7 +42,9 @@ namespace Wireform.Circuitry.Utilities
         public GatePin[] Inputs { get; set; }
 
         /// <summary>
-        /// Lo
+        /// Hitbox for Gate
+        /// This does NOT take into account the multiplayer (gate rotation) but will update 
+        /// Gate.HitBox which is relative to the rotation
         /// </summary>
         [JsonIgnore]
         private BoxCollider localHitbox;
@@ -81,11 +89,16 @@ namespace Wireform.Circuitry.Utilities
             }
         }
 
+        /// <summary>
+        /// The direction which the gate is facing
+        /// If you would like to disable rotation, simply override Direction and tag it
+        /// with [HideCircuitAttributes]
+        /// </summary>
         [CircuitAction("Rotate", 'r')]
         [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
         public virtual Direction Direction { get; set; } = Direction.Right;
 
-        public Gate(Vec2 Position, Direction direction, BoxCollider localHitbox)
+        protected Gate(Vec2 Position, Direction direction, BoxCollider localHitbox)
         {
             Direction = direction;
             this.localHitbox = localHitbox;
@@ -184,15 +197,25 @@ namespace Wireform.Circuitry.Utilities
             }
         }
 
+        /// <summary>
+        /// Helper function that applies func to all Inputs in order, passing along the accumulator (Similar to Aggregate in LINQ).
+        /// E.g. to 'and' all inputs, run FoldInputs((accumulator, current) => accumulator & current);
+        /// </summary>
+        protected BitArray FoldInputs(Func<BitArray, BitArray, BitArray> func)
+        {
+            if (Inputs.Length == 0) return new BitArray(0);
+            BitArray accumulator = Inputs[0].Values;
+            for(int i = 1; i < Inputs.Length; i++)
+            {
+                accumulator = func(accumulator, Inputs[i].Values);
+            }
+            return accumulator;
+        }
+
         public override void Delete(BoardState propogator)
         {
             propogator.gates.Remove(this);
             RemoveConnections(propogator.Connections);
         }
-
-        //public override CircuitObject Copy()
-        //{
-        //    throw new System.NotImplementedException();
-        //}
     }
 }

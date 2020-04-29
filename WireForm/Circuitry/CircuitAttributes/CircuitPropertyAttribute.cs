@@ -44,7 +44,7 @@ namespace Wireform.Circuitry.CircuitAttributes
 
         public static List<CircuitProp> GetProperties(CircuitObject target)
         {
-            var properties = target.GetType().GetProperties();
+            var properties = target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             var circuitProps = new List<CircuitProp>();
 
             foreach (var property in properties)

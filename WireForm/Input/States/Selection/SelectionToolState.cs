@@ -50,7 +50,11 @@ namespace Wireform.Input.States.Selection
             }
             //Begin dragging selection box
             //Clear selections if additiveSelection is not activated
-            if (!additiveSelection) selections.Clear();
+            if (!additiveSelection)
+            {
+                selections.Clear();
+                stateControls.CircuitPropertiesOutput = new List<CircuitProp>();
+            }
             return (true, new SelectingState(localPoint, selections));
         }
 
@@ -71,7 +75,6 @@ namespace Wireform.Input.States.Selection
             }
             return (false, this);
         }
-
 
         public override InputReturns Undo(StateControls stateControls)
         {

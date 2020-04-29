@@ -45,6 +45,7 @@ namespace Wireform.Circuitry.Gates
 
 
         [JsonIgnore]
+        [CircuitAction("Toggle", 't')]
         [CircuitProperty(2, 3, false, new[] { "Zero", "One" })]
         public int Value
         {
@@ -61,10 +62,7 @@ namespace Wireform.Circuitry.Gates
         [CircuitProperty(1, 32, false)]
         public int BitDepth
         {
-            get
-            {
-                return Outputs[0].Values.Length;
-            }
+            get => Outputs[0].Values.Length;
             set
             {
                 Outputs[0].Values = new BitArray(value);
@@ -75,11 +73,5 @@ namespace Wireform.Circuitry.Gates
         public override Direction Direction { get => base.Direction; set => base.Direction = value; }
 
         public BitValue currentValue = BitValue.One;
-
-        [CircuitAction("Toggle", 't')]
-        public void Toggle()
-        {
-            currentValue = !currentValue;
-        }
     }
 }

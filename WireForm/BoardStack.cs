@@ -20,7 +20,7 @@ namespace Wireform
         }
 
         private ISaveable saveable;
-        string locationIdentifier;
+        string locationIdentifier = "";
 
         public BoardStack(ISaveable saveable)
         {
@@ -69,6 +69,7 @@ namespace Wireform
         public void Load()
         {
             string json = saveable.GetJson(out locationIdentifier);
+            if (json == "") return;
             SaveManager.Load(json, out currentState);
             currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
             Propogate();
@@ -84,11 +85,13 @@ namespace Wireform
         public void Save()
         {
             locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), locationIdentifier);
+            if (locationIdentifier == "") return;
         }
 
         public void SaveAs()
         {
             locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), "");
+            if (locationIdentifier == "") return;
         }
 
         public void Propogate()

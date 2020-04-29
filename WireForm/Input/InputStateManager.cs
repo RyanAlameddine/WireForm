@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utilities;
 using Wireform.GraphicsUtils;
@@ -104,11 +105,19 @@ namespace Wireform.Input
         /// <summary>
         /// Special operation that, if the current state IsClean, will change state to MovingSelectionState
         /// and place the newGate into the selections list.
+        /// Returns a function which matches the 'takes in the current StateControls and outputs a boolean' pattern.
         /// </summary>
-        public bool PlaceNewGate(StateControls stateControls, Gate newGate)
+        public Func<StateControls, bool> PlaceNewGate(Gate newGate)
         {
-            if (!state.IsClean()) return false;
-            return Eval(new InputReturns(true, new MovingSelectionState(stateControls.LocalMousePosition, new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false)));
+            return (stateControls =>
+            {
+                if (!state.IsClean()) return false;
+                var newState = new MovingSelectionState(stateControls.LocalMousePosition, new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false);
+
+                stateControls.CircuitPropertiesOutput = newState.GetUpdatedCircuitProperties();
+
+                return Eval(new InputReturns(true, newState));
+            });
         }
     }
 
