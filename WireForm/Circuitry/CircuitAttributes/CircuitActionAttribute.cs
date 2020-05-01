@@ -14,7 +14,7 @@ namespace Wireform.Circuitry.CircuitAttributes
     /// In this case, an action will be generated which cycles through the range of the [CircuitProperty].
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class CircuitActionAttribute : Attribute
+    public sealed class CircuitActionAttribute : Attribute
     {
         public string Name { get; }
 
@@ -42,7 +42,7 @@ namespace Wireform.Circuitry.CircuitAttributes
         /// Reflectively loads all [CircuitActions] on a target CircuitObject.
         /// </summary>
         /// <param name="cleanup">Function to be run after the action is invoked (refresh selections)</param>
-        public static List<CircuitAct> GetActions(CircuitObject target, Action<BoardState> cleanup)
+        public static List<CircuitAct> GetActions(CircuitObject target, Action<BoardState> cleanup, Action<string> registerChange)
         {
             var actions = new List<CircuitAct>();
 
@@ -55,12 +55,14 @@ namespace Wireform.Circuitry.CircuitAttributes
                     //If method has IgnoreCircuitAttribute, continue
                     if (method.GetCustomAttributes(typeof(HideCircuitAttributesAttribute), true).Length != 0) continue;
 
-                    Action<BoardState> action = (state) =>
+                    void action(BoardState state)
                     {
                         //Invoke method with or without state as parameter
                         method.Invoke(target, method.GetParameters().Length == 1 ? new[] { state } : null);
+
                         cleanup(state);
-                    };
+                        registerChange($"Executed action {attribute.Name} on selection");
+                    }
                     actions.Add(new CircuitAct(action, attribute));
                 }
             }
@@ -80,13 +82,15 @@ namespace Wireform.Circuitry.CircuitAttributes
                 var prop = new CircuitProp(property, target, propertyAttribute.ValueRange, propertyAttribute.ValueNames, propertyAttribute.RequireReconnect, property.Name);
 
                 //Increments the property's value and resets to valueRange.min if it goes over the valueRange.max
-                Action<BoardState> action = (state) =>
+                void action(BoardState state)
                 {
                     int value = prop.Get();
                     if (++value > prop.valueRange.max)
                         value = prop.valueRange.min;
                     prop.Set(value, state.Connections);
-                };
+                    cleanup(state);
+                    registerChange($"Executed action {actionAttribute.Name} on selection");
+                }
 
                 actions.Add(new CircuitAct(action, actionAttribute));
             }
@@ -115,5 +119,36 @@ namespace Wireform.Circuitry.CircuitAttributes
         {
             action(state);
         }
+
+        //auto-generated code:
+        public override bool Equals(object obj)
+        {
+            return obj is CircuitAct act &&
+                   EqualityComparer<Action<BoardState>>.Default.Equals(action, act.action) &&
+                   Name == act.Name &&
+                   Hotkey == act.Hotkey &&
+                   Modifiers == act.Modifiers;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 1150516337;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Action<BoardState>>.Default.GetHashCode(action);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + Hotkey.GetHashCode();
+            hashCode = hashCode * -1521134295 + Modifiers.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(CircuitAct left, CircuitAct right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CircuitAct left, CircuitAct right)
+        {
+            return !(left == right);
+        }
+
     }
 }

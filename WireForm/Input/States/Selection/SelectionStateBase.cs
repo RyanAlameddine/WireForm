@@ -20,7 +20,7 @@ namespace Wireform.Input.States.Selection
     {
         protected readonly HashSet<CircuitObject> selections;
 
-        public SelectionStateBase(HashSet<CircuitObject> selections)
+        protected SelectionStateBase(HashSet<CircuitObject> selections)
         {
             this.selections = selections;
         }
@@ -63,7 +63,7 @@ namespace Wireform.Input.States.Selection
             //Find all actions
             foreach(var selection in selections)
             {
-                actions.AddRange(CircuitActionAttribute.GetActions(selection, RefreshSelections));
+                actions.AddRange(CircuitActionAttribute.GetActions(selection, RefreshSelections, stateControls.RegisterChange));
             }
             //Execute matches
             foreach (var action in actions)
@@ -75,11 +75,9 @@ namespace Wireform.Input.States.Selection
                 }
             }
 
-            string hotkey;
-            if (stateControls.Modifiers == Modifier.None) hotkey = stateControls.Hotkey + "";
-            else hotkey = $"{stateControls.Modifiers.ToString().Replace(", ", "+")}+{stateControls.Hotkey}";
-
-            if(toRefresh) stateControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
+            string hotkey = stateControls.Hotkey.GetHotkeyString(stateControls.Modifiers);
+            
+            //if(toRefresh) stateControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
             return toRefresh;
         }
 
@@ -92,13 +90,11 @@ namespace Wireform.Input.States.Selection
             int count = selections.Count;
             selections.RemoveWhere((x) =>
             {
-                var gate = x as Gate;
-                var wire = x as WireLine;
-                if (wire != null)
+                if (x is WireLine wire)
                 {
                     return !state.wires.Contains(wire);
                 }
-                else if (gate != null)
+                else if (x is Gate gate)
                 {
                     return !state.gates.Contains(gate);
                 }

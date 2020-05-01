@@ -7,7 +7,7 @@ using Wireform.MathUtils;
 namespace Wireform.Circuitry.CircuitAttributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class CircuitPropertyAttribute : Attribute
+    public sealed class CircuitPropertyAttribute : Attribute
     {
         public readonly (int min, int max) ValueRange;
         public readonly string[] ValueNames;
@@ -103,6 +103,40 @@ namespace Wireform.Circuitry.CircuitAttributes
             {
                 info.SetValue(circuitObject, value);
             }
+        }
+
+        //Generated code:
+        public override bool Equals(object obj)
+        {
+            return obj is CircuitProp prop &&
+                   EqualityComparer<PropertyInfo>.Default.Equals(info, prop.info) &&
+                   EqualityComparer<CircuitObject>.Default.Equals(circuitObject, prop.circuitObject) &&
+                   valueRange.Equals(prop.valueRange) &&
+                   EqualityComparer<string[]>.Default.Equals(valueNames, prop.valueNames) &&
+                   RequireReconnect == prop.RequireReconnect &&
+                   Name == prop.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 474732924;
+            hashCode = hashCode * -1521134295 + EqualityComparer<PropertyInfo>.Default.GetHashCode(info);
+            hashCode = hashCode * -1521134295 + EqualityComparer<CircuitObject>.Default.GetHashCode(circuitObject);
+            hashCode = hashCode * -1521134295 + valueRange.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(valueNames);
+            hashCode = hashCode * -1521134295 + RequireReconnect.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            return hashCode;
+        }
+
+        public static bool operator ==(CircuitProp left, CircuitProp right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CircuitProp left, CircuitProp right)
+        {
+            return !(left == right);
         }
     }
 }

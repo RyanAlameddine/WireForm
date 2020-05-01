@@ -40,15 +40,15 @@ namespace WinformsWireform
 
         #region Input
 
-        bool runInputEvent(Func<StateControls, bool> inputEvent)
+        bool RunInputEvent(Func<StateControls, bool> inputEvent)
         {
-            return runInputEvent(inputEvent, Keys.None);
+            return RunInputEvent(inputEvent, Keys.None);
         }
         /// <summary>
         /// Function for the Form to interact with the input manager.
         /// The inputEvent should be a function in the InputStateManager.
         /// </summary>
-        bool runInputEvent(Func<StateControls, bool> inputEvent, Keys key)
+        bool RunInputEvent(Func<StateControls, bool> inputEvent, Keys key)
         {
             var stateControls = MakeControls(key);
             bool toRefresh = inputEvent(stateControls);
@@ -60,13 +60,17 @@ namespace WinformsWireform
                 for (int i = 0; i < stateControls.CircuitActionsOutput.Count; i++)
                 {
                     var act = stateControls.CircuitActionsOutput[i];
-                    EventHandler actionEvent = (s, e) =>
+                    void actionEvent(object s, EventArgs e)
                     {
                         act.Invoke(stateControls.State);
-                        stateControls.RegisterChange($"Executed action {act.Name} on selection");
                         drawingPanel.Refresh();
+                    }
+                    var item = new ToolStripMenuItem(act.Name, null, actionEvent)
+                    {
+                        ShortcutKeyDisplayString = act.Hotkey.GetHotkeyString(act.Modifiers),
+                        ShowShortcutKeys = true
                     };
-                    GateMenu.Items.Add(act.Name, null, actionEvent);
+                    GateMenu.Items.Add(item);
                 }
 
                 GateMenu.Show(this, (Point)drawingPanel.PointToClient(Cursor.Position));
@@ -104,21 +108,21 @@ namespace WinformsWireform
             return stateControls;
         }
 
-        private void drawingPanel_MouseDown(object sender, MouseEventArgs e)
+        private void DrawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            if      (e.Button == MouseButtons.Left ) runInputEvent(stateManager.MouseLeftDown);
-            else if (e.Button == MouseButtons.Right) runInputEvent(stateManager.MouseRightDown);
+            if      (e.Button == MouseButtons.Left ) RunInputEvent(stateManager.MouseLeftDown);
+            else if (e.Button == MouseButtons.Right) RunInputEvent(stateManager.MouseRightDown);
         }
 
-        private void drawingPanel_MouseUp(object sender, MouseEventArgs e)
+        private void DrawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            if      (e.Button == MouseButtons.Left ) runInputEvent(stateManager.MouseLeftUp);
-            else if (e.Button == MouseButtons.Right) runInputEvent(stateManager.MouseRightUp);
+            if      (e.Button == MouseButtons.Left ) RunInputEvent(stateManager.MouseLeftUp);
+            else if (e.Button == MouseButtons.Right) RunInputEvent(stateManager.MouseRightUp);
         }
 
-        private void drawingPanel_MouseMove(object sender, MouseEventArgs e)
+        private void DrawingPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            runInputEvent(stateManager.MouseMove);
+            RunInputEvent(stateManager.MouseMove);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -155,24 +159,24 @@ namespace WinformsWireform
             if (keyData == Keys.W)
             {
                 toolBox.SelectedIndex = 1;
-                toolBox_SelectedIndexChanged(this, new EventArgs());
+                ToolBox_SelectedIndexChanged(this, new EventArgs());
             }
             else if (keyData == Keys.G)
             {
                 toolBox.SelectedIndex = 0;
-                toolBox_SelectedIndexChanged(this, new EventArgs());
+                ToolBox_SelectedIndexChanged(this, new EventArgs());
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            runInputEvent(stateManager.KeyDown, e.KeyCode);
+            RunInputEvent(stateManager.KeyDown, e.KeyCode);
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            runInputEvent(stateManager.KeyUp, e.KeyCode);
+            RunInputEvent(stateManager.KeyUp, e.KeyCode);
         }
 
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
@@ -198,12 +202,12 @@ namespace WinformsWireform
             //Place created gate onto board
             StateControls stateControls = MakeControls(Keys.None);
             Gate newGate = GateCollection.CreateGate((string)gateBox.SelectedValue, Vec2.Zero);
-            runInputEvent(stateManager.PlaceNewGate(newGate));
+            RunInputEvent(stateManager.PlaceNewGate(newGate));
         }
         #endregion Input
 
         #region Graphics
-        private void drawingPanel_Paint(object sender, PaintEventArgs e)
+        private void DrawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             GraphicsManager.Paint(new PainterScope(new WinformsPainter(e.Graphics, GraphicsManager.SizeScale), GraphicsManager.SizeScale), new Vec2(Width, Height), stateStack.CurrentState, stateManager);
@@ -252,7 +256,7 @@ namespace WinformsWireform
 
         #region FormInput
         Tools tool = Tools.SelectionTool;
-        private void toolBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void ToolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             var newTool = (Tools)toolBox.SelectedIndex;
             if (newTool == tool) return;
@@ -268,12 +272,12 @@ namespace WinformsWireform
             drawingPanel.Refresh();
         }
 
-        private void newButton_Click(object sender, EventArgs e)
+        private void NewButton_Click(object sender, EventArgs e)
         {
             stateStack.Clear();
         }
 
-        private void openButton_Click(object sender, EventArgs e)
+        private void OpenButton_Click(object sender, EventArgs e)
         {
             //openFileDialog.Filter = "Json|*.json";
             //openFileDialog.Title = "Load your wireForm";
@@ -283,7 +287,7 @@ namespace WinformsWireform
             stateStack.Load();
         }
 
-        private void save_Click(object sender, EventArgs e)
+        private void Save_Click(object sender, EventArgs e)
         {
                 //saveFileDialog.Filter = "Json|*.json";
                 //saveFileDialog.Title = "Save your wireForm";
@@ -296,7 +300,7 @@ namespace WinformsWireform
             stateStack.Save();
         }
 
-        private void saveAsButton_Click(object sender, EventArgs e)
+        private void SaveAsButton_Click(object sender, EventArgs e)
         {
             //saveFileDialog.Filter = "Json|*.json";
             //saveFileDialog.Title = "Save your wireForm";
@@ -309,32 +313,32 @@ namespace WinformsWireform
             stateStack.SaveAs();
         }
 
-        private void undoButton_Click(object sender, EventArgs e)
+        private void UndoButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(stateManager.Undo);
+            RunInputEvent(stateManager.Undo);
         }
 
-        private void redoButton_Click(object sender, EventArgs e)
+        private void RedoButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(stateManager.Redo);
+            RunInputEvent(stateManager.Redo);
         }
 
-        private void copyButton_Click(object sender, EventArgs e)
+        private void CopyButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(stateManager.Copy);
+            RunInputEvent(stateManager.Copy);
         }
 
-        private void cutButton_Click(object sender, EventArgs e)
+        private void CutButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(stateManager.Cut);
+            RunInputEvent(stateManager.Cut);
         }
 
-        private void pasteButton_Click(object sender, EventArgs e)
+        private void PasteButton_Click(object sender, EventArgs e)
         {
-            runInputEvent(stateManager.Paste);
+            RunInputEvent(stateManager.Paste);
         }
 
-        private void closeButton_Click(object sender, EventArgs e)
+        private void CloseButton_Click(object sender, EventArgs e)
         {
             Close();
         }

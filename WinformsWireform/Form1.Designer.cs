@@ -68,7 +68,7 @@
             this.toolBox.Name = "toolBox";
             this.toolBox.Size = new System.Drawing.Size(121, 21);
             this.toolBox.TabIndex = 0;
-            this.toolBox.SelectedIndexChanged += new System.EventHandler(this.toolBox_SelectedIndexChanged);
+            this.toolBox.SelectedIndexChanged += new System.EventHandler(this.ToolBox_SelectedIndexChanged);
             // 
             // gateBox
             // 
@@ -155,7 +155,7 @@
             this.newButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newButton.Size = new System.Drawing.Size(285, 34);
             this.newButton.Text = "New";
-            this.newButton.Click += new System.EventHandler(this.newButton_Click);
+            this.newButton.Click += new System.EventHandler(this.NewButton_Click);
             // 
             // openButton
             // 
@@ -163,7 +163,7 @@
             this.openButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openButton.Size = new System.Drawing.Size(285, 34);
             this.openButton.Text = "Open";
-            this.openButton.Click += new System.EventHandler(this.openButton_Click);
+            this.openButton.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // openRecentButton
             // 
@@ -177,7 +177,7 @@
             this.save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.save.Size = new System.Drawing.Size(285, 34);
             this.save.Text = "Save";
-            this.save.Click += new System.EventHandler(this.save_Click);
+            this.save.Click += new System.EventHandler(this.Save_Click);
             // 
             // saveAsButton
             // 
@@ -186,7 +186,7 @@
             | System.Windows.Forms.Keys.S)));
             this.saveAsButton.Size = new System.Drawing.Size(285, 34);
             this.saveAsButton.Text = "Save As";
-            this.saveAsButton.Click += new System.EventHandler(this.saveAsButton_Click);
+            this.saveAsButton.Click += new System.EventHandler(this.SaveAsButton_Click);
             // 
             // closeButton
             // 
@@ -194,7 +194,7 @@
             this.closeButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
             this.closeButton.Size = new System.Drawing.Size(285, 34);
             this.closeButton.Text = "Close";
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            this.closeButton.Click += new System.EventHandler(this.CloseButton_Click);
             // 
             // editButton
             // 
@@ -214,7 +214,7 @@
             this.copyButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.copyButton.Size = new System.Drawing.Size(264, 34);
             this.copyButton.Text = "Copy";
-            this.copyButton.Click += new System.EventHandler(this.copyButton_Click);
+            this.copyButton.Click += new System.EventHandler(this.CopyButton_Click);
             // 
             // cutButton
             // 
@@ -222,7 +222,7 @@
             this.cutButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
             this.cutButton.Size = new System.Drawing.Size(264, 34);
             this.cutButton.Text = "Cut";
-            this.cutButton.Click += new System.EventHandler(this.cutButton_Click);
+            this.cutButton.Click += new System.EventHandler(this.CutButton_Click);
             // 
             // pasteButton
             // 
@@ -230,7 +230,7 @@
             this.pasteButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
             this.pasteButton.Size = new System.Drawing.Size(264, 34);
             this.pasteButton.Text = "Paste";
-            this.pasteButton.Click += new System.EventHandler(this.pasteButton_Click);
+            this.pasteButton.Click += new System.EventHandler(this.PasteButton_Click);
             // 
             // undoButton
             // 
@@ -238,7 +238,7 @@
             this.undoButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             this.undoButton.Size = new System.Drawing.Size(264, 34);
             this.undoButton.Text = "Undo";
-            this.undoButton.Click += new System.EventHandler(this.undoButton_Click);
+            this.undoButton.Click += new System.EventHandler(this.UndoButton_Click);
             // 
             // redoButton
             // 
@@ -247,7 +247,7 @@
             | System.Windows.Forms.Keys.Z)));
             this.redoButton.Size = new System.Drawing.Size(264, 34);
             this.redoButton.Text = "Redo";
-            this.redoButton.Click += new System.EventHandler(this.redoButton_Click);
+            this.redoButton.Click += new System.EventHandler(this.RedoButton_Click);
             // 
             // drawingPanel
             // 
@@ -257,10 +257,10 @@
             this.drawingPanel.Name = "drawingPanel";
             this.drawingPanel.Size = new System.Drawing.Size(800, 419);
             this.drawingPanel.TabIndex = 9;
-            this.drawingPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.drawingPanel_Paint);
-            this.drawingPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.drawingPanel_MouseDown);
-            this.drawingPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.drawingPanel_MouseMove);
-            this.drawingPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.drawingPanel_MouseUp);
+            this.drawingPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingPanel_Paint);
+            this.drawingPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseDown);
+            this.drawingPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseMove);
+            this.drawingPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseUp);
             // 
             // Form1
             // 

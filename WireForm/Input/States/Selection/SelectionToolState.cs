@@ -68,7 +68,7 @@ namespace Wireform.Input.States.Selection
                 selections.Clear();
                 selections.Add(clickedcircuitObject);
                 //Load [CircuitActions]
-                var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, RefreshSelections);
+                var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, RefreshSelections, stateControls.RegisterChange);
                 stateControls.CircuitActionsOutput = new List<CircuitAct>();
                 stateControls.CircuitActionsOutput.AddRange(actions);
                 return (true, this);

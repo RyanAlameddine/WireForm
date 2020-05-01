@@ -2,6 +2,7 @@
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utilities;
+using Wireform.Input;
 using Wireform.MathUtils;
 
 namespace Wireform
@@ -87,6 +88,14 @@ namespace Wireform
             {
                 pins[i].Values = new BitArray(bitDepth);
             }
+        }
+
+        public static string GetHotkeyString(this char key, Modifier modifiers)
+        {
+            string hotkey;
+            if (modifiers == Modifier.None) hotkey = key + "";
+            else hotkey = $"{modifiers.ToString().Replace(", ", "+")}+{key}";
+            return hotkey;
         }
     }
 }
