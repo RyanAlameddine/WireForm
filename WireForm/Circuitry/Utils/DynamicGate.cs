@@ -10,7 +10,7 @@ using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 
-namespace Wireform.Circuitry.Utilities
+namespace Wireform.Circuitry.Utils
 {
     /// <summary>
     /// Gate which is automatically able to change the amount of inputs/outputs.
@@ -192,7 +192,7 @@ namespace Wireform.Circuitry.Utilities
             return positions;
         }
 
-        protected override void draw(PainterScope painter)
+        protected override void Draw(PainterScope painter)
         {
             ExtensionLine(painter, InputCount , inputCenterLocal );
             ExtensionLine(painter, OutputCount, outputCenterLocal);

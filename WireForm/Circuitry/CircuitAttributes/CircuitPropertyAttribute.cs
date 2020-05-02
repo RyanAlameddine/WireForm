@@ -41,21 +41,6 @@ namespace Wireform.Circuitry.CircuitAttributes
                 throw new Exception("ValueRange is not of the same length as specified ValueNames array");
             }
         }
-
-        public static List<CircuitProp> GetProperties(CircuitObject target)
-        {
-            var properties = target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            var circuitProps = new List<CircuitProp>();
-
-            foreach (var property in properties)
-            {
-                var attribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
-                ///If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
-                if (attribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
-                circuitProps.Add(new CircuitProp(property, target, attribute.ValueRange, attribute.ValueNames, attribute.RequireReconnect, property.Name));
-            }
-            return circuitProps;
-        }
     }
 
     /// <summary>
@@ -64,30 +49,32 @@ namespace Wireform.Circuitry.CircuitAttributes
     /// </summary>
     public readonly struct CircuitProp
     {
-        private readonly PropertyInfo info;
-        private readonly CircuitObject circuitObject;
+        private readonly Func<int> getter;
+        private readonly Action<int, Dictionary<Vec2, List<BoardObject>>> setter;
 
+        public readonly CircuitObject circuitObject;
         public readonly (int min, int max) valueRange;
         public readonly string[] valueNames;
         public readonly bool RequireReconnect;
         public readonly string Name;
 
-        internal CircuitProp(PropertyInfo info, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, bool RequireReconnect, string Name)
+        internal CircuitProp(Func<int> getter, Action<int, Dictionary<Vec2, List<BoardObject>>> setter, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, bool RequireReconnect, string Name)
         {
-            this.info = info;
+            this.getter = getter;
+            this.setter = setter;
             this.circuitObject = circuitObject;
             this.valueRange = valueRange;
             this.valueNames = valueNames;
-            this.RequireReconnect = RequireReconnect;
             this.Name = Name;
+            this.RequireReconnect = RequireReconnect;
         }
 
-        public int Get()
+        internal int Get()
         {
-            return (int)info.GetValue(circuitObject);
+            return getter();
         }
 
-        public void Set(int value, Dictionary<Vec2, List<BoardObject>> connections)
+        internal void Set(int value, Dictionary<Vec2, List<BoardObject>> connections)
         {
             if (value < valueRange.min || value > valueRange.max)
             {
@@ -96,35 +83,37 @@ namespace Wireform.Circuitry.CircuitAttributes
             if (RequireReconnect)
             {
                 circuitObject.RemoveConnections(connections);
-                info.SetValue(circuitObject, value);
+                setter(value, connections);
                 circuitObject.AddConnections(connections);
             }
             else
             {
-                info.SetValue(circuitObject, value);
+                setter(value, connections);
             }
         }
 
-        //Generated code:
+        public string GetValueName(int value)
+        {
+            return valueNames[value - valueRange.min];
+        }
+
         public override bool Equals(object obj)
         {
             return obj is CircuitProp prop &&
-                   EqualityComparer<PropertyInfo>.Default.Equals(info, prop.info) &&
-                   EqualityComparer<CircuitObject>.Default.Equals(circuitObject, prop.circuitObject) &&
+                   EqualityComparer<Func<int>>.Default.Equals(getter, prop.getter) &&
+                   EqualityComparer<Action<int, Dictionary<Vec2, List<BoardObject>>>>.Default.Equals(setter, prop.setter) &&
                    valueRange.Equals(prop.valueRange) &&
                    EqualityComparer<string[]>.Default.Equals(valueNames, prop.valueNames) &&
-                   RequireReconnect == prop.RequireReconnect &&
                    Name == prop.Name;
         }
 
         public override int GetHashCode()
         {
-            var hashCode = 474732924;
-            hashCode = hashCode * -1521134295 + EqualityComparer<PropertyInfo>.Default.GetHashCode(info);
-            hashCode = hashCode * -1521134295 + EqualityComparer<CircuitObject>.Default.GetHashCode(circuitObject);
+            var hashCode = -224463829;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Func<int>>.Default.GetHashCode(getter);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Action<int, Dictionary<Vec2, List<BoardObject>>>>.Default.GetHashCode(setter);
             hashCode = hashCode * -1521134295 + valueRange.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(valueNames);
-            hashCode = hashCode * -1521134295 + RequireReconnect.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
             return hashCode;
         }
@@ -138,5 +127,6 @@ namespace Wireform.Circuitry.CircuitAttributes
         {
             return !(left == right);
         }
+
     }
 }

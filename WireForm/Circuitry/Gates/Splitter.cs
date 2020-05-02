@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
@@ -35,7 +35,7 @@ namespace Wireform.Circuitry.Gates.Logic
             SplitDepth = inputDepth;
         }
 
-        protected override void compute()
+        protected override void Compute()
         {
             if (splitDirection == 0)
             {
@@ -75,14 +75,14 @@ namespace Wireform.Circuitry.Gates.Logic
             }
         }
 
-        protected override void draw(PainterScope painter)
+        protected override void Draw(PainterScope painter)
         {
             painter.DrawLine(Color.DarkGray, 10, new Vec2(-1, -1), Vec2.Zero);
 
             painter.DrawLine(Color.DarkGray, 10, new Vec2(0 - 1 / 20f, 0), new Vec2(1, 0));
-            painter.DrawStringC(getRange(0), Color.Black, new Vec2(.4f, 0), 4);
+            painter.DrawStringC(GetRange(0), Color.Black, new Vec2(.4f, 0), 4);
             
-            base.draw(painter);
+            base.Draw(painter);
 
             if (splitDirection == 0)
             {
@@ -98,7 +98,7 @@ namespace Wireform.Circuitry.Gates.Logic
             }
         }
 
-        private string getRange(int i)
+        private string GetRange(int i)
         {
             if(splitDepth == 1)
             {
@@ -201,7 +201,7 @@ namespace Wireform.Circuitry.Gates.Logic
             for (int i = 1; i < splitCount; i++)
             {
                 painter.DrawLine(Color.DarkGray, 10, new Vec2(0, i), new Vec2(1, i));
-                painter.DrawStringC(getRange(i), Color.Black, new Vec2(.4f, i), 4);
+                painter.DrawStringC(GetRange(i), Color.Black, new Vec2(.4f, i), 4);
             }
         }
 
@@ -256,6 +256,9 @@ namespace Wireform.Circuitry.Gates.Logic
                 }
             }
         }
+
+        [HideCircuitAttributes]
+        public override int InputCount { get => base.InputCount; set => base.InputCount = value; }
 
         public override CircuitObject Copy()
         {

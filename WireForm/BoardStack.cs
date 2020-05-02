@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 
 namespace Wireform
 {

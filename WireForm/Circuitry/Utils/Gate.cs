@@ -10,7 +10,7 @@ using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 
-namespace Wireform.Circuitry.Utilities
+namespace Wireform.Circuitry.Utils
 {
     public abstract class Gate : CircuitObject
     {
@@ -31,7 +31,6 @@ namespace Wireform.Circuitry.Utilities
             }
             set
             {
-                Vec2 offset = value - position;
                 position = value;
 
                 RefreshChildren();
@@ -136,13 +135,13 @@ namespace Wireform.Circuitry.Utilities
             }
         }
 
-        protected abstract void draw(PainterScope painter);
-        public void Draw(PainterScope painter)
+        protected abstract void Draw(PainterScope painter);
+        public void DrawGate(PainterScope painter)
         {
             painter.AppendOffset(StartPoint);
 
             painter.SetLocalMultiplier(Direction);
-            draw(painter);
+            Draw(painter);
 
             painter.DrawEllipseC(Color.Red, 3, Vec2.Zero, new Vec2(.1f, .1f));
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
@@ -159,10 +158,13 @@ namespace Wireform.Circuitry.Utilities
             }
         }
 
-        protected abstract void compute();
-        public void Compute()
+        /// <summary>
+        /// Implementation for gate which should read from Inputs to set Outputs accordingly
+        /// </summary>
+        protected abstract void Compute();
+        public void ComputeGate()
         {
-            compute();
+            Compute();
         }
 
         /// <summary>

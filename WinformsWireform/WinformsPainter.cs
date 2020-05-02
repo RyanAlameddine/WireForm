@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 

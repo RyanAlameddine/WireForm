@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 

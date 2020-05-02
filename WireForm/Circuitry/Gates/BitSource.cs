@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using Wireform.Circuitry.Utils;
 
 namespace Wireform.Circuitry.Gates
 {
@@ -16,18 +17,18 @@ namespace Wireform.Circuitry.Gates
         public BitSource(Vec2 Position, Direction direction)
             : base(Position, direction, new BoxCollider(-.5f, -.5f, 1, 1))
         {
-            Inputs = new GatePin[0];
+            Inputs = Array.Empty<GatePin>();
             Outputs = new GatePin[] {
                 new GatePin(this, new Vec2())
             };
         }
 
-        protected override void draw(PainterScope painter)
+        protected override void Draw(PainterScope painter)
         {
             painter.DrawRectangle(Color.Green, 10, new Vec2(-.4f, -.4f), new Vec2(.8f, .8f));
         }
 
-        protected override void compute()
+        protected override void Compute()
         {
             for (int i = 0; i < BitDepth; i++)
             {
@@ -37,9 +38,11 @@ namespace Wireform.Circuitry.Gates
 
         public override CircuitObject Copy()
         {
-            var gate = new BitSource(StartPoint, Direction);
-            gate.currentValue = currentValue;
-            gate.BitDepth = BitDepth;
+            var gate = new BitSource(StartPoint, Direction)
+            {
+                currentValue = currentValue,
+                BitDepth = BitDepth
+            };
             return gate;
         }
 

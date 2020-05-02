@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.MathUtils;
 
-namespace Wireform.Circuitry.Utilities
+namespace Wireform.Circuitry.Utils
 {
     public enum Direction
     {

@@ -7,8 +7,9 @@ using System.Windows.Forms;
 using Wireform;
 using Wireform.Circuitry;
 using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Gates;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.Input;
 using Wireform.MathUtils;
@@ -40,15 +41,15 @@ namespace WinformsWireform
 
         #region Input
 
-        bool RunInputEvent(Func<StateControls, bool> inputEvent)
+        void RunInputEvent(Func<StateControls, bool> inputEvent)
         {
-            return RunInputEvent(inputEvent, Keys.None);
+            RunInputEvent(inputEvent, Keys.None);
         }
         /// <summary>
         /// Function for the Form to interact with the input manager.
         /// The inputEvent should be a function in the InputStateManager.
         /// </summary>
-        bool RunInputEvent(Func<StateControls, bool> inputEvent, Keys key)
+        void RunInputEvent(Func<StateControls, bool> inputEvent, Keys key)
         {
             var stateControls = MakeControls(key);
             bool toRefresh = inputEvent(stateControls);
@@ -57,23 +58,19 @@ namespace WinformsWireform
             if (stateControls.CircuitActionsOutput != null)
             {
                 GateMenu.Items.Clear();
-                for (int i = 0; i < stateControls.CircuitActionsOutput.Count; i++)
+                foreach(var action in stateControls.CircuitActionsOutput)
                 {
-                    var act = stateControls.CircuitActionsOutput[i];
-                    void actionEvent(object s, EventArgs e)
+                    //Creates a dropdown menu item which, when clicked, will invoke the action and refresh the drawing panel
+                    void actionEvent(object s, EventArgs e) => stateControls.CircuitActionsOutput.InvokeActionAndRefresh(stateControls.State, drawingPanel.Refresh, action);
+                    var item = new ToolStripMenuItem(action.Name, null, actionEvent)
                     {
-                        act.Invoke(stateControls.State);
-                        drawingPanel.Refresh();
-                    }
-                    var item = new ToolStripMenuItem(act.Name, null, actionEvent)
-                    {
-                        ShortcutKeyDisplayString = act.Hotkey.GetHotkeyString(act.Modifiers),
+                        ShortcutKeyDisplayString = action.Hotkey.GetHotkeyString(action.Modifiers),
                         ShowShortcutKeys = true
                     };
                     GateMenu.Items.Add(item);
                 }
 
-                GateMenu.Show(this, (Point)drawingPanel.PointToClient(Cursor.Position));
+                GateMenu.Show(this, drawingPanel.PointToClient(Cursor.Position));
             }
 
             //Process [CircuitProperties]
@@ -85,13 +82,11 @@ namespace WinformsWireform
 
                 foreach (var property in circuitProperties)
                 {
-                    SelectionSettings.Items.Add(property.Name);
+                    SelectionSettings.Items.Add(property.Key);
                 }
             }
 
             if (toRefresh) drawingPanel.Refresh();
-
-            return toRefresh;
         }
 
         /// <summary>
@@ -104,7 +99,7 @@ namespace WinformsWireform
             if (ModifierKeys.HasFlag(Keys.Control)) modifierKeys |= Modifier.Control;
             if (ModifierKeys.HasFlag(Keys.Shift  )) modifierKeys |= Modifier.Shift  ;
             if (ModifierKeys.HasFlag(Keys.Alt    )) modifierKeys |= Modifier.Alt    ;
-            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key.ToString().ToLower()[0], modifierKeys, drawingPanel.Refresh, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key.ToString().ToLower()[0], modifierKeys, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
             return stateControls;
         }
 
@@ -216,12 +211,12 @@ namespace WinformsWireform
         Gate picBoxGate = new BitSource(new Vec2(4, 2.5f), Direction.Right);
         private void GatePicBox_Paint(object sender, PaintEventArgs e)
         {
-            picBoxGate.Draw(new PainterScope(new WinformsPainter(e.Graphics, 15), 15));
+            picBoxGate.DrawGate(new PainterScope(new WinformsPainter(e.Graphics, 15), 15));
         }
         #endregion Graphics
 
         #region CircuitProperties
-        List<CircuitProp> circuitProperties;
+        CircuitPropertyCollection circuitProperties;
 
         int prevSelectedIndex = 0;
         private void SelectionSettings_SelectedIndexChanged(object sender, EventArgs e)
@@ -229,8 +224,8 @@ namespace WinformsWireform
             SelectionSettingValue.Items.Clear();
             if (SelectionSettings.SelectedIndex == -1) { return; }
 
-            var prop = circuitProperties[SelectionSettings.SelectedIndex];
-            var value = prop.Get();
+            var prop = circuitProperties[SelectionSettings.SelectedItem.ToString()];
+            var value = circuitProperties.InvokeGet(prop.Name);
 
             for (int i = 0; i <= prop.valueRange.max - prop.valueRange.min; i++)
             {
@@ -242,12 +237,12 @@ namespace WinformsWireform
 
         private void SelectionSettingsValue_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var prop = circuitProperties[SelectionSettings.SelectedIndex];
+            var prop = circuitProperties[SelectionSettings.SelectedItem.ToString()];
 
             int newVal = SelectionSettingValue.SelectedIndex + prop.valueRange.min;
             if (newVal == prevSelectedIndex) { return; }
             prevSelectedIndex = newVal;
-            prop.Set(newVal, stateStack.CurrentState.Connections);
+            circuitProperties.InvokeSet(prop.Name, newVal, stateStack.CurrentState.Connections);
             stateStack.RegisterChange($"Changed {SelectionSettings.SelectedItem} to {newVal}");
             drawingPanel.Refresh();
             //Refresh();
@@ -279,37 +274,16 @@ namespace WinformsWireform
 
         private void OpenButton_Click(object sender, EventArgs e)
         {
-            //openFileDialog.Filter = "Json|*.json";
-            //openFileDialog.Title = "Load your wireForm";
-            //openFileDialog.ShowDialog();
-
-            //var fileName = openFileDialog.FileName;
             stateStack.Load();
         }
 
         private void Save_Click(object sender, EventArgs e)
         {
-                //saveFileDialog.Filter = "Json|*.json";
-                //saveFileDialog.Title = "Save your wireForm";
-                //saveFileDialog.ShowDialog();
-                //var fileName = saveFileDialog.FileName;
-                //if (fileName == "")
-                //{
-                //    return;
-                //}
             stateStack.Save();
         }
 
         private void SaveAsButton_Click(object sender, EventArgs e)
         {
-            //saveFileDialog.Filter = "Json|*.json";
-            //saveFileDialog.Title = "Save your wireForm";
-            //saveFileDialog.ShowDialog();
-            //var fileName = saveFileDialog.FileName;
-            //if (fileName == "")
-            //{
-            //    return;
-            //}
             stateStack.SaveAs();
         }
 

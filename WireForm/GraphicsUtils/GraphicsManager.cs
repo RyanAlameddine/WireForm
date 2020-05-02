@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.Input;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
@@ -37,7 +37,7 @@ namespace Wireform.GraphicsUtils
 
             foreach (Gate gate in state.gates)
             {
-                gate.Draw(painter);
+                gate.DrawGate(painter);
             }
 
             foreach (WireLine wireLine in state.wires)

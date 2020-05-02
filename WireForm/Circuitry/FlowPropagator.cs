@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.MathUtils;
 
 namespace Wireform.Circuitry
@@ -33,7 +33,7 @@ namespace Wireform.Circuitry
                 var source = sources.Dequeue();
                 
                 //Compute and Propogate
-                source.Compute();
+                source.ComputeGate();
                 foreach (var output in source.Outputs)
                 {
                     PropagateWires(state, patternStack, visitedWires, visitedPins, output.StartPoint, output.Values);
@@ -153,7 +153,7 @@ namespace Wireform.Circuitry
                             visitedPins.Add(pin);
                             pin.Values = values;
 
-                            pin.Parent.Compute();
+                            pin.Parent.ComputeGate();
                             foreach (GatePin output in pin.Parent.Outputs)
                             {
                                 PropagateWires(state, patternStack, visitedWires, visitedPins, output.StartPoint, output.Values);

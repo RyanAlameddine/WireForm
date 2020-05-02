@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.CircuitAttributes.Utilities;
+using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
 using Wireform.MathUtils;
 
@@ -17,11 +19,6 @@ namespace Wireform.Input
         /// The current mouse position in viewport coordinates
         /// </summary>
         public Vec2 MousePosition { get; }
-
-        /// <summary>
-        /// A function which will re-draw the current screen
-        /// </summary>
-        public Action Refresh { get; }
 
         /// <summary>
         /// If this control is being created for a keyboard event, should contain the key of note
@@ -64,21 +61,20 @@ namespace Wireform.Input
         /// A list of [CircuitActions] which should be loaded.
         /// null if no update is required
         /// </summary>
-        public List<CircuitAct> CircuitActionsOutput { get; set; } = null;
+        public CircuitActionCollection CircuitActionsOutput { get; set; } = null;
 
         /// <summary>
         /// A list of [CircuitProperties] which should be loaded.
         /// null if no update is required
         /// </summary>
-        public List<CircuitProp> CircuitPropertiesOutput { get; set; } = null;
+        public CircuitPropertyCollection CircuitPropertiesOutput { get; set; } = null;
 
-        public StateControls(BoardState state, Vec2 mousePosition, char hotkey, Modifier modifiers, Action refresh, Action<string> registerChange, Action reverse, Action advance)
+        public StateControls(BoardState state, Vec2 mousePosition, char hotkey, Modifier modifiers, Action<string> registerChange, Action reverse, Action advance)
         {
             this.State = state;
             this.MousePosition = mousePosition;
             this.Hotkey = hotkey;
             this.Modifiers = modifiers;
-            this.Refresh = refresh;
             this.RegisterChange = registerChange;
             this.Reverse = reverse;
             this.Advance = advance;

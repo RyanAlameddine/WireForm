@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
@@ -44,7 +45,7 @@ namespace Wireform.Input.States.Selection
                 else if (additiveSelection) selections.Remove(clickedcircuitObject);
 
                 //Load [CircuitProperties] for clicked object
-                if(selections.Count == 1) stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
+                stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties(stateControls.RegisterChange);
 
                 return (true, new MovingSelectionState(stateControls.MousePosition, selections, clickedcircuitObject, stateControls.State, true));
             }
@@ -53,7 +54,7 @@ namespace Wireform.Input.States.Selection
             if (!additiveSelection)
             {
                 selections.Clear();
-                stateControls.CircuitPropertiesOutput = new List<CircuitProp>();
+                stateControls.CircuitPropertiesOutput = CircuitPropertyCollection.Empty;
             }
             return (true, new SelectingState(localPoint, selections));
         }
@@ -68,9 +69,8 @@ namespace Wireform.Input.States.Selection
                 selections.Clear();
                 selections.Add(clickedcircuitObject);
                 //Load [CircuitActions]
-                var actions = CircuitActionAttribute.GetActions(clickedcircuitObject, RefreshSelections, stateControls.RegisterChange);
-                stateControls.CircuitActionsOutput = new List<CircuitAct>();
-                stateControls.CircuitActionsOutput.AddRange(actions);
+                var actions = CircuitAttributes.GetActions(clickedcircuitObject, RefreshSelections, stateControls.RegisterChange);
+                stateControls.CircuitActionsOutput = actions;
                 return (true, this);
             }
             return (false, this);

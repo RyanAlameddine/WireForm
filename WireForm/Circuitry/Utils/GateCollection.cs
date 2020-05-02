@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Wireform.MathUtils;
 
-namespace Wireform.Circuitry.Utilities
+namespace Wireform.Circuitry.Utils
 {
     /// <summary>
     /// Loads all Gate classes and allows you to create instances of said classes

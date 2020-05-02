@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.Input.States.Selection;
 using Wireform.Input.States.Wire;
@@ -114,7 +114,7 @@ namespace Wireform.Input
                 if (!state.IsClean()) return false;
                 var newState = new MovingSelectionState(stateControls.LocalMousePosition, new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false);
 
-                stateControls.CircuitPropertiesOutput = newState.GetUpdatedCircuitProperties();
+                stateControls.CircuitPropertiesOutput = newState.GetUpdatedCircuitProperties(stateControls.RegisterChange);
 
                 return Eval(new InputReturns(true, newState));
             });

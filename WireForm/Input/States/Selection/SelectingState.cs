@@ -49,7 +49,7 @@ namespace Wireform.Input.States.Selection
             selections.Clear();
             selections.UnionWith(newSelections);
             selections.UnionWith(additiveSelections);
-            stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties();
+            stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties(stateControls.RegisterChange);
             return (true, this);
         }
 

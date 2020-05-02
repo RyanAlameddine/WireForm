@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Wireform.Circuitry;
 using Wireform.Circuitry.CircuitAttributes;
+using Wireform.Circuitry.CircuitAttributes.Utilities;
+using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
@@ -25,32 +28,25 @@ namespace Wireform.Input.States.Selection
             this.selections = selections;
         }
 
-        /// <summary>
-        /// The last object whose [CircuitProperties] were loaded
-        /// </summary>
-        protected CircuitObject previousObject = null;
-
+        private readonly HashSet<CircuitObject> oldSelections = new HashSet<CircuitObject>();
         /// <summary>
         /// Returns a list of updated CircuitProperties to be passed into the StateControls
         /// </summary>
-        public List<CircuitProp> GetUpdatedCircuitProperties()
+        public CircuitPropertyCollection GetUpdatedCircuitProperties(Action<string> registerChange)
         {
-            List<CircuitProp> circuitProperties = null;
-            var gates = selections.Where((x) => x is Gate);
-            if(gates.Count() == 1)
+            if (!selections.SetEquals(oldSelections))
             {
-                var newObject = gates.First();
-                if(newObject != previousObject)
+                CircuitPropertyCollection circuitProperties = CircuitPropertyCollection.Empty;
+                oldSelections.Clear();
+                oldSelections.UnionWith(selections);
+                foreach(var selection in selections)
                 {
-                    circuitProperties = CircuitPropertyAttribute.GetProperties(newObject);
-                    previousObject = newObject;
+                    circuitProperties.Intersect(CircuitAttributes.GetProperties(selection, registerChange));
                 }
-            }else if(previousObject != null)
-            {
-                previousObject = null;
-                circuitProperties = new List<CircuitProp>();
+                return circuitProperties;
             }
-            return circuitProperties;
+
+            return null;
         }
 
         /// <summary>
@@ -58,27 +54,14 @@ namespace Wireform.Input.States.Selection
         /// </summary>
         protected bool ExecuteHotkey(StateControls stateControls)
         {
-            bool toRefresh = false;
-            List<CircuitAct> actions = new List<CircuitAct>();
+            CircuitActionCollection actions = CircuitActionCollection.Empty;
             //Find all actions
             foreach(var selection in selections)
             {
-                actions.AddRange(CircuitActionAttribute.GetActions(selection, RefreshSelections, stateControls.RegisterChange));
+                actions.UnionWith(CircuitAttributes.GetActions(selection, RefreshSelections, stateControls.RegisterChange));
             }
             //Execute matches
-            foreach (var action in actions)
-            {
-                if (action.Hotkey == stateControls.Hotkey && action.Modifiers == stateControls.Modifiers)
-                {
-                    toRefresh = true;
-                    action.Invoke(stateControls.State);
-                }
-            }
-
-            string hotkey = stateControls.Hotkey.GetHotkeyString(stateControls.Modifiers);
-            
-            //if(toRefresh) stateControls.RegisterChange($"Executed hotkey {hotkey} on selection(s)");
-            return toRefresh;
+            return actions.InvokeHotkeyActions(stateControls.State, stateControls.Hotkey, stateControls.Modifiers);
         }
 
 
@@ -112,7 +95,7 @@ namespace Wireform.Input.States.Selection
             {
                 if (selection is Gate gate)
                 {
-                    gate.Draw(painter);
+                    gate.DrawGate(painter);
                     BoxCollider selectionBox = selection.HitBox;
 
                     painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);

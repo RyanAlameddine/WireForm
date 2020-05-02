@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
@@ -22,12 +22,12 @@ namespace Wireform.Circuitry.Gates.Logic
             };
         }
 
-        protected override void compute()
+        protected override void Compute()
         {
             Outputs[0].Values = !Inputs[0].Values;
         }
 
-        protected override void draw(PainterScope painter)
+        protected override void Draw(PainterScope painter)
         {
             painter.DrawLine(Color.Black, 10, new Vec2(-1, .75f), new Vec2(-1, -.75f));
             painter.DrawLine(Color.Black, 10, new Vec2(-1, .75f), new Vec2(1, 0));

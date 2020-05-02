@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;

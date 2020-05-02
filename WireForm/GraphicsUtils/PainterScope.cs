@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wireform.Circuitry.Utilities;
+﻿using System.Drawing;
+using Wireform.Circuitry.Utils;
 using Wireform.MathUtils;
 
 namespace Wireform.GraphicsUtils
@@ -18,9 +13,9 @@ namespace Wireform.GraphicsUtils
     /// </summary>
     public struct PainterScope
     {
-        private float zoom; // = 50f
+        private readonly float zoom; // = 50f
 
-        private IPainter painter;
+        private readonly IPainter painter;
 
         private Vec2 offset;
 
@@ -43,16 +38,6 @@ namespace Wireform.GraphicsUtils
         public void AppendOffset(Vec2 offset)
         {
             this.offset += offset;
-        }
-        
-        /// <summary>
-        /// Sets the multiplier for the un-offsetted position values for drawing.
-        /// The sign on the x and y coordinates should determine which direction a gate is facing.
-        /// </summary>
-        /// <param name="multiplier">X and Y should be equal to 1, or -1 ONLY</param>
-        private void setLocalMultiplier(Vec2 multiplier)
-        {
-            this.multiplier = multiplier;
         }
 
         /// <summary>
@@ -124,7 +109,7 @@ namespace Wireform.GraphicsUtils
             {
                 if(multiplier.Y == -1)
                 {
-                    startAngle = startAngle-90;
+                    startAngle -= 90;
                     //sweepAngle *= -1;
                     return;
                 }

@@ -37,66 +37,6 @@ namespace Wireform.Circuitry.CircuitAttributes
             this.Hotkey = hotkey;
             this.Modifiers = modifiers;
         }
-
-        /// <summary>
-        /// Reflectively loads all [CircuitActions] on a target CircuitObject.
-        /// </summary>
-        /// <param name="cleanup">Function to be run after the action is invoked (refresh selections)</param>
-        public static List<CircuitAct> GetActions(CircuitObject target, Action<BoardState> cleanup, Action<string> registerChange)
-        {
-            var actions = new List<CircuitAct>();
-
-            //Find and register all methods which are circuit actions
-            var methods = target.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            foreach (var method in methods)
-            {
-                foreach (var attribute in (CircuitActionAttribute[])method.GetCustomAttributes(typeof(CircuitActionAttribute), true))
-                {
-                    //If method has IgnoreCircuitAttribute, continue
-                    if (method.GetCustomAttributes(typeof(HideCircuitAttributesAttribute), true).Length != 0) continue;
-
-                    void action(BoardState state)
-                    {
-                        //Invoke method with or without state as parameter
-                        method.Invoke(target, method.GetParameters().Length == 1 ? new[] { state } : null);
-
-                        cleanup(state);
-                        registerChange($"Executed action {attribute.Name} on selection");
-                    }
-                    actions.Add(new CircuitAct(action, attribute));
-                }
-            }
-
-            //Find and register all properties which are Circuit Actions
-            var properties = target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            var circuitProps = new List<CircuitProp>();
-
-            foreach (var property in properties)
-            {
-                var actionAttribute = property.GetCustomAttribute<CircuitActionAttribute>(true);
-                var propertyAttribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
-                //If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
-                if (actionAttribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
-                if (propertyAttribute == null) throw new NotImplementedException("All [CircuitAction] attributes on a property must also have a [CircuitProperty] attribute.");
-
-                var prop = new CircuitProp(property, target, propertyAttribute.ValueRange, propertyAttribute.ValueNames, propertyAttribute.RequireReconnect, property.Name);
-
-                //Increments the property's value and resets to valueRange.min if it goes over the valueRange.max
-                void action(BoardState state)
-                {
-                    int value = prop.Get();
-                    if (++value > prop.valueRange.max)
-                        value = prop.valueRange.min;
-                    prop.Set(value, state.Connections);
-                    cleanup(state);
-                    registerChange($"Executed action {actionAttribute.Name} on selection");
-                }
-
-                actions.Add(new CircuitAct(action, actionAttribute));
-            }
-
-            return actions;
-        }
     }
 
     public readonly struct CircuitAct
@@ -115,7 +55,7 @@ namespace Wireform.Circuitry.CircuitAttributes
             this.Name = attribute.Name;
         }
 
-        public void Invoke(BoardState state)
+        internal void Invoke(BoardState state)
         {
             action(state);
         }

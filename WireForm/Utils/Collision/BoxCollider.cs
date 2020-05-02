@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
-using Wireform.Circuitry.Utilities;
+using Wireform.Circuitry.Utils;
 
 namespace Wireform.MathUtils.Collision
 {
