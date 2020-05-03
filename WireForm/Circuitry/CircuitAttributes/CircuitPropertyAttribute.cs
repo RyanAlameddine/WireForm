@@ -49,7 +49,7 @@ namespace Wireform.Circuitry.CircuitAttributes
     /// </summary>
     public readonly struct CircuitProp
     {
-        private readonly Func<int> getter;
+        private readonly Func<int?> getter;
         private readonly Action<int, Dictionary<Vec2, List<BoardObject>>> setter;
 
         public readonly CircuitObject circuitObject;
@@ -58,7 +58,7 @@ namespace Wireform.Circuitry.CircuitAttributes
         public readonly bool RequireReconnect;
         public readonly string Name;
 
-        internal CircuitProp(Func<int> getter, Action<int, Dictionary<Vec2, List<BoardObject>>> setter, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, bool RequireReconnect, string Name)
+        internal CircuitProp(Func<int?> getter, Action<int, Dictionary<Vec2, List<BoardObject>>> setter, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, bool RequireReconnect, string Name)
         {
             this.getter = getter;
             this.setter = setter;
@@ -69,7 +69,7 @@ namespace Wireform.Circuitry.CircuitAttributes
             this.RequireReconnect = RequireReconnect;
         }
 
-        internal int Get()
+        internal int? Get()
         {
             return getter();
         }
@@ -100,7 +100,7 @@ namespace Wireform.Circuitry.CircuitAttributes
         public override bool Equals(object obj)
         {
             return obj is CircuitProp prop &&
-                   EqualityComparer<Func<int>>.Default.Equals(getter, prop.getter) &&
+                   EqualityComparer<Func<int?>>.Default.Equals(getter, prop.getter) &&
                    EqualityComparer<Action<int, Dictionary<Vec2, List<BoardObject>>>>.Default.Equals(setter, prop.setter) &&
                    valueRange.Equals(prop.valueRange) &&
                    EqualityComparer<string[]>.Default.Equals(valueNames, prop.valueNames) &&
@@ -110,7 +110,7 @@ namespace Wireform.Circuitry.CircuitAttributes
         public override int GetHashCode()
         {
             var hashCode = -224463829;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Func<int>>.Default.GetHashCode(getter);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Func<int?>>.Default.GetHashCode(getter);
             hashCode = hashCode * -1521134295 + EqualityComparer<Action<int, Dictionary<Vec2, List<BoardObject>>>>.Default.GetHashCode(setter);
             hashCode = hashCode * -1521134295 + valueRange.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(valueNames);

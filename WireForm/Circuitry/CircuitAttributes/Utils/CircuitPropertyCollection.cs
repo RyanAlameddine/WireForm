@@ -95,13 +95,17 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
                     else valueNames[i] = value.ToString();
                 }
 
+                //determine the value
+                int? propValue = property.Get();
+                if (propValue != existingProp.Get()) propValue = null;
+
                 //create and insert the new property
                 var newProp = new CircuitProp(
-                    ()  => property.Get(), //todo implement value sharing
-                    (value, connections) =>
+                    ()  => propValue, //getter with shared value
+                    (value, connections) => //setter which chains Set calls
                     {
-                        property.Set((int) value, connections);
-                        existingProp.Set((int) value, connections);
+                        property.Set(value, connections);
+                        existingProp.Set(value, connections);
                     }, 
                     property.circuitObject, (min, max), valueNames, property.RequireReconnect, property.Name);
 
@@ -114,7 +118,8 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
         /// <summary>
         /// Invokes the Get function on the property and returns the result
         /// </summary>
-        public int InvokeGet(string propertyName)
+        /// <returns>null only if the values are different for different selections</returns>
+        public int? InvokeGet(string propertyName)
         {
             return propertyMap[propertyName].Get();
         }

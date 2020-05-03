@@ -218,7 +218,7 @@ namespace WinformsWireform
         #region CircuitProperties
         CircuitPropertyCollection circuitProperties;
 
-        int prevSelectedIndex = 0;
+        int? prevSelectedIndex = 0;
         private void SelectionSettings_SelectedIndexChanged(object sender, EventArgs e)
         {
             SelectionSettingValue.Items.Clear();
@@ -226,13 +226,15 @@ namespace WinformsWireform
 
             var prop = circuitProperties[SelectionSettings.SelectedItem.ToString()];
             var value = circuitProperties.InvokeGet(prop.Name);
+            prevSelectedIndex = value;
 
             for (int i = 0; i <= prop.valueRange.max - prop.valueRange.min; i++)
             {
                 SelectionSettingValue.Items.Add(prop.valueNames[i]);
             }
-            prevSelectedIndex = value;
-            SelectionSettingValue.SelectedIndex = value - prop.valueRange.min;
+
+            //if value is null, -1, else index
+            SelectionSettingValue.SelectedIndex = value == null ? -1 : (int)value - prop.valueRange.min;
         }
 
         private void SelectionSettingsValue_SelectedIndexChanged(object sender, EventArgs e)
@@ -243,7 +245,6 @@ namespace WinformsWireform
             if (newVal == prevSelectedIndex) { return; }
             prevSelectedIndex = newVal;
             circuitProperties.InvokeSet(prop.Name, newVal, stateStack.CurrentState.Connections);
-            stateStack.RegisterChange($"Changed {SelectionSettings.SelectedItem} to {newVal}");
             drawingPanel.Refresh();
             //Refresh();
         }

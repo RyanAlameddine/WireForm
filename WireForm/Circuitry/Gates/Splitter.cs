@@ -16,16 +16,7 @@ namespace Wireform.Circuitry.Gates.Logic
     {
         [JsonConstructor]
         public Splitter(Vec2 Position, Direction direction)
-            : base(Position, direction, new BoxCollider(-1, -1, 2, 1), new Vec2(-1, -1), new Vec2(1, 0), 1, 1)
-        {
-            Inputs = new GatePin[] {
-                new GatePin(this, new Vec2(-1, -1))
-            };
-
-            Outputs = new GatePin[] {
-                new GatePin(this, new Vec2(1, 0))
-            };
-        }
+            : base(Position, direction, new BoxCollider(-1, -1, 2, 1), new Vec2(-1, -1), new Vec2(1, 0), 1, 1) { }
 
         public Splitter(Vec2 Position, Direction direction, int splitCount, int inputDepth, Split splitDirection)
             : this(Position, direction)

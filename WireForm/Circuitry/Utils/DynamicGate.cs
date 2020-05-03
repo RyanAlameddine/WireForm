@@ -61,8 +61,6 @@ namespace Wireform.Circuitry.Utils
             get => inputCount;
             set
             {
-                if (inputCount == value) return;
-
                 inputCount = value;
                 GenerateInputs();
             }
@@ -82,8 +80,6 @@ namespace Wireform.Circuitry.Utils
             get => outputCount;
             set
             {
-                if (outputCount == value) return;
-
                 outputCount = value;
                 GenerateOutputs();
             }

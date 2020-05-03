@@ -85,7 +85,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
                 //Increments the property's value and resets to valueRange.min if it goes over the valueRange.max
                 void action(BoardState state)
                 {
-                    int value = prop.Get();
+                    int value = (int) prop.Get();
                     if (++value > prop.valueRange.max)
                         value = prop.valueRange.min;
                     prop.Set(value, state.Connections);
