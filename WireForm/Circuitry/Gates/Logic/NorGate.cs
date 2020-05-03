@@ -29,7 +29,7 @@ namespace Wireform.Circuitry.Gates.Logic
             painter.DrawArcC(Color.Black, 10, new Vec2(-2.3f, 2), new Vec2(8, 7), 270, 60);
             painter.DrawArcC(Color.Black, 10, new Vec2(-2.3f, -2), new Vec2(8, 7), 90, -60);
 
-            painter.DrawEllipseC(Color.Black, 10, new Vec2(1, 0), new Vec2(.4f, .4f));
+            painter.DrawEllipseC(Color.Black, 10, new Vec2(1, 0), new Vec2(.6f, .6f));
 
             base.Draw(painter);
         }

@@ -200,10 +200,7 @@ namespace Wireform.Circuitry.Gates.Logic
         [CircuitProperty(1, 32, true)]
         protected int SplitCount
         {
-            get
-            {
-                return splitCount;
-            }
+            get => splitCount;
             set
             {
                 splitCount = value;
@@ -215,10 +212,7 @@ namespace Wireform.Circuitry.Gates.Logic
         [CircuitProperty(1, 32, true)]
         protected int SplitDepth
         {
-            get
-            {
-                return splitDepth;
-            }
+            get => splitDepth;
             set
             {
                 splitDepth = value;
@@ -234,10 +228,7 @@ namespace Wireform.Circuitry.Gates.Logic
         [CircuitProperty(0, 1, true, new[] { "Expand", "Contract" })]
         protected Split SplitDirection
         {
-            get
-            {
-                return splitDirection;
-            }
+            get => splitDirection;
             set
             {
                 if (splitDirection != value)

@@ -110,7 +110,7 @@ namespace Wireform.Circuitry.Data
         }
 
         /// <summary>
-        /// Binary xor operator
+        /// Binary xor operator.
         /// </summary>
         public static BitArray operator ^(BitArray values1, BitArray values2)
         {
@@ -120,6 +120,52 @@ namespace Wireform.Circuitry.Data
                 newBits[i] = values1[i] ^ values2[i];
             }
             return newBits;
+        }
+
+        /// <summary>
+        /// Outputs one only if exactly one input is one
+        /// </summary>
+        public static BitArray Only1Input1(IEnumerable<BitArray> bitArrays)
+        {
+            List<BitValue> bitValues = new List<BitValue>();
+            int minLength = int.MaxValue;
+
+            //Nothing + Anything = Anything, 0 + 1 = 1, 1 + 1 = Error
+            foreach(BitArray array in bitArrays)
+            {
+                minLength = Math.Min(minLength, array.Length);
+                while (array.Length > bitValues.Count) bitValues.Add(BitValue.Nothing);
+
+                for(int i = 0; i < array.Length; i++)
+                {
+                    if (bitValues[i] == BitValue.Nothing)
+                    {
+                        bitValues[i] = array[i];
+                    }
+                    else if(bitValues[i] == BitValue.One && array[i] == BitValue.One)
+                    {
+                        bitValues[i] = BitValue.Error;
+                    }
+                    else if(bitValues[i] == BitValue.Zero && array[i] == BitValue.One)
+                    {
+                        bitValues[i] = BitValue.One;
+                    }
+                }
+            }
+
+            //Replace all errors with zero
+            for(int i = 0; i < minLength; i++)
+            {
+                if (bitValues[i] == BitValue.Error) bitValues[i] = BitValue.Zero;
+            }
+
+            //Replace all trailing values with error
+            for(int i = minLength; i < bitValues.Count; i++)
+            {
+                bitValues[i] = BitValue.Error;
+            }
+
+            return new BitArray(bitValues.ToArray());
         }
 
         public void CopyTo(out BitArray data)
