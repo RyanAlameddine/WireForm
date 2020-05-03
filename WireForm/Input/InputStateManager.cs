@@ -43,16 +43,16 @@ namespace Wireform.Input
         /// If the current state is clean, inserts the new state (loaded from StandardToolState) and returns true.
         /// If not, return false.
         /// </summary>
-        public bool ChangeTool(Tools newState)
+        public bool TryChangeTool(Tools newState)
         {
-            return ChangeTool(StandardToolStates[newState]);
+            return TryChangeTool(StandardToolStates[newState]);
         }
 
         /// <summary>
         /// If the current state is clean, inserts the new state and returns true.
         /// If not, return false.
         /// </summary>
-        public bool ChangeTool(InputState newState)
+        private bool TryChangeTool(InputState newState)
         {
             if (state.IsClean())
             {

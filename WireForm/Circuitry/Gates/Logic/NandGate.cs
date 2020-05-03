@@ -9,6 +9,7 @@ using Wireform.MathUtils.Collision;
 
 namespace Wireform.Circuitry.Gates.Logic
 {
+    [Gate("Logic", "NAND")]
     class NandGate : DynamicGate
     {
         [JsonConstructor]

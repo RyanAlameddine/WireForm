@@ -12,6 +12,7 @@ using Wireform.Circuitry.Utils;
 
 namespace Wireform.Circuitry.Gates
 {
+    [Gate]
     public class BitSource : Gate
     {
         public BitSource(Vec2 Position, Direction direction)

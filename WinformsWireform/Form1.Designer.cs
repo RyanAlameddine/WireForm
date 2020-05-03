@@ -30,8 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.toolBox = new System.Windows.Forms.ComboBox();
-            this.gateBox = new System.Windows.Forms.ComboBox();
-            this.gatePicBox = new System.Windows.Forms.PictureBox();
             this.GateMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SelectionSettings = new System.Windows.Forms.ListBox();
             this.SelectionSettingValue = new System.Windows.Forms.ComboBox();
@@ -51,9 +49,10 @@
             this.pasteButton = new System.Windows.Forms.ToolStripMenuItem();
             this.undoButton = new System.Windows.Forms.ToolStripMenuItem();
             this.redoButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawingPanel = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.gatePicBox)).BeginInit();
             this.menuStrip.SuspendLayout();
+            this.drawingPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolBox
@@ -64,35 +63,12 @@
             this.toolBox.Items.AddRange(new object[] {
             "Gate Controller (G)",
             "Wire Painter (W)"});
-            this.toolBox.Location = new System.Drawing.Point(667, 12);
+            this.toolBox.Location = new System.Drawing.Point(1000, 18);
+            this.toolBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.toolBox.Name = "toolBox";
-            this.toolBox.Size = new System.Drawing.Size(121, 21);
+            this.toolBox.Size = new System.Drawing.Size(180, 28);
             this.toolBox.TabIndex = 0;
             this.toolBox.SelectedIndexChanged += new System.EventHandler(this.ToolBox_SelectedIndexChanged);
-            // 
-            // gateBox
-            // 
-            this.gateBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gateBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gateBox.FormattingEnabled = true;
-            this.gateBox.Location = new System.Drawing.Point(667, 39);
-            this.gateBox.Name = "gateBox";
-            this.gateBox.Size = new System.Drawing.Size(121, 21);
-            this.gateBox.TabIndex = 1;
-            this.gateBox.SelectedIndexChanged += new System.EventHandler(this.GateBox_SelectedIndexChanged);
-            // 
-            // gatePicBox
-            // 
-            this.gatePicBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gatePicBox.BackColor = System.Drawing.Color.LightGray;
-            this.gatePicBox.Location = new System.Drawing.Point(667, 62);
-            this.gatePicBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.gatePicBox.Name = "gatePicBox";
-            this.gatePicBox.Size = new System.Drawing.Size(120, 83);
-            this.gatePicBox.TabIndex = 5;
-            this.gatePicBox.TabStop = false;
-            this.gatePicBox.Paint += new System.Windows.Forms.PaintEventHandler(this.GatePicBox_Paint);
-            this.gatePicBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GatePicBox_MouseDown);
             // 
             // GateMenu
             // 
@@ -104,10 +80,10 @@
             // 
             this.SelectionSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectionSettings.FormattingEnabled = true;
-            this.SelectionSettings.Location = new System.Drawing.Point(667, 149);
-            this.SelectionSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SelectionSettings.ItemHeight = 20;
+            this.SelectionSettings.Location = new System.Drawing.Point(1000, 21);
             this.SelectionSettings.Name = "SelectionSettings";
-            this.SelectionSettings.Size = new System.Drawing.Size(121, 225);
+            this.SelectionSettings.Size = new System.Drawing.Size(180, 344);
             this.SelectionSettings.TabIndex = 6;
             this.SelectionSettings.SelectedIndexChanged += new System.EventHandler(this.SelectionSettings_SelectedIndexChanged);
             // 
@@ -116,9 +92,10 @@
             this.SelectionSettingValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectionSettingValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.SelectionSettingValue.FormattingEnabled = true;
-            this.SelectionSettingValue.Location = new System.Drawing.Point(667, 379);
+            this.SelectionSettingValue.Location = new System.Drawing.Point(1000, 375);
+            this.SelectionSettingValue.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.SelectionSettingValue.Name = "SelectionSettingValue";
-            this.SelectionSettingValue.Size = new System.Drawing.Size(121, 21);
+            this.SelectionSettingValue.Size = new System.Drawing.Size(180, 28);
             this.SelectionSettingValue.TabIndex = 7;
             this.SelectionSettingValue.SelectedIndexChanged += new System.EventHandler(this.SelectionSettingsValue_SelectedIndexChanged);
             // 
@@ -127,11 +104,11 @@
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileButton,
-            this.editButton});
+            this.editButton,
+            this.createToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
-            this.menuStrip.Size = new System.Drawing.Size(800, 31);
+            this.menuStrip.Size = new System.Drawing.Size(1200, 33);
             this.menuStrip.TabIndex = 8;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -249,13 +226,20 @@
             this.redoButton.Text = "Redo";
             this.redoButton.Click += new System.EventHandler(this.RedoButton_Click);
             // 
+            // createToolStripMenuItem
+            // 
+            this.createToolStripMenuItem.Name = "createToolStripMenuItem";
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(78, 29);
+            this.createToolStripMenuItem.Text = "Create";
+            // 
             // drawingPanel
             // 
+            this.drawingPanel.Controls.Add(this.SelectionSettings);
+            this.drawingPanel.Controls.Add(this.SelectionSettingValue);
             this.drawingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.drawingPanel.Location = new System.Drawing.Point(0, 31);
-            this.drawingPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.drawingPanel.Location = new System.Drawing.Point(0, 33);
             this.drawingPanel.Name = "drawingPanel";
-            this.drawingPanel.Size = new System.Drawing.Size(800, 419);
+            this.drawingPanel.Size = new System.Drawing.Size(1200, 659);
             this.drawingPanel.TabIndex = 9;
             this.drawingPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingPanel_Paint);
             this.drawingPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseDown);
@@ -264,18 +248,15 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.SelectionSettingValue);
-            this.Controls.Add(this.SelectionSettings);
-            this.Controls.Add(this.gatePicBox);
-            this.Controls.Add(this.gateBox);
+            this.ClientSize = new System.Drawing.Size(1200, 692);
             this.Controls.Add(this.toolBox);
             this.Controls.Add(this.drawingPanel);
             this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -283,9 +264,9 @@
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseWheel);
-            ((System.ComponentModel.ISupportInitialize)(this.gatePicBox)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
+            this.drawingPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -294,8 +275,6 @@
         #endregion
 
         private System.Windows.Forms.ComboBox toolBox;
-        private System.Windows.Forms.ComboBox gateBox;
-        private System.Windows.Forms.PictureBox gatePicBox;
         internal System.Windows.Forms.ContextMenuStrip GateMenu;
         private System.Windows.Forms.ListBox SelectionSettings;
         private System.Windows.Forms.ComboBox SelectionSettingValue;
@@ -316,6 +295,7 @@
         private System.Windows.Forms.ToolStripMenuItem cutButton;
         private System.Windows.Forms.ToolStripMenuItem pasteButton;
         internal System.Windows.Forms.Panel drawingPanel;
+        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
     }
 }
 

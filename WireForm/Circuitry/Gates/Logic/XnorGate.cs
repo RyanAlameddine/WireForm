@@ -11,6 +11,7 @@ using Wireform.MathUtils.Collision;
 
 namespace Wireform.Circuitry.Gates.Logic
 {
+    [Gate("Logic", "XNOR")]
     class XnorGate : DynamicGate
     {
         [JsonConstructor]

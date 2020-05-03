@@ -12,6 +12,7 @@ using Wireform.MathUtils.Collision;
 
 namespace Wireform.Circuitry.Gates.Logic
 {
+    [Gate]
     class Splitter : DynamicGate
     {
         [JsonConstructor]

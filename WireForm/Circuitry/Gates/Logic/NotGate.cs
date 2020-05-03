@@ -8,6 +8,7 @@ using Wireform.MathUtils.Collision;
 
 namespace Wireform.Circuitry.Gates.Logic
 {
+    [Gate("Logic", "NOT")]
     class NotGate : Gate
     {
         public NotGate(Vec2 Position, Direction direction)

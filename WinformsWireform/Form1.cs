@@ -16,7 +16,6 @@ using Wireform.MathUtils;
 
 namespace WinformsWireform
 {
-
     public partial class Form1 : Form
     {
         readonly BoardStack stateStack;
@@ -36,7 +35,42 @@ namespace WinformsWireform
         private void Form1_Load(object sender, EventArgs e)
         {
             toolBox.SelectedIndex = 0;
-            gateBox.DataSource = GateCollection.GateConstructors.Keys.ToArray();
+            //Create the Create menu
+            var gates = GateCollection.GatePaths;
+
+            //Create gate menu heirarchy
+            foreach(var gatePath in gates)
+            {
+                var currentMenuItem = createToolStripMenuItem;
+                var path = gatePath.Split('/');
+                for(int i = 0; i < path.Length - 1; i++)
+                {
+                    //Checks if currentMenuItem already has category child which matches path[i]
+                    var children = currentMenuItem.DropDownItems;
+                    bool found = false;
+                    foreach(var child in children) if(child is ToolStripMenuItem item) if(item.Text == path[i])
+                    {
+                        currentMenuItem = item; found = true; break;
+                    }
+                    if (found) continue;
+
+                    var newItem = new ToolStripMenuItem(path[i]);
+                    currentMenuItem.DropDownItems.Add(newItem);
+                    currentMenuItem = newItem;
+                }
+
+                //Add gate to category menu
+                var gateItem = new ToolStripMenuItem(path[path.Length - 1], null, 
+                    (s, e) =>
+                    {
+                        //Place created gate onto board
+                        StateControls stateControls = MakeControls(Keys.None);
+                        Gate newGate = GateCollection.CreateGate(gatePath, Vec2.Zero);
+                        RunInputEvent(stateManager.PlaceNewGate(newGate));
+                    });
+                currentMenuItem.DropDownItems.Add(gateItem);
+            }
+
         }
 
         #region Input
@@ -184,21 +218,6 @@ namespace WinformsWireform
             }
             drawingPanel.Refresh();
         }
-
-        private void GateBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //Create new gate
-            picBoxGate = GateCollection.CreateGate((string)gateBox.SelectedValue, new Vec2(4, 2.5f));
-            gatePicBox.Refresh();
-        }
-
-        private void GatePicBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            //Place created gate onto board
-            StateControls stateControls = MakeControls(Keys.None);
-            Gate newGate = GateCollection.CreateGate((string)gateBox.SelectedValue, Vec2.Zero);
-            RunInputEvent(stateManager.PlaceNewGate(newGate));
-        }
         #endregion Input
 
         #region Graphics
@@ -207,63 +226,23 @@ namespace WinformsWireform
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             GraphicsManager.Paint(new PainterScope(new WinformsPainter(e.Graphics, GraphicsManager.SizeScale), GraphicsManager.SizeScale), new Vec2(Width, Height), stateStack.CurrentState, stateManager);
         }
-
-        Gate picBoxGate = new BitSource(new Vec2(4, 2.5f), Direction.Right);
-        private void GatePicBox_Paint(object sender, PaintEventArgs e)
-        {
-            picBoxGate.DrawGate(new PainterScope(new WinformsPainter(e.Graphics, 15), 15));
-        }
         #endregion Graphics
-
-        #region CircuitProperties
-        CircuitPropertyCollection circuitProperties;
-
-        int? prevSelectedIndex = 0;
-        private void SelectionSettings_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectionSettingValue.Items.Clear();
-            if (SelectionSettings.SelectedIndex == -1) { return; }
-
-            var prop = circuitProperties[SelectionSettings.SelectedItem.ToString()];
-            var value = circuitProperties.InvokeGet(prop.Name);
-            prevSelectedIndex = value;
-
-            for (int i = 0; i <= prop.valueRange.max - prop.valueRange.min; i++)
-            {
-                SelectionSettingValue.Items.Add(prop.valueNames[i]);
-            }
-
-            //if value is null, -1, else index
-            SelectionSettingValue.SelectedIndex = value == null ? -1 : (int)value - prop.valueRange.min;
-        }
-
-        private void SelectionSettingsValue_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var prop = circuitProperties[SelectionSettings.SelectedItem.ToString()];
-
-            int newVal = SelectionSettingValue.SelectedIndex + prop.valueRange.min;
-            if (newVal == prevSelectedIndex) { return; }
-            prevSelectedIndex = newVal;
-            circuitProperties.InvokeSet(prop.Name, newVal, stateStack.CurrentState.Connections);
-            drawingPanel.Refresh();
-            //Refresh();
-        }
-        #endregion CircuitProperties
 
         #region FormInput
         Tools tool = Tools.SelectionTool;
         private void ToolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var newTool = (Tools)toolBox.SelectedIndex;
-            if (newTool == tool) return;
+            bool successful = stateManager.TryChangeTool(tool);
+            if (!successful)
+            {
+                toolBox.SelectedIndex = (int)tool;
+                return;
+            }
 
             tool                          = (Tools)toolBox.SelectedIndex;
-            gateBox.Visible               = tool == Tools.SelectionTool;
             SelectionSettings.Visible     = tool == Tools.SelectionTool;
             SelectionSettingValue.Visible = tool == Tools.SelectionTool;
-            gatePicBox.Visible            = tool == Tools.SelectionTool;
 
-            stateManager.ChangeTool(tool);
 
             drawingPanel.Refresh();
         }
@@ -318,5 +297,40 @@ namespace WinformsWireform
             Close();
         }
         #endregion
+
+        #region CircuitProperties
+        CircuitPropertyCollection circuitProperties;
+
+        int? prevSelectedIndex = 0;
+        private void SelectionSettings_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SelectionSettingValue.Items.Clear();
+            if (SelectionSettings.SelectedIndex == -1) { return; }
+
+            var prop = circuitProperties[SelectionSettings.SelectedItem.ToString()];
+            var value = circuitProperties.InvokeGet(prop.Name);
+            prevSelectedIndex = value;
+
+            for (int i = 0; i <= prop.valueRange.max - prop.valueRange.min; i++)
+            {
+                SelectionSettingValue.Items.Add(prop.valueNames[i]);
+            }
+
+            //if value is null, -1, else index
+            SelectionSettingValue.SelectedIndex = value == null ? -1 : (int)value - prop.valueRange.min;
+        }
+
+        private void SelectionSettingsValue_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var prop = circuitProperties[SelectionSettings.SelectedItem.ToString()];
+
+            int newVal = SelectionSettingValue.SelectedIndex + prop.valueRange.min;
+            if (newVal == prevSelectedIndex) { return; }
+            prevSelectedIndex = newVal;
+            circuitProperties.InvokeSet(prop.Name, newVal, stateStack.CurrentState.Connections);
+            drawingPanel.Refresh();
+            //Refresh();
+        }
+        #endregion CircuitProperties
     }
 }

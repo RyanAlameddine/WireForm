@@ -11,26 +11,25 @@ namespace Wireform.Circuitry.Utils
     /// </summary>
     public static class GateCollection
     {
-        private static Dictionary<string, Func<Vec2, Gate>> constructors;
+        private static SortedDictionary<string, Func<Vec2, Gate>> constructors;
         /// <summary>
-        /// Map from string (gate type name eg. "Splitter") to function which takes in a Vec2 (position) and 
-        /// returns a new Gate object
+        /// Gate path category path followed by name separated by '/', eg. "Utils/Splitter"
         /// </summary>
-        public static IReadOnlyDictionary<string, Func<Vec2, Gate>> GateConstructors
+        public static IEnumerable<string> GatePaths
         {
             get
             {
                 if (constructors == null) LoadConstructors();
-                return constructors;
+                return constructors.Keys;
             }
         }
 
         /// <summary>
-        /// Returns a new gate from the GateConstructors dictionary at the desired position
+        /// Returns a new gate from the GateConstructors dictionary at the desired path
         /// </summary>
-        public static Gate CreateGate(string name, Vec2 position)
+        public static Gate CreateGate(string path, Vec2 position)
         {
-            return constructors[name](position);
+            return constructors[path](position);
         }
 
         /// <summary>
@@ -38,17 +37,25 @@ namespace Wireform.Circuitry.Utils
         /// </summary>
         private static void LoadConstructors()
         {
-            constructors = new Dictionary<string, Func<Vec2, Gate>>();
-            var gateTypes = Assembly.GetExecutingAssembly().GetTypes().Where((x) => x.IsSubclassOf(typeof(Gate)) && !x.IsAbstract);
+            constructors = new SortedDictionary<string, Func<Vec2, Gate>>();
+            //Gets all types which extend Gate and are not abstract
+            var gateTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where((x) => x.IsSubclassOf(typeof(Gate)) && !x.IsAbstract);
             foreach(var type in gateTypes)
             {
-                var name = type.Name;
+                //Check for [Gate]
+                GateAttribute attribute = type.GetCustomAttribute<GateAttribute>(false);
+                if (attribute == null) continue;
+
+                //type name only if gateName is ""
+                var name = attribute.gateName.Length != 0 ? attribute.gateName : type.Name;
+                var fullPath = attribute.path + name;
 
                 try
                 {
                     Gate constructor(Vec2 position) => (Gate)Activator.CreateInstance(type, position, default);
-                    constructors.Add(name, constructor);
-                } catch (System.MissingMethodException)
+                    constructors.Add(fullPath, constructor);
+                } catch (MissingMethodException)
                 {
                     throw new MissingMethodException("All Gates must have a constructor which takes in only Vec2 (for position), and Direction");
                 }
