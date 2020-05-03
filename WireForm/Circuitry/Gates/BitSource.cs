@@ -49,7 +49,7 @@ namespace Wireform.Circuitry.Gates
 
 
         [JsonIgnore]
-        [CircuitAction("Toggle", 't')]
+        [CircuitPropertyAction("Toggle", 't', true)]
         [CircuitProperty(2, 3, false, new[] { "Zero", "One" })]
         public int Value
         {

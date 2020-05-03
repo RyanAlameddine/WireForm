@@ -49,20 +49,19 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
             var methods = target.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var method in methods)
             {
-                foreach (var attribute in (CircuitActionAttribute[])method.GetCustomAttributes(typeof(CircuitActionAttribute), true))
+                var attribute = method.GetCustomAttribute<CircuitActionBase>(true);
+                if (attribute == null) continue;
+                //If method has IgnoreCircuitAttribute, continue
+                if (method.GetCustomAttributes(typeof(HideCircuitAttributesAttribute), true).Length != 0) continue;
+
+                void action(BoardState state)
                 {
-                    //If method has IgnoreCircuitAttribute, continue
-                    if (method.GetCustomAttributes(typeof(HideCircuitAttributesAttribute), true).Length != 0) continue;
+                    //Invoke method with or without state as parameter
+                    method.Invoke(target, method.GetParameters().Length == 1 ? new[] { state } : null);
 
-                    void action(BoardState state)
-                    {
-                        //Invoke method with or without state as parameter
-                        method.Invoke(target, method.GetParameters().Length == 1 ? new[] { state } : null);
-
-                        cleanup(state);
-                    }
-                    actions.Add(new CircuitAct(action, attribute));
+                    cleanup(state);
                 }
+                actions.Add(new CircuitAct(action, attribute));
             }
 
             //Find and register all properties which are Circuit Actions
@@ -71,28 +70,45 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
 
             foreach (var property in properties)
             {
-                var actionAttribute = property.GetCustomAttribute<CircuitActionAttribute>(true);
                 var propertyAttribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
-                //If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
-                if (actionAttribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
-                if (propertyAttribute == null) throw new NotImplementedException("All [CircuitAction] attributes on a property must also have a [CircuitProperty] attribute.");
-
-                CircuitProp prop = new CircuitProp(
-                    () => (int)property.GetValue(target),
-                    (value, connections) => property.SetValue(target, value),
-                    target, propertyAttribute.ValueRange, propertyAttribute.ValueNames, propertyAttribute.RequireReconnect, property.Name);
-
-                //Increments the property's value and resets to valueRange.min if it goes over the valueRange.max
-                void action(BoardState state)
+                var actionAttributes = property.GetCustomAttributes<CircuitPropertyActionAttribute>(true);
+                foreach (var actionAttribute in actionAttributes)
                 {
-                    int value = (int) prop.Get();
-                    if (++value > prop.valueRange.max)
-                        value = prop.valueRange.min;
-                    prop.Set(value, state.Connections);
-                    cleanup(state);
-                }
+                    //If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
+                    if (actionAttribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
+                    if (propertyAttribute == null) throw new NotImplementedException("All [CircuitPropertyAction] attributes on a property must also have a [CircuitProperty] attribute.");
 
-                actions.Add(new CircuitAct(action, actionAttribute));
+                    CircuitProp prop = new CircuitProp(
+                        () => (int)property.GetValue(target),
+                        (value, connections) => property.SetValue(target, value),
+                        target, propertyAttribute.ValueRange, propertyAttribute.ValueNames, propertyAttribute.RequireReconnect, property.Name);
+
+                    //Increments/decrements the property's value and resets to valueRange.min/max if it goes over/under the valueRange.max/min
+                    void action(BoardState state)
+                    {
+                        int value = (int)prop.Get();
+                        if (actionAttribute.increment)
+                        {
+                            if (++value > prop.valueRange.max)
+                                if (actionAttribute.behavior == PropertyOverflow.Clip)
+                                    value = prop.valueRange.max;
+                                else
+                                    value = prop.valueRange.min;
+                        }
+                        else
+                        {
+                            if (--value < prop.valueRange.min)
+                                if (actionAttribute.behavior == PropertyOverflow.Clip)
+                                    value = prop.valueRange.min;
+                                else
+                                    value = prop.valueRange.max;
+                        }
+                        prop.Set(value, state.Connections);
+                        cleanup(state);
+                    }
+
+                    actions.Add(new CircuitAct(action, actionAttribute));
+                }
             }
 
             return new CircuitActionCollection(actions, registerChange);

@@ -225,7 +225,7 @@ namespace Wireform.Circuitry.Gates.Logic
         /// The way in which the splitter expands or contracts inputs or outputs
         /// </summary>
         private Split splitDirection = Split.Expand;
-        [CircuitAction("Flip", 'f')]
+        [CircuitPropertyAction("Flip", 'f', true)]
         [CircuitProperty(0, 1, true, new[] { "Expand", "Contract" })]
         protected Split SplitDirection
         {

@@ -93,7 +93,7 @@ namespace Wireform.Circuitry.Utils
         /// If you would like to disable rotation, simply override Direction and tag it
         /// with [HideCircuitAttributes]
         /// </summary>
-        [CircuitAction("Rotate", 'r')]
+        [CircuitPropertyAction("Rotate", 'r', true)]
         [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
         public virtual Direction Direction { get; set; } = Direction.Right;
 

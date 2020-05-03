@@ -7,6 +7,7 @@ using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
+using Wireform.Input;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 
@@ -55,7 +56,9 @@ namespace Wireform.Circuitry.Utils
         /// The amount of generated inputs for a dynamic gate.
         /// Setting this will update the Inputs if applicable.
         /// </summary>
-        [CircuitProperty(2, 16, true)]
+        [CircuitPropertyAction("Increment inputs", 'i', true, PropertyOverflow.Clip)]
+        [CircuitPropertyAction("Decrement inputs", 'i', Modifier.Shift, false, PropertyOverflow.Clip)]
+        [CircuitProperty(2, 32, true)]
         public virtual int InputCount
         {
             get => inputCount;

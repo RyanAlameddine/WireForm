@@ -21,7 +21,7 @@ namespace Wireform.Input.States.Selection
 
         public override InputReturns KeyDown(StateControls stateControls)
         {
-            bool toRefresh = ExecuteHotkey(stateControls);
+            bool toRefresh = ExecuteHotkey(stateControls.State, stateControls.Hotkey, stateControls.Modifiers, stateControls.RegisterChange);
             return (toRefresh, this);
         }
 

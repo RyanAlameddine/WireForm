@@ -64,7 +64,7 @@ namespace WinformsWireform
                     (s, e) =>
                     {
                         //Place created gate onto board
-                        StateControls stateControls = MakeControls(Keys.None);
+                        StateControls stateControls = MakeControls(null);
                         Gate newGate = GateCollection.CreateGate(gatePath, Vec2.Zero);
                         RunInputEvent(stateManager.PlaceNewGate(newGate));
                     });
@@ -77,13 +77,13 @@ namespace WinformsWireform
 
         void RunInputEvent(Func<StateControls, bool> inputEvent)
         {
-            RunInputEvent(inputEvent, Keys.None);
+            RunInputEvent(inputEvent, null);
         }
         /// <summary>
         /// Function for the Form to interact with the input manager.
         /// The inputEvent should be a function in the InputStateManager.
         /// </summary>
-        void RunInputEvent(Func<StateControls, bool> inputEvent, Keys key)
+        void RunInputEvent(Func<StateControls, bool> inputEvent, char? key)
         {
             var stateControls = MakeControls(key);
             bool toRefresh = inputEvent(stateControls);
@@ -126,14 +126,14 @@ namespace WinformsWireform
         /// <summary>
         /// Helper function which makes StateControls
         /// </summary>
-        StateControls MakeControls(Keys key)
+        StateControls MakeControls(char? keyChar)
         {
             var mousePoint = (Vec2)drawingPanel.PointToClient(Cursor.Position);
             Modifier modifierKeys = Modifier.None;
             if (ModifierKeys.HasFlag(Keys.Control)) modifierKeys |= Modifier.Control;
             if (ModifierKeys.HasFlag(Keys.Shift  )) modifierKeys |= Modifier.Shift  ;
             if (ModifierKeys.HasFlag(Keys.Alt    )) modifierKeys |= Modifier.Alt    ;
-            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, key.ToString().ToLower()[0], modifierKeys, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, keyChar, modifierKeys, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
             return stateControls;
         }
 
@@ -156,17 +156,6 @@ namespace WinformsWireform
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-
-            if (e.KeyChar == '+' || e.KeyChar == '=')
-            {
-                GraphicsManager.SizeScale *= 1.1f;
-                drawingPanel.Refresh();
-            }
-            if (e.KeyChar == '-')
-            {
-                GraphicsManager.SizeScale *= .9f;
-                drawingPanel.Refresh();
-            }
             if (e.KeyChar == 'p')
             {
                 Queue<Gate> sources = new Queue<Gate>();
@@ -180,6 +169,7 @@ namespace WinformsWireform
                 FlowPropagator.Propogate(stateStack.CurrentState, sources);
                 drawingPanel.Refresh();
             }
+            RunInputEvent(stateManager.KeyDown, e.KeyChar);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -196,16 +186,6 @@ namespace WinformsWireform
                 ToolBox_SelectedIndexChanged(this, new EventArgs());
             }
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
-            RunInputEvent(stateManager.KeyDown, e.KeyCode);
-        }
-
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            RunInputEvent(stateManager.KeyUp, e.KeyCode);
         }
 
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
@@ -239,9 +219,10 @@ namespace WinformsWireform
                 return;
             }
 
-            tool                          = (Tools)toolBox.SelectedIndex;
-            SelectionSettings.Visible     = tool == Tools.SelectionTool;
-            SelectionSettingValue.Visible = tool == Tools.SelectionTool;
+            tool                            = (Tools)toolBox.SelectedIndex;
+            createToolStripMenuItem.Visible = tool == Tools.SelectionTool;
+            SelectionSettings.Visible       = tool == Tools.SelectionTool;
+            SelectionSettingValue.Visible   = tool == Tools.SelectionTool;
 
 
             drawingPanel.Refresh();
@@ -250,6 +231,7 @@ namespace WinformsWireform
         private void NewButton_Click(object sender, EventArgs e)
         {
             stateStack.Clear();
+            Refresh();
         }
 
         private void OpenButton_Click(object sender, EventArgs e)

@@ -52,16 +52,20 @@ namespace Wireform.Input.States.Selection
         /// <summary>
         /// Propogates hotkey through all selected CircuitObjects and runs any valid [CircuitProperties]
         /// </summary>
-        protected bool ExecuteHotkey(StateControls stateControls)
+        protected bool ExecuteHotkey(BoardState state, char? key, Modifier Modifiers,  Action<string> registerChange)
         {
             CircuitActionCollection actions = CircuitActionCollection.Empty;
             //Find all actions
             foreach(var selection in selections)
             {
-                actions.UnionWith(CircuitAttributes.GetActions(selection, RefreshSelections, stateControls.RegisterChange));
+                actions.UnionWith(CircuitAttributes.GetActions(selection, RefreshSelections, registerChange));
             }
+
+            char hotkey = (char) key;
             //Execute matches
-            return actions.InvokeHotkeyActions(stateControls.State, stateControls.Hotkey, stateControls.Modifiers);
+            bool toRefresh = actions.InvokeHotkeyActions(state, hotkey, Modifiers);
+            GetUpdatedCircuitProperties(registerChange);
+            return toRefresh;
         }
 
 

@@ -23,7 +23,7 @@ namespace Wireform.Input
         /// <summary>
         /// If this control is being created for a keyboard event, should contain the key of note
         /// </summary>
-        public char Hotkey { get; }
+        public char? Hotkey { get; }
 
         /// <summary>
         /// The key modifiers currently being pressed down
@@ -69,11 +69,11 @@ namespace Wireform.Input
         /// </summary>
         public CircuitPropertyCollection CircuitPropertiesOutput { get; set; } = null;
 
-        public StateControls(BoardState state, Vec2 mousePosition, char hotkey, Modifier modifiers, Action<string> registerChange, Action reverse, Action advance)
+        public StateControls(BoardState state, Vec2 mousePosition, char? hotkey, Modifier modifiers, Action<string> registerChange, Action reverse, Action advance)
         {
             this.State = state;
             this.MousePosition = mousePosition;
-            this.Hotkey = hotkey;
+            this.Hotkey = hotkey == null ? hotkey : hotkey.ToString().ToLower()[0];
             this.Modifiers = modifiers;
             this.RegisterChange = registerChange;
             this.Reverse = reverse;
