@@ -106,6 +106,7 @@ namespace Wireform.Input
         /// Special operation that, if the current state IsClean, will change state to MovingSelectionState
         /// and place the newGate into the selections list.
         /// Returns a function which matches the 'takes in the current StateControls and outputs a boolean' pattern.
+        /// NOTE: new gates can be greated through the GatesCollection class
         /// </summary>
         public Func<StateControls, bool> PlaceNewGate(Gate newGate)
         {

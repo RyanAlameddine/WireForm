@@ -31,8 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.toolBox = new System.Windows.Forms.ComboBox();
             this.GateMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.SelectionSettings = new System.Windows.Forms.ListBox();
-            this.SelectionSettingValue = new System.Windows.Forms.ComboBox();
+            this.CircuitPropertyBox = new System.Windows.Forms.ListBox();
+            this.CircuitPropertyValueBox = new System.Windows.Forms.ComboBox();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
@@ -50,9 +50,9 @@
             this.undoButton = new System.Windows.Forms.ToolStripMenuItem();
             this.redoButton = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.drawingPanel = new System.Windows.Forms.Panel();
+            this.DrawingPanel = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
-            this.drawingPanel.SuspendLayout();
+            this.DrawingPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolBox
@@ -76,28 +76,28 @@
             this.GateMenu.Name = "contextMenuStrip1";
             this.GateMenu.Size = new System.Drawing.Size(61, 4);
             // 
-            // SelectionSettings
+            // CircuitPropertyBox
             // 
-            this.SelectionSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SelectionSettings.FormattingEnabled = true;
-            this.SelectionSettings.ItemHeight = 20;
-            this.SelectionSettings.Location = new System.Drawing.Point(1000, 21);
-            this.SelectionSettings.Name = "SelectionSettings";
-            this.SelectionSettings.Size = new System.Drawing.Size(180, 344);
-            this.SelectionSettings.TabIndex = 6;
-            this.SelectionSettings.SelectedIndexChanged += new System.EventHandler(this.SelectionSettings_SelectedIndexChanged);
+            this.CircuitPropertyBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.CircuitPropertyBox.FormattingEnabled = true;
+            this.CircuitPropertyBox.ItemHeight = 20;
+            this.CircuitPropertyBox.Location = new System.Drawing.Point(1000, 21);
+            this.CircuitPropertyBox.Name = "CircuitPropertyBox";
+            this.CircuitPropertyBox.Size = new System.Drawing.Size(180, 344);
+            this.CircuitPropertyBox.TabIndex = 6;
+            this.CircuitPropertyBox.SelectedIndexChanged += new System.EventHandler(this.CircuitPropertyBox_SelectedIndexChanged);
             // 
-            // SelectionSettingValue
+            // CircuitPropertyValueBox
             // 
-            this.SelectionSettingValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SelectionSettingValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.SelectionSettingValue.FormattingEnabled = true;
-            this.SelectionSettingValue.Location = new System.Drawing.Point(1000, 375);
-            this.SelectionSettingValue.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.SelectionSettingValue.Name = "SelectionSettingValue";
-            this.SelectionSettingValue.Size = new System.Drawing.Size(180, 28);
-            this.SelectionSettingValue.TabIndex = 7;
-            this.SelectionSettingValue.SelectedIndexChanged += new System.EventHandler(this.SelectionSettingsValue_SelectedIndexChanged);
+            this.CircuitPropertyValueBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.CircuitPropertyValueBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CircuitPropertyValueBox.FormattingEnabled = true;
+            this.CircuitPropertyValueBox.Location = new System.Drawing.Point(1000, 375);
+            this.CircuitPropertyValueBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.CircuitPropertyValueBox.Name = "CircuitPropertyValueBox";
+            this.CircuitPropertyValueBox.Size = new System.Drawing.Size(180, 28);
+            this.CircuitPropertyValueBox.TabIndex = 7;
+            this.CircuitPropertyValueBox.SelectedIndexChanged += new System.EventHandler(this.CircuitPropertyValueBox_SelectedIndexChanged);
             // 
             // menuStrip
             // 
@@ -163,7 +163,7 @@
             | System.Windows.Forms.Keys.S)));
             this.saveAsButton.Size = new System.Drawing.Size(285, 34);
             this.saveAsButton.Text = "Save As";
-            this.saveAsButton.Click += new System.EventHandler(this.SaveAsButton_Click);
+            this.saveAsButton.Click += new System.EventHandler(this.SaveAs_Click);
             // 
             // closeButton
             // 
@@ -234,17 +234,17 @@
             // 
             // drawingPanel
             // 
-            this.drawingPanel.Controls.Add(this.SelectionSettings);
-            this.drawingPanel.Controls.Add(this.SelectionSettingValue);
-            this.drawingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.drawingPanel.Location = new System.Drawing.Point(0, 33);
-            this.drawingPanel.Name = "drawingPanel";
-            this.drawingPanel.Size = new System.Drawing.Size(1200, 659);
-            this.drawingPanel.TabIndex = 9;
-            this.drawingPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingPanel_Paint);
-            this.drawingPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseDown);
-            this.drawingPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseMove);
-            this.drawingPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseUp);
+            this.DrawingPanel.Controls.Add(this.CircuitPropertyBox);
+            this.DrawingPanel.Controls.Add(this.CircuitPropertyValueBox);
+            this.DrawingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DrawingPanel.Location = new System.Drawing.Point(0, 33);
+            this.DrawingPanel.Name = "drawingPanel";
+            this.DrawingPanel.Size = new System.Drawing.Size(1200, 659);
+            this.DrawingPanel.TabIndex = 9;
+            this.DrawingPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingPanel_Paint);
+            this.DrawingPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseDown);
+            this.DrawingPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Panel_MouseMove);
+            this.DrawingPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseUp);
             // 
             // Form1
             // 
@@ -253,7 +253,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.ClientSize = new System.Drawing.Size(1200, 692);
             this.Controls.Add(this.toolBox);
-            this.Controls.Add(this.drawingPanel);
+            this.Controls.Add(this.DrawingPanel);
             this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -264,7 +264,7 @@
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseWheel);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
-            this.drawingPanel.ResumeLayout(false);
+            this.DrawingPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -274,8 +274,8 @@
 
         private System.Windows.Forms.ComboBox toolBox;
         internal System.Windows.Forms.ContextMenuStrip GateMenu;
-        private System.Windows.Forms.ListBox SelectionSettings;
-        private System.Windows.Forms.ComboBox SelectionSettingValue;
+        private System.Windows.Forms.ListBox CircuitPropertyBox;
+        private System.Windows.Forms.ComboBox CircuitPropertyValueBox;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.MenuStrip menuStrip;
@@ -292,7 +292,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyButton;
         private System.Windows.Forms.ToolStripMenuItem cutButton;
         private System.Windows.Forms.ToolStripMenuItem pasteButton;
-        internal System.Windows.Forms.Panel drawingPanel;
+        internal System.Windows.Forms.Panel DrawingPanel;
         private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
     }
 }

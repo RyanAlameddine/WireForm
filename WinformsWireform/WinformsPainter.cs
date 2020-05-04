@@ -17,7 +17,7 @@ namespace WinformsWireform
     /// Painters also contain an internal offset value which will be applied to all position elements
     /// and a multiplier which determines rotational values of drawn gates
     /// </summary>
-    public class WinformsPainter : IPainter
+    internal class WinformsPainter : IPainter
     {
         Graphics gfx;
         float zoom;

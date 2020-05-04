@@ -9,7 +9,7 @@ using Wireform;
 
 namespace WinformsWireform
 {
-    class LocalSaveable : ISaveable
+    internal class LocalSaveable : ISaveable
     {
         OpenFileDialog openFileDialog;
         SaveFileDialog saveFileDialog;
