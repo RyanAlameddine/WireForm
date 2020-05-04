@@ -7,9 +7,10 @@ WireForm is a .NET Standard 2.0 library created to simulate logic gates and othe
 - The ability to rotate gates for improved control of circuit board
 - Wires with variable bitDepth (running multiple bits through a single wire)
 - The ability to split or weave wires to and from different bitDepths using the special Splitter gate
+- Gates with a dynamic input/output count
 - Undo-Redo functionality
 - Copy-Cut-Paste functionality
-- Other ease of use features such as additive selections (holding shift while selecting)
+- Other ease of use features such as additive selections (holding shift while selecting), intersected selection properties (multi-object editing), etc.
 
 ## Installation
 
