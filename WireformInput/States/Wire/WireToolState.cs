@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wireform.Circuitry.Data;
-using Wireform.GraphicsUtils;
+﻿using WireformInput.Utils;
 
-namespace Wireform.Input.States.Wire
+namespace WireformInput.States.Wire
 {
     /// <summary>
     /// The state where the Wire tool is selected and the program sits idle.

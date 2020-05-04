@@ -95,6 +95,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WireformInput\WireformInput.csproj">
+      <Project>{3A44D7CF-AA1B-4090-930F-270A7B6290C8}</Project>
+      <Name>WireformInput</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Wireform\Wireform.csproj">
       <Project>{6F25BFC2-8995-4F5B-B5E7-6695E402540E}</Project>
       <Name>Wireform</Name>

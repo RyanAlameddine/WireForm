@@ -1,15 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
-using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
-using Wireform.Input;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using Wireform.Utils;
 
 namespace Wireform.Circuitry.Utils
 {

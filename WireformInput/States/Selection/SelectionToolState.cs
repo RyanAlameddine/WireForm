@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using Wireform.Utils;
+using WireformInput.Utils;
 
-namespace Wireform.Input.States.Selection
+namespace WireformInput.States.Selection
 {
     /// <summary>
     /// The state where the Selection tool is selected and the program sits idle.
@@ -47,7 +48,7 @@ namespace Wireform.Input.States.Selection
                 //Load [CircuitProperties] for clicked object
                 stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties(stateControls.RegisterChange);
 
-                return (true, new MovingSelectionState(stateControls.MousePosition, selections, clickedcircuitObject, stateControls.State, true));
+                return (true, new MovingSelectionState(stateControls.LocalMousePosition, selections, clickedcircuitObject, stateControls.State, true));
             }
             //Begin dragging selection box
             //Clear selections if additiveSelection is not activated
@@ -61,9 +62,8 @@ namespace Wireform.Input.States.Selection
 
         public override InputReturns MouseRightDown(StateControls stateControls)
         {
-            Vec2 localPoint = MathHelper.ViewportToLocalPoint(stateControls.MousePosition);
             //true if you click a gate
-            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(stateControls.State, true, out _, out var circuitObjects, false))
+            if (new BoxCollider(stateControls.LocalMousePosition.X, stateControls.LocalMousePosition.Y, 0, 0).GetIntersections(stateControls.State, true, out _, out var circuitObjects, false))
             {
                 CircuitObject clickedcircuitObject = circuitObjects.First();
                 selections.Clear();
@@ -147,7 +147,7 @@ namespace Wireform.Input.States.Selection
             }
 
             //New objects pasted and are now being held
-            if (selections.Count > 0) return (true, new MovingSelectionState(stateControls.MousePosition, selections, currentObject, stateControls.State, false));
+            if (selections.Count > 0) return (true, new MovingSelectionState(stateControls.LocalMousePosition, selections, currentObject, stateControls.State, false));
 
             return (false, this);
 

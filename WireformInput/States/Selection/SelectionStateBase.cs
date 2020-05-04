@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using Wireform.Circuitry;
-using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.CircuitAttributes.Utilities;
 using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
@@ -12,8 +9,10 @@ using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using Wireform.Utils;
+using WireformInput.Utils;
 
-namespace Wireform.Input.States.Selection
+namespace WireformInput.States.Selection
 {
     /// <summary>
     /// Base class for selection states which handles drawing of selections

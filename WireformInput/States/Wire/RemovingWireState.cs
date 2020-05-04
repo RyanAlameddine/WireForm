@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
 using Wireform.MathUtils;
+using WireformInput.Utils;
 
-namespace Wireform.Input.States.Wire
+namespace WireformInput.States.Wire
 {
     /// <summary>
     /// State for removing wires holding the right click button

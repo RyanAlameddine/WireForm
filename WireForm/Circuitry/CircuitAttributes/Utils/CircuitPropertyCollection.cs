@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Wireform.Circuitry.Data;
-using Wireform.Input;
 using Wireform.MathUtils;
 
 namespace Wireform.Circuitry.CircuitAttributes.Utils

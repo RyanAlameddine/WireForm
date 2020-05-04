@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Wireform.Circuitry.Utils;
-using Wireform.Input;
 using Wireform.MathUtils;
+using WireformInput;
 
 namespace WinformsWireform.Helpers
 {

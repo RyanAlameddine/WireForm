@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.CircuitAttributes.Utilities;
 using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
 using Wireform.MathUtils;
+using Wireform.Utils;
 
-namespace Wireform.Input
+namespace WireformInput
 {
     public class StateControls
     {
@@ -69,7 +68,7 @@ namespace Wireform.Input
         /// </summary>
         public CircuitPropertyCollection CircuitPropertiesOutput { get; set; } = null;
 
-        public StateControls(BoardState state, Vec2 mousePosition, char? hotkey, Modifier modifiers, Action<string> registerChange, Action reverse, Action advance)
+        public StateControls(BoardState state, Vec2 mousePosition, float SizeScale, char? hotkey, Modifier modifiers, Action<string> registerChange, Action reverse, Action advance)
         {
             this.State = state;
             this.MousePosition = mousePosition;
@@ -79,7 +78,7 @@ namespace Wireform.Input
             this.Reverse = reverse;
             this.Advance = advance;
 
-            this.LocalMousePosition = MathHelper.ViewportToLocalPoint(mousePosition);
+            this.LocalMousePosition = MathHelper.ViewportToLocalPoint(mousePosition, SizeScale);
             this.GriddedMousePosition = this.LocalMousePosition.Round();
         }
     }

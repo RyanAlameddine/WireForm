@@ -93,9 +93,9 @@ namespace Wireform.MathUtils
         /// <summary>
         /// Transforms a Vec2 from viewport coordinates to relative to the local grid
         /// </summary>
-        public static Vec2 ViewportToLocalPoint(Vec2 point)
+        public static Vec2 ViewportToLocalPoint(Vec2 point, float SizeScale)
         {
-            return point * (1 / GraphicsManager.SizeScale);
+            return point * (1 / SizeScale);
         }
     }
 }

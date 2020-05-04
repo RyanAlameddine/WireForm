@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Wireform;
 using Wireform.Circuitry.CircuitAttributes.Utils;
-using Wireform.Input;
 using Wireform.MathUtils;
+using Wireform.Utils;
+using WireformInput;
 
 namespace WinformsWireform.Helpers
 {
@@ -100,7 +97,7 @@ namespace WinformsWireform.Helpers
             if (ModifierKeys.HasFlag(Keys.Control)) modifierKeys |= Modifier.Control;
             if (ModifierKeys.HasFlag(Keys.Shift))   modifierKeys |= Modifier.Shift;
             if (ModifierKeys.HasFlag(Keys.Alt))     modifierKeys |= Modifier.Alt;
-            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, keyChar, modifierKeys, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, stateManager.SizeScale, keyChar, modifierKeys, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
             return stateControls;
         }
     }

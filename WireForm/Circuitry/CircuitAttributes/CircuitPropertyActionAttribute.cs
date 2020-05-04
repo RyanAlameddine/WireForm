@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Wireform.Circuitry.CircuitAttributes.Utils;
-using Wireform.Circuitry.Data;
-using Wireform.Input;
+using Wireform.Utils;
 
 namespace Wireform.Circuitry.CircuitAttributes
 {

@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using Wireform.Circuitry;
+using Wireform;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using WireformInput.Utils;
 
-namespace Wireform.Input.States.Selection
+namespace WireformInput.States.Selection
 {
     /// <summary>
     /// State in which selected objects are being dragged
@@ -40,7 +39,7 @@ namespace Wireform.Input.States.Selection
         /// true if the objects which are being moved already exists, 
         /// and thus has a valid start position
         /// </param>
-        public MovingSelectionState(Vec2 mousePosition, HashSet<CircuitObject> selections, CircuitObject selectedObject, BoardState state, bool resettable) : base(selections)
+        public MovingSelectionState(Vec2 localPoint, HashSet<CircuitObject> selections, CircuitObject selectedObject, BoardState state, bool resettable) : base(selections)
         {
             //Make sure all selections start in a gridded position;
             foreach (var selection in selections)
@@ -57,7 +56,6 @@ namespace Wireform.Input.States.Selection
             }
 
             //Calculate offset from held location to current Mouse position
-            Vec2 localPoint = MathHelper.ViewportToLocalPoint(mousePosition);
             startPosition = selectedObject.StartPoint;
             offset = selectedObject.StartPoint - localPoint;
 
@@ -89,7 +87,7 @@ namespace Wireform.Input.States.Selection
 
         public override InputReturns MouseMove(StateControls stateControls)
         {
-            Vec2 newPosition = MathHelper.ViewportToLocalPoint(stateControls.MousePosition) + offset;
+            Vec2 newPosition = stateControls.LocalMousePosition + offset;
             Vec2 gridPoint = newPosition.Round();
 
             if (gridPoint == selectedObject.StartPoint) return (false, this);

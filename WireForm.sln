@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinformsWireform", "WinformsWireform\WinformsWireform.csproj", "{BEA321AC-2F96-4B9D-825E-E7CFD7B5ED44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wireform", "Wireform\Wireform.csproj", "{6F25BFC2-8995-4F5B-B5E7-6695E402540E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wireform", "Wireform\Wireform.csproj", "{6F25BFC2-8995-4F5B-B5E7-6695E402540E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireformInput", "WireformInput\WireformInput.csproj", "{3A44D7CF-AA1B-4090-930F-270A7B6290C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6F25BFC2-8995-4F5B-B5E7-6695E402540E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F25BFC2-8995-4F5B-B5E7-6695E402540E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F25BFC2-8995-4F5B-B5E7-6695E402540E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A44D7CF-AA1B-4090-930F-270A7B6290C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A44D7CF-AA1B-4090-930F-270A7B6290C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A44D7CF-AA1B-4090-930F-270A7B6290C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A44D7CF-AA1B-4090-930F-270A7B6290C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,8 +4,9 @@ using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using WireformInput.Utils;
 
-namespace Wireform.Input.States.Selection
+namespace WireformInput.States.Selection
 {
     /// <summary>
     /// The state in which a selection box is being drawn.
@@ -39,10 +40,9 @@ namespace Wireform.Input.States.Selection
 
         public override InputReturns MouseMove(StateControls stateControls)
         {
-            Vec2 localPoint = MathHelper.ViewportToLocalPoint(stateControls.MousePosition);
 
-            mouseBox.Width = localPoint.X - mouseBox.X;
-            mouseBox.Height = localPoint.Y - mouseBox.Y;
+            mouseBox.Width = stateControls.LocalMousePosition.X - mouseBox.X;
+            mouseBox.Height = stateControls.LocalMousePosition.Y - mouseBox.Y;
 
             //Update selection box and load intersections into selections
             mouseBox.GetNormalized().GetIntersections(stateControls.State, true, out _, out var newSelections);

@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
-using Wireform.Input.States.Selection;
-using Wireform.Input.States.Wire;
+using Wireform.MathUtils;
+using WireformInput.States.Selection;
+using WireformInput.States.Wire;
+using WireformInput.Utils;
 
-namespace Wireform.Input
+namespace WireformInput
 {
     /// <summary>
     /// A class which manages all input which can communicate with the Wireform.
@@ -39,6 +43,16 @@ namespace Wireform.Input
             state = new SelectionToolState();
         }
 
+        private float scale = 50f;
+        /// <summary>
+        /// The zoom to draw with (small values = zoomed in)
+        /// </summary>
+        public float SizeScale
+        {
+            get => scale;
+            set { scale = value > 5 ? value : 5; }
+        }
+
         /// <summary>
         /// If the current state is clean, inserts the new state (loaded from StandardToolState) and returns true.
         /// If not, return false.
@@ -65,8 +79,18 @@ namespace Wireform.Input
             }
         }
 
-        public void Draw(BoardState currentState, PainterScope painter)
+        public void Draw(BoardState currentState, PainterScope painter, Vec2 viewportSize)
         {
+            //Draw grid
+            int step = MathHelper.Ceiling((int)(viewportSize.X / SizeScale) / 50f);
+            for (int x = 0; x * SizeScale < viewportSize.X; x += step)
+                for (int y = 0; y * SizeScale < viewportSize.Y; y += step)
+                    painter.FillRectangleC(Color.DarkBlue, new Vec2(x, y), new Vec2(.05f * step, .05f * step));
+            //Draw gates
+            foreach (Gate gate in currentState.gates) gate.DrawGate(painter);
+            //Draw Wires
+            foreach (WireLine wireLine in currentState.wires) WirePainter.DrawWireLine(painter, currentState, wireLine);
+            //Draw state-specific info
             state.Draw(currentState, painter);
         }
 
@@ -113,7 +137,7 @@ namespace Wireform.Input
             return (stateControls =>
             {
                 if (!state.IsClean()) return false;
-                var newState = new MovingSelectionState(stateControls.LocalMousePosition, new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false);
+                var newState = new MovingSelectionState(new Vec2(0, 0), new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false);
 
                 stateControls.CircuitPropertiesOutput = newState.GetUpdatedCircuitProperties(stateControls.RegisterChange);
 
