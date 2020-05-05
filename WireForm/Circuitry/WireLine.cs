@@ -425,7 +425,7 @@ namespace Wireform.Circuitry
 
         public override void Delete(BoardState propogator)
         {
-            propogator.wires.Remove(this);
+            propogator.Wires.Remove(this);
             RemoveConnections(propogator.Connections);
         }
 

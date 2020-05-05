@@ -51,7 +51,7 @@ namespace WireformInput.States.Selection
         /// <summary>
         /// Propogates hotkey through all selected CircuitObjects and runs any valid [CircuitProperties]
         /// </summary>
-        protected bool ExecuteHotkey(BoardState state, char? key, Modifier Modifiers,  Action<string> registerChange)
+        protected bool ExecuteHotkey(BoardState state, char? key, Modifier Modifiers, Action<string> registerChange, out CircuitPropertyCollection circuitProperties)
         {
             CircuitActionCollection actions = CircuitActionCollection.Empty;
             //Find all actions
@@ -63,7 +63,7 @@ namespace WireformInput.States.Selection
             char hotkey = (char) key;
             //Execute matches
             bool toRefresh = actions.InvokeHotkeyActions(state, hotkey, Modifiers);
-            GetUpdatedCircuitProperties(registerChange);
+            circuitProperties = GetUpdatedCircuitProperties(registerChange);
             return toRefresh;
         }
 
@@ -78,11 +78,11 @@ namespace WireformInput.States.Selection
             {
                 if (x is WireLine wire)
                 {
-                    return !state.wires.Contains(wire);
+                    return !state.Wires.Contains(wire);
                 }
                 else if (x is Gate gate)
                 {
-                    return !state.gates.Contains(gate);
+                    return !state.Gates.Contains(gate);
                 }
                 else
                 {

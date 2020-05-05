@@ -31,16 +31,16 @@ namespace Wireform
                     TypeNameHandling = TypeNameHandling.Auto
                 });
             state.Connections = new Dictionary<Vec2, List<BoardObject>>();
-            for (int i = 0; i < state.wires.Count; i++)
+            for (int i = 0; i < state.Wires.Count; i++)
             {
-                if (state.wires[i].StartPoint.Y == state.wires[i].EndPoint.Y)
+                if (state.Wires[i].StartPoint.Y == state.Wires[i].EndPoint.Y)
                 {
-                    state.wires[i] = new WireLine(state.wires[i].StartPoint, state.wires[i].EndPoint, true);
+                    state.Wires[i] = new WireLine(state.Wires[i].StartPoint, state.Wires[i].EndPoint, true);
                 }
-                state.wires[i].AddConnections(state.Connections);
+                state.Wires[i].AddConnections(state.Connections);
             }
 
-            foreach(Gate gate in state.gates)
+            foreach(Gate gate in state.Gates)
             {
                 foreach(GatePin input in gate.Inputs)
                 {

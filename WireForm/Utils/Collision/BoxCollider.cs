@@ -154,7 +154,7 @@ namespace Wireform.MathUtils.Collision
 
             if (hitWires)
             {
-                foreach (WireLine wire in propogator.wires)
+                foreach (WireLine wire in propogator.Wires)
                 {
                     BoxCollider collider = wire.HitBox;
                     if (Intersects(collider, out var intersection))
@@ -165,7 +165,7 @@ namespace Wireform.MathUtils.Collision
                 }
             }
 
-            foreach (Gate gate in propogator.gates)
+            foreach (Gate gate in propogator.Gates)
             {
                 BoxCollider collider = gate.HitBox;
                 if (Intersects(collider, out var intersection))

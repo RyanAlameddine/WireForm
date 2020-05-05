@@ -19,9 +19,7 @@ namespace Wireform
         /// Possibly prompts the user for where to load and returns the json string at that location.
         /// NOTE: return "" if loading was canceled or failed.
         /// </summary>
-        /// <param name="locationIdentifier">an arbitrary identifier which can be used to save to the same location it was loaded from. 
-        /// Eg. On a local filesystem, the identifier could be the path of the file to be saved</param>
         /// <returns>json string</returns>
-        public string GetJson(out string locationIdentifier);
+        public string GetJson();
     }
 }

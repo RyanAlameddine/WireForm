@@ -9,6 +9,7 @@ using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 using Wireform.Circuitry.Utils;
+using System.Linq;
 
 namespace Wireform.Circuitry.Gates
 {
@@ -31,10 +32,7 @@ namespace Wireform.Circuitry.Gates
 
         protected override void Compute()
         {
-            for (int i = 0; i < BitDepth; i++)
-            {
-                Outputs[0].Values.Set(i, currentValue);
-            }
+            Outputs[0].Values = Outputs[0].Values.Select((_) => currentValue);
         }
 
         public override CircuitObject Copy()
@@ -66,7 +64,7 @@ namespace Wireform.Circuitry.Gates
         [CircuitProperty(1, 32, false)]
         public int BitDepth
         {
-            get => Outputs[0].Values.Length;
+            get => Outputs[0].Values.Count;
             set
             {
                 Outputs[0].Values = new BitArray(value);

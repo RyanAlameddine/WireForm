@@ -2,45 +2,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 
 namespace Wireform.Circuitry.Data
 {
+    /// <summary>
+    /// An immutable array of bits (implicitly converts from BitValue[] and ImmutableArray<BitValue>
+    /// </summary>
     [JsonConverter(typeof(BitArrayConverter))]
     public struct BitArray : IEnumerable<BitValue>
     {
-        public readonly BitValue[] BitValues;
+        public readonly ImmutableArray<BitValue> BitValues;
         [JsonIgnore]
-        public int Length { get => BitValues.Length; }
+        public int Count { get => BitValues.Length; }
 
-        public BitArray(int Length)
+        public BitArray(int length)
         {
-            BitValues = new BitValue[Length];
+            BitValues = ImmutableArray.CreateRange(Enumerable.Repeat<BitValue>(BitValue.Nothing, length));
+        }
+
+        public BitArray(ImmutableArray<BitValue> bitValues)
+        {
+            BitValues = bitValues;
         }
 
         public BitArray(IEnumerable<BitValue> bitValues)
         {
-            BitValues = bitValues.ToArray();
-        }
-
-        public BitArray(BitValue[] values)
-        {
-            BitValues = values;
-        }
-
-        public void Set(int i, BitValue value)
-        {
-            BitValues[i] = value;
-        }
-
-        public void SetAll(BitValue value)
-        {
-            for(int i = 0; i < Length; i++)
-            {
-                BitValues[i] = value;
-            }
+            BitValues = ImmutableArray.CreateRange(bitValues);
         }
 
         public BitValue this[int i]
@@ -49,10 +40,6 @@ namespace Wireform.Circuitry.Data
             {
                 return BitValues[i];
             }
-            set
-            {
-                BitValues[i] = value;
-            }
         }
 
         /// <summary>
@@ -60,7 +47,7 @@ namespace Wireform.Circuitry.Data
         /// </summary>
         public Color[] BitColors()
         {
-            Color[] colors = new Color[Length];
+            Color[] colors = new Color[Count];
             for(int i = 0; i < colors.Length; i++)
             {
                 colors[i] = GetBitColor(i);
@@ -84,17 +71,22 @@ namespace Wireform.Circuitry.Data
             };
         }
 
+        public BitArray Select(Func<BitValue, BitValue> map)
+        {
+            var builder = ImmutableArray.CreateBuilder<BitValue>(Count);
+            for(int i = 0; i < Count; i++)
+            {
+                builder.Add(map(BitValues[i]));
+            }
+            return builder.ToImmutable();
+        }
+
         /// <summary>
         /// Binary not operator
         /// </summary>
         public static BitArray operator !(BitArray values)
         {
-            BitArray newBits = new BitArray(values.Length);
-            for (int i = 0; i < values.Length; i++)
-            {
-                newBits[i] = !values[i];
-            }
-            return newBits;
+            return ImmutableArray.CreateRange(values.Select((x)=> !x));
         }
 
         /// <summary>
@@ -144,13 +136,15 @@ namespace Wireform.Circuitry.Data
             List<BitValue> bitValues = new List<BitValue>();
             int minLength = int.MaxValue;
 
-            //Nothing + Anything = Anything, 0 + 1 = 1, 1 + 1 = Error
+            //Nothing + Anything = Anything, 
+            //0 + 1 = 1, 
+            //1 + 1 = Error
             foreach(BitArray array in bitArrays)
             {
-                minLength = Math.Min(minLength, array.Length);
-                while (array.Length > bitValues.Count) bitValues.Add(BitValue.Nothing);
+                minLength = Math.Min(minLength, array.Count);
+                while (array.Count > bitValues.Count) bitValues.Add(BitValue.Nothing);
 
-                for(int i = 0; i < array.Length; i++)
+                for(int i = 0; i < array.Count; i++)
                 {
                     if (bitValues[i] == BitValue.Nothing)
                     {
@@ -182,13 +176,14 @@ namespace Wireform.Circuitry.Data
             return new BitArray(bitValues.ToArray());
         }
 
-        public void CopyTo(out BitArray data)
+        public static implicit operator BitArray(ImmutableArray<BitValue> bitValues)
         {
-            data = new BitArray(Length);
-            for(int i = 0; i < Length; i++)
-            {
-                data[i] = BitValues[i];
-            }
+            return new BitArray(bitValues);
+        }
+
+        public static implicit operator BitArray(BitValue[] bitValues)
+        {
+            return new BitArray(bitValues);
         }
 
         /// <summary>
@@ -199,11 +194,11 @@ namespace Wireform.Circuitry.Data
         ///      newBits = { 0, 0, 0, 0, Error, Error }
         /// </summary>
         /// <returns>the length of the array before it begins erroring</returns>
-        private static int ErrorOverflow(BitArray values1, BitArray values2, out BitArray newBits)
+        private static int ErrorOverflow(BitArray values1, BitArray values2, out BitValue[] newBits)
         {
-            int min = Math.Min(values1.Length, values2.Length);
-            int max = Math.Max(values1.Length, values2.Length);
-            newBits = new BitArray(max);
+            int min = Math.Min(values1.Count, values2.Count);
+            int max = Math.Max(values1.Count, values2.Count);
+            newBits = new BitValue[max];
             for(int i = min; i < max; i++)
             {
                 newBits[i] = BitValue.Error;
@@ -233,7 +228,7 @@ namespace Wireform.Circuitry.Data
 
         public override int GetHashCode()
         {
-            return 1291433875 + EqualityComparer<BitValue[]>.Default.GetHashCode(BitValues);
+            return 808299910 + EqualityComparer<ImmutableArray<BitValue>>.Default.GetHashCode(BitValues);
         }
 
         public override string ToString()
@@ -249,14 +244,14 @@ namespace Wireform.Circuitry.Data
             return sb.ToString();
         }
 
-        IEnumerator<BitValue> IEnumerable<BitValue>.GetEnumerator()
+        public IEnumerator<BitValue> GetEnumerator()
         {
-            return (IEnumerator<BitValue>) BitValues.GetEnumerator();
+            return ((IEnumerable<BitValue>)BitValues).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return BitValues.GetEnumerator();
+            return ((IEnumerable<BitValue>)BitValues).GetEnumerator();
         }
     }
 }

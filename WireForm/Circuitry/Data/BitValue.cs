@@ -6,9 +6,9 @@ namespace Wireform.Circuitry.Data
     public struct BitValue
     {
         public const int Nothing = 0;
-        public const int Error = 1;
-        public const int Zero = 2;
-        public const int One = 3;
+        public const int Error   = 1;
+        public const int Zero    = 2;
+        public const int One     = 3;
 
         public readonly byte Selected;
 
@@ -55,9 +55,9 @@ namespace Wireform.Circuitry.Data
         /// <summary>
         /// Checks if the inputs are valid (not nothing or error)
         /// </summary>
-        /// <param name="returnValue">If INVALID, this is the type of invalidity</param>
-        /// <returns>true if INVALID</returns>
-        private static bool CheckInputs(out BitValue returnValue, params BitValue[] values)
+        /// <param name="invalidType">If invalid, this is the type of invalidity (error/nothing)</param>
+        /// <returns>true if invalid</returns>
+        private static bool CheckInputs(out BitValue invalidType, params BitValue[] values)
         {
             bool valid = true;
             bool error = false;
@@ -77,17 +77,17 @@ namespace Wireform.Circuitry.Data
 
             if (valid)
             {
-                returnValue = default;
+                invalidType = default;
                 return false;
             }
             else if (error)
             {
-                returnValue = Error;
+                invalidType = Error;
                 return true;
             }
             else
             {
-                returnValue = Nothing;
+                invalidType = Nothing;
                 return true;
             }
         }
@@ -101,6 +101,16 @@ namespace Wireform.Circuitry.Data
         public static implicit operator BitValue(long value)
         {
             return new BitValue((byte)value);
+        }
+
+        public static bool operator ==(BitValue value, BitValue value2)
+        {
+            return value.Equals(value2);
+        }
+
+        public static bool operator !=(BitValue value, BitValue value2)
+        {
+            return !value.Equals(value2);
         }
 
         public static bool operator ==(BitValue value, int valueRep)

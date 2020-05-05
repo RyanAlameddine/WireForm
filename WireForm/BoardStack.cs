@@ -68,7 +68,7 @@ namespace Wireform
 
         public void Load()
         {
-            string json = saveable.GetJson(out locationIdentifier);
+            string json = saveable.GetJson();
             if (json.Length == 0) return;
             SaveManager.Load(json, out currentState);
             currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");

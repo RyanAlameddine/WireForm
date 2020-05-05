@@ -65,8 +65,8 @@ namespace WireformInput.States.Wire
 
         public override InputReturns MouseLeftUp(StateControls stateControls)
         {
-            primaryLine  .InsertAndAttach(stateControls.State.wires, stateControls.State.Connections);
-            secondaryLine.InsertAndAttach(stateControls.State.wires, stateControls.State.Connections);
+            primaryLine  .InsertAndAttach(stateControls.State.Wires, stateControls.State.Connections);
+            secondaryLine.InsertAndAttach(stateControls.State.Wires, stateControls.State.Connections);
 
             if (primaryLine.StartPoint != secondaryLine.EndPoint)
                 stateControls.RegisterChange($"Created wire from {primaryLine.StartPoint}-{secondaryLine.EndPoint}");

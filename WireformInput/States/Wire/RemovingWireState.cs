@@ -18,7 +18,7 @@ namespace WireformInput.States.Wire
 
         public override InputReturns MouseMove(StateControls stateControls)
         {
-            return removeWire(stateControls.State.wires, stateControls.GriddedMousePosition, stateControls.State.Connections);
+            return removeWire(stateControls.State.Wires, stateControls.GriddedMousePosition, stateControls.State.Connections);
         }
 
         public override InputReturns MouseRightUp(StateControls stateControls)

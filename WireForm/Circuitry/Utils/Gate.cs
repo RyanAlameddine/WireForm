@@ -216,7 +216,7 @@ namespace Wireform.Circuitry.Utils
 
         public override void Delete(BoardState propogator)
         {
-            propogator.gates.Remove(this);
+            propogator.Gates.Remove(this);
             RemoveConnections(propogator.Connections);
         }
     }

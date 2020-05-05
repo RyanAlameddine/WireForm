@@ -10,7 +10,7 @@ using WireformInput;
 
 namespace WinformsWireform
 {
-    public partial class Form1 : Form
+    public partial class WireformForm : Form
     {
         readonly BoardStack stateStack;
         readonly InputStateManager inputStateManager;
@@ -21,7 +21,7 @@ namespace WinformsWireform
         /// </summary>
         readonly WinformsInputHandler inputHandler;
 
-        public Form1()
+        public WireformForm()
         {
             InitializeComponent();
 

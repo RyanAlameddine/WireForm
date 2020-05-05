@@ -37,8 +37,8 @@ namespace Wireform
         {
             foreach (CircuitObject circuitObject in circuitObjects)
             {
-                if (circuitObject is WireLine wire) state.wires.Remove(wire);
-                else if (circuitObject is Gate gate) state.gates.Remove(gate);
+                if (circuitObject is WireLine wire) state.Wires.Remove(wire);
+                else if (circuitObject is Gate gate) state.Gates.Remove(gate);
                 circuitObject.RemoveConnections(state.Connections);
             }
         }
@@ -55,13 +55,13 @@ namespace Wireform
             {
                 if (circuitObject is WireLine wire)
                 {
-                    List<WireLine> newWires = wire.InsertAndAttach(state.wires, state.Connections);
+                    List<WireLine> newWires = wire.InsertAndAttach(state.Wires, state.Connections);
                     toAdd.AddRange(newWires);
                     toRemove.Add(wire);
                 }
                 else if (circuitObject is Gate gate)
                 {
-                    state.gates.Add(gate);
+                    state.Gates.Add(gate);
                     circuitObject.AddConnections(state.Connections);
                 }
             }

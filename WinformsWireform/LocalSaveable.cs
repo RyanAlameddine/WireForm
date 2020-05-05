@@ -11,8 +11,8 @@ namespace WinformsWireform
 {
     internal class LocalSaveable : ISaveable
     {
-        OpenFileDialog openFileDialog;
-        SaveFileDialog saveFileDialog;
+        readonly OpenFileDialog openFileDialog;
+        readonly SaveFileDialog saveFileDialog;
 
         public LocalSaveable(OpenFileDialog openFileDialog, SaveFileDialog saveFileDialog)
         {
@@ -20,29 +20,27 @@ namespace WinformsWireform
             this.saveFileDialog = saveFileDialog;
         }
 
-        public string GetJson(out string locationIdentifier)
+        public string GetJson()
         {
             openFileDialog.Filter = "Json|*.json";
             openFileDialog.Title = "Load your wireForm";
             openFileDialog.ShowDialog();
 
-            locationIdentifier = openFileDialog.FileName;
+            if (openFileDialog.FileName.Length == 0) return "";
 
-            if (locationIdentifier == "") return "";
-
-            return File.ReadAllText(locationIdentifier);
+            return File.ReadAllText(openFileDialog.FileName);
         }
 
         public string WriteJson(string json, string locationIdentifier)
         {
-            if (locationIdentifier == "") 
+            if (locationIdentifier.Length == 0) 
             {
                 saveFileDialog.Filter = "Json|*.json";
                 saveFileDialog.Title = "Save your wireForm";
                 saveFileDialog.ShowDialog();
                 locationIdentifier = saveFileDialog.FileName;
             }
-            if (locationIdentifier == "") return "";
+            if (locationIdentifier.Length == 0) return "";
 
             File.WriteAllText(locationIdentifier, json);
             return locationIdentifier;

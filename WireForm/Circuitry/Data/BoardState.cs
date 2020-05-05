@@ -11,19 +11,19 @@ namespace Wireform.Circuitry.Data
     {
         [JsonIgnore]
         public Dictionary<Vec2, List<BoardObject>> Connections { get; set; }
-        public List<WireLine> wires { get; set; }
-        public List<Gate> gates { get; set; }
+        public List<WireLine> Wires { get; set; }
+        public List<Gate> Gates { get; set; }
         public BoardState()
         {
             Connections = new Dictionary<Vec2, List<BoardObject>>();
-            wires = new List<WireLine>();
-            gates = new List<Gate>();
+            Wires = new List<WireLine>();
+            Gates = new List<Gate>();
         }
 
         public void Propogate()
         {
             Queue<Gate> sources = new Queue<Gate>();
-            foreach (Gate gate in gates)
+            foreach (Gate gate in Gates)
             {
                 if (gate.Inputs.Length == 0)
                 {
@@ -37,18 +37,18 @@ namespace Wireform.Circuitry.Data
         {
             BoardState state = new BoardState();
 
-            foreach (WireLine wire in wires)
+            foreach (WireLine wire in Wires)
             {
                 WireLine newWire = (WireLine)wire.Copy();
-                state.wires.Add(newWire);
+                state.Wires.Add(newWire);
                 newWire.AddConnections(state.Connections);
 
             }
 
-            foreach (Gate gate in gates)
+            foreach (Gate gate in Gates)
             {
                 Gate newGate = (Gate)gate.Copy();
-                state.gates.Add(newGate);
+                state.Gates.Add(newGate);
                 newGate.AddConnections(state.Connections);
             }
             return state;

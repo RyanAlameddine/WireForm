@@ -1,6 +1,6 @@
 ﻿namespace WinformsWireform
 {
-    partial class Form1
+    partial class WireformForm
     {
         /// <summary>
         /// Required designer variable.

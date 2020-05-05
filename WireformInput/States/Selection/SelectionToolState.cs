@@ -22,7 +22,8 @@ namespace WireformInput.States.Selection
 
         public override InputReturns KeyDown(StateControls stateControls)
         {
-            bool toRefresh = ExecuteHotkey(stateControls.State, stateControls.Hotkey, stateControls.Modifiers, stateControls.RegisterChange);
+            bool toRefresh = ExecuteHotkey(stateControls.State, stateControls.Hotkey, stateControls.Modifiers, stateControls.RegisterChange, out var circuitProperties);
+            stateControls.CircuitPropertiesOutput = circuitProperties;
             return (toRefresh, this);
         }
 
@@ -146,11 +147,11 @@ namespace WireformInput.States.Selection
                 obj.SetPosition(offset);
             }
 
+            stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties(stateControls.RegisterChange);
             //New objects pasted and are now being held
             if (selections.Count > 0) return (true, new MovingSelectionState(stateControls.LocalMousePosition, selections, currentObject, stateControls.State, false));
 
             return (false, this);
-
         }
     }
 }
