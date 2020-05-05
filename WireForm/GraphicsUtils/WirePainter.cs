@@ -10,7 +10,7 @@ namespace Wireform.GraphicsUtils
         private const float wireSize = 1.4f;
         public static void DrawWireLine(PainterScope painter, BoardState propogator, WireLine wireLine)
         {
-            Color[] bitColors = wireLine.Data.BitColors();
+            Color[] bitColors = wireLine.Values.BitColors();
             DrawWireLine(painter, propogator, wireLine, bitColors);
         }
         public static void DrawWireLine(PainterScope painter, BoardState propogator, WireLine wireLine, Color[] colors)

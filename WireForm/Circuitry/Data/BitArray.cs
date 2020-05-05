@@ -1,22 +1,28 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace Wireform.Circuitry.Data
 {
     [JsonConverter(typeof(BitArrayConverter))]
-    public struct BitArray
+    public struct BitArray : IEnumerable<BitValue>
     {
-        public BitValue[] BitValues;
-
+        public readonly BitValue[] BitValues;
         [JsonIgnore]
         public int Length { get => BitValues.Length; }
 
         public BitArray(int Length)
         {
             BitValues = new BitValue[Length];
+        }
+
+        public BitArray(IEnumerable<BitValue> bitValues)
+        {
+            BitValues = bitValues.ToArray();
         }
 
         public BitArray(BitValue[] values)
@@ -27,6 +33,14 @@ namespace Wireform.Circuitry.Data
         public void Set(int i, BitValue value)
         {
             BitValues[i] = value;
+        }
+
+        public void SetAll(BitValue value)
+        {
+            for(int i = 0; i < Length; i++)
+            {
+                BitValues[i] = value;
+            }
         }
 
         public BitValue this[int i]
@@ -61,10 +75,10 @@ namespace Wireform.Circuitry.Data
         {
             return BitValues[index].Selected switch
             {
-                BitValue.Error => Color.DarkRed,
+                BitValue.Error   => Color.DarkRed,
                 BitValue.Nothing => Color.DimGray,
-                BitValue.One => Color.FromArgb(51, 171, 212),//Color.Blue,
-                BitValue.Zero => Color.FromArgb(26, 30, 153),//Color.DarkBlue,
+                BitValue.One     => Color.FromArgb(51, 171, 212),//Color.Blue,
+                BitValue.Zero    => Color.FromArgb(26, 30, 153),//Color.DarkBlue,
 
                 _ => throw new Exception("BitValue undefined")
             };
@@ -199,18 +213,22 @@ namespace Wireform.Circuitry.Data
 
         public static bool operator ==(BitArray values1, BitArray values2)
         {
-            return values1.BitValues == values2.BitValues;
+            return values1.Equals(values2);
         }
 
         public static bool operator !=(BitArray values1, BitArray values2)
         {
-            return values1.BitValues != values2.BitValues;
+            return !values1.Equals(values2);
         }
 
+        //NOT AUTO GENERATED
+        /// <summary>
+        /// IMPORTANT: WILL CHECK STRUCTURAL EQUALITY
+        /// </summary>
         public override bool Equals(object obj)
         {
             return obj is BitArray array &&
-                   EqualityComparer<BitValue[]>.Default.Equals(BitValues, array.BitValues);
+                   BitValues.SequenceEqual(array.BitValues);
         }
 
         public override int GetHashCode()
@@ -229,6 +247,16 @@ namespace Wireform.Circuitry.Data
             sb.Remove(sb.Length - 2, 2);
             sb.Append(" }");
             return sb.ToString();
+        }
+
+        IEnumerator<BitValue> IEnumerable<BitValue>.GetEnumerator()
+        {
+            return (IEnumerator<BitValue>) BitValues.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return BitValues.GetEnumerator();
         }
     }
 }

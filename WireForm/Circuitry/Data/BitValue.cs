@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace Wireform.Circuitry.Data
 {
@@ -52,7 +53,7 @@ namespace Wireform.Circuitry.Data
         //Backend
 
         /// <summary>
-        /// Checks if the inputs are valid
+        /// Checks if the inputs are valid (not nothing or error)
         /// </summary>
         /// <param name="returnValue">If INVALID, this is the type of invalidity</param>
         /// <returns>true if INVALID</returns>
@@ -125,18 +126,14 @@ namespace Wireform.Circuitry.Data
 
         public override string ToString()
         {
-            switch (Selected)
+            return Selected switch
             {
-                case 0:
-                    return "Nothing";
-                case 1:
-                    return "Error";
-                case 2:
-                    return "Zero";
-                case 3:
-                    return "One";
-            }
-            throw new System.Exception();
+                0 => "Nothing",
+                1 => "Error",
+                2 => "Zero",
+                3 => "One",
+                _ => throw new System.Exception(),
+            };
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Wireform
             }
         }
 
-        private ISaveable saveable;
+        private readonly ISaveable saveable;
         string locationIdentifier = "";
 
         public BoardStack(ISaveable saveable)
@@ -37,7 +37,7 @@ namespace Wireform
             Debug.WriteLine(message);
             currentNode.Next = new BoardStackNode(null, currentNode, currentState.Copy(), message);
             currentNode = currentNode.Next;
-            Propogate();
+            CurrentState.Propogate();
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Wireform
             {
                 currentNode = currentNode.Next;
                 currentState = currentNode.State.Copy();
-                Propogate();
+                CurrentState.Propogate();
             }
         }
 
@@ -62,17 +62,17 @@ namespace Wireform
             {
                 currentNode = currentNode.Previous;
                 currentState = currentNode.State.Copy();
-                Propogate();
+                CurrentState.Propogate();
             }
         }
 
         public void Load()
         {
             string json = saveable.GetJson(out locationIdentifier);
-            if (json == "") return;
+            if (json.Length == 0) return;
             SaveManager.Load(json, out currentState);
             currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
-            Propogate();
+            CurrentState.Propogate();
         }
 
         public void Clear()
@@ -85,26 +85,13 @@ namespace Wireform
         public void Save()
         {
             locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), locationIdentifier);
-            if (locationIdentifier == "") return;
+            if (locationIdentifier.Length == 0) return;
         }
 
         public void SaveAs()
         {
             locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), "");
-            if (locationIdentifier == "") return;
-        }
-
-        public void Propogate()
-        {
-            Queue<Gate> sources = new Queue<Gate>();
-            foreach (Gate gate in CurrentState.gates)
-            {
-                if (gate.Inputs.Length == 0)
-                {
-                    sources.Enqueue(gate);
-                }
-            }
-            FlowPropagator.Propogate(currentState, sources);
+            if (locationIdentifier.Length == 0) return;
         }
 
         private class BoardStackNode

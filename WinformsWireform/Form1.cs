@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using WinformsWireform.Helpers;
 using Wireform;
+using Wireform.Circuitry;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using WireformInput;
@@ -32,6 +33,7 @@ namespace WinformsWireform
             inputHandler = new WinformsInputHandler(inputStateManager, stateStack, GateMenu, CircuitPropertyBox, CircuitPropertyValueBox, DrawingPanel, () => ModifierKeys);
 
             toolBox.SelectedIndex = 0;
+            //FlowPropagator.DebugStep = DrawingPanel.Refresh;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -57,6 +59,8 @@ namespace WinformsWireform
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
+
 
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
         {

@@ -60,6 +60,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\CircuitPropertyBoxHelper.cs" />
     <Compile Include="WinformsInputHandler.cs" />
     <Compile Include="Helpers\MenuHelper.cs" />

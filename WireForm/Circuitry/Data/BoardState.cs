@@ -20,6 +20,19 @@ namespace Wireform.Circuitry.Data
             gates = new List<Gate>();
         }
 
+        public void Propogate()
+        {
+            Queue<Gate> sources = new Queue<Gate>();
+            foreach (Gate gate in gates)
+            {
+                if (gate.Inputs.Length == 0)
+                {
+                    sources.Enqueue(gate);
+                }
+            }
+            FlowPropagator.PropogateBits(this, sources);
+        }
+
         public BoardState Copy()
         {
             BoardState state = new BoardState();

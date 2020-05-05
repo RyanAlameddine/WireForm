@@ -7,199 +7,143 @@ using System.Threading.Tasks;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
 using Wireform.MathUtils;
+using Wireform.Utils;
 
 namespace Wireform.Circuitry
 {
-    public 
-        class FlowPropagator
+    public static class FlowPropagator
     {
+#if DEBUG
         /// <summary>
-        /// Computes each source and propogates down wires from sources
-        /// After doing that, it visits each unvisited gate and propogates down wires from their outputs
+        /// Debug function to call between each step of the circuit
         /// </summary>
-        public static void Propogate(BoardState state, Queue<Gate> sources)
-        {
-            if (sources == null || sources.Count == 0)
-            {
-                return;
-            }
+        public static Action DebugStep;
+#endif
 
-            PatternStack<WireValuePair> patternStack = new PatternStack<WireValuePair>();
+        /// <summary>
+        /// Computes each source and propogates down wires from sources (breadth-first search), 
+        /// computing all gates found along the way.
+        /// </summary>
+        public static void PropogateBits(BoardState state, Queue<Gate> sources)
+        {
+            Debug.WriteLine("propogated");
+            //Copy sources into currentGates
+            Queue<Gate> gateQueue = new Queue<Gate>(sources);
+#if DEBUG
+            gateQueue.Enqueue(null);
+#endif
+
+            //All gates which have been visited at least once
+            HashSet<Gate> visitedGates = new HashSet<Gate>();
+            //All wires which have been visited at least once
             HashSet<WireLine> visitedWires = new HashSet<WireLine>();
-            HashSet<GatePin> visitedPins = new HashSet<GatePin>();
 
-            while (sources.Count > 0)
+            //All input gatePins which have been visited at least once
+            HashSet<GatePin> visitedInputs = new HashSet<GatePin>();
+
+            //Stores the last 25% of circuit objects which have been visited
+            //This is used if there is an overflow and the propogator is stuck oscillating
+            //All objects contained here will have their values set to ERROR
+            WrappingArray<BoardObject> updatedObjects = new WrappingArray<BoardObject>(GlobalSettings.PropogationRepetitionOverflow / 4);
+
+            //Each iteration represents one propogation
+            for (int i = 0; gateQueue.Count != 0; i++)
             {
-                var source = sources.Dequeue();
-                
-                //Compute and Propogate
-                source.ComputeGate();
-                foreach (var output in source.Outputs)
+                Gate currentGate = gateQueue.Dequeue();
+#if DEBUG
+                if(currentGate == null) { DebugStep?.Invoke(); if(!(gateQueue.Count == 0)) gateQueue.Enqueue(null); continue; }
+#endif
+
+                currentGate.ComputeGate();
+                visitedGates.Add(currentGate);
+
+                foreach (GatePin output in currentGate.Outputs)
                 {
-                    PropagateWires(state, patternStack, visitedWires, visitedPins, output.StartPoint, output.Values);
+                    output.Values.CopyTo(out var values);
+                    PropogateDownPoint(output.StartPoint, values, state, gateQueue, visitedInputs, visitedWires, updatedObjects);
+                }
+
+                //infinite oscillation catch:
+                if (i > GlobalSettings.PropogationRepetitionOverflow)
+                {
+                    foreach (BoardObject boardObject in updatedObjects)
+                    {
+                        if (boardObject is WireLine wire) wire.Values.SetAll(BitValue.Error);
+                        //else if (boardObject is GatePin pin) pin.Values.SetAll(BitValue.Error);
+                    }
+                    Debug.WriteLine("Infinite oscillation caught!");
+                    break;
                 }
             }
-            foreach (WireLine wire in state.wires)
+
+            //Set unvisited wires to Nothing
+            foreach (WireLine wire in state.wires.Where((wire) => !visitedWires.Contains(wire)))
             {
-                if (!visitedWires.Contains(wire))
-                {
-                    for (int i = 0; i < wire.Data.BitValues.Length; i++)
-                    {
-                        wire.Data.BitValues[i] = BitValue.Nothing;
-                    }
-                }
+                wire.Values.SetAll(BitValue.Nothing);
             }
-            foreach (Gate gate in state.gates)
+
+            //Sets unvisited pins to Nothing
+            foreach (GatePin pin in state.gates.SelectMany((gate) => gate.Inputs).Where((pin) => !visitedInputs.Contains(pin)))
             {
-                foreach (GatePin pin in gate.Inputs)
-                {
-                    if (!visitedPins.Contains(pin))
-                    {
-                        for (int i = 0; i < pin.Values.Length; i++)
-                        {
-                            pin.Values.Set(i, BitValue.Nothing);
-                        }
-                    }
-                }
+                pin.Values.SetAll(BitValue.Nothing);
             }
         }
 
-        static void PropagateWires(BoardState state, PatternStack<WireValuePair> patternStack, HashSet<WireLine> visitedWires, HashSet<GatePin> visitedPins, Vec2 startPoint, BitArray values)
+        /// <summary>
+        /// Propogates down wires instantly from a point, and adds gates to gateQueue
+        /// </summary>
+        private static void PropogateDownPoint(Vec2 point, BitArray values, BoardState state, Queue<Gate> gateQueue, HashSet<GatePin> visitedInputs, HashSet<WireLine> visitedWires, WrappingArray<BoardObject> updatedObjects)
         {
-            if (!state.Connections.ContainsKey(startPoint))
-            {
-                return;
-            }
+            HashSet<WireLine> newWires = new HashSet<WireLine>();
+            RecursivePropogate(newWires, point);
+            visitedWires.UnionWith(newWires);
+            return;
 
-
-            foreach (BoardObject circuitObject in state.Connections[startPoint])
+            //inner recursive function which builds up the local visited wires collection
+            void RecursivePropogate(HashSet<WireLine> vWires, Vec2 position)
             {
-                WireLine wire = circuitObject as WireLine;
-                if (wire != null)
+                List<BoardObject> boardObjects = state.Connections[position];
+                foreach (var boardObject in boardObjects)
                 {
-                    if (!patternStack.IsEmpty() && patternStack.Peek().Wire == wire)
+                    if (boardObject is GatePin pin)
                     {
-                        continue;
+                        //if pin is an output pin, nothing to be done
+                        if (pin.Parent.Outputs.Contains(pin)) continue;
+
+                        //if pin has been visited and the input value has not changed, nothing to be done
+                        if (pin.Values == values && visitedInputs.Contains(pin)) continue;
+
+                        visitedInputs.Add(pin);
+                        updatedObjects.Add(pin);
+
+                        //update pin values and add to queue
+                        values.CopyTo(out var copiedVal);
+                        pin.Values = copiedVal;
+
+                        //Note to self: if something isn't working and it makes no sense and I have no clue why:
+                        //It's probably because this check is wrong
+                        //if (gateQueue.Contains(pin.Parent)) 
+                        //{
+                        //    var removed = gateQueue.Where((x) => x != pin.Parent);
+                        //    gateQueue = new Queue<Gate>(removed);
+                        //}
+                        gateQueue.Enqueue(pin.Parent);
                     }
-                    var index = patternStack.HeadIndex;
-                    bool patternMatched = patternStack.Push(new WireValuePair(wire, values));
-                    visitedWires.Add(wire);
-
-                    values.CopyTo(out var copiedData);
-                    wire.Data = copiedData;
-                    //wire.Data = values;
-
-                    if (patternMatched)
+                    else if (boardObject is WireLine wire)
                     {
-                        //Debug.WriteLine("Matched");
+                        //wire has already been visited this propogation
+                        if (vWires.Contains(wire)) continue;
 
-                        var matchedNode = patternStack.matchedStartNode;
-                        bool allMatch = true;
-                        foreach (var node in patternStack.CurrentPattern)
-                        {
-                            if(node.Values != matchedNode.Value.Values)
-                            {
-                                allMatch = false;
-                                break;
-                            }
-
-                            matchedNode = matchedNode.Next;
-                        }
-
-                        if (allMatch)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            foreach (var node in patternStack.CurrentPattern)
-                            {
-                                for (int i = 0; i < node.Wire.Data.Length; i++)
-                                {
-                                    node.Wire.Data.BitValues[i] = BitValue.Error;
-                                }
-                            }
-                            return;
-                        }
+                        values.CopyTo(out var copiedVal);
+                        wire.Values = copiedVal;
+                        vWires.Add(wire);
+                        updatedObjects.Add(wire);
+                        //if this point is the start of the wire, return the end and vice versa
+                        Vec2 otherPoint = position == wire.StartPoint ? wire.EndPoint : wire.StartPoint;
+                        RecursivePropogate(vWires, otherPoint);
                     }
-                    else
-                    {
-                        if (wire.StartPoint == startPoint)
-                        {
-                            PropagateWires(state, patternStack, visitedWires, visitedPins, wire.EndPoint, values);
-                            patternStack.Pop(patternStack.HeadIndex - index);
-                        }
-                        else if (wire.EndPoint == startPoint)
-                        {
-                            PropagateWires(state, patternStack, visitedWires, visitedPins, wire.StartPoint, values);
-                            patternStack.Pop(patternStack.HeadIndex - index);
-                        }
-                        else
-                        {
-                            throw new Exception("How tf did this happen");
-                        }
-                    }
-
-                    continue;
                 }
-
-                GatePin pin = circuitObject as GatePin;
-                if (pin != null)
-                {
-                    if (pin.Parent.Inputs != null)
-                    {
-                        if (pin.Parent.Inputs.Contains(pin))
-                        {
-                            visitedPins.Add(pin);
-                            pin.Values = values;
-
-                            pin.Parent.ComputeGate();
-                            foreach (GatePin output in pin.Parent.Outputs)
-                            {
-                                PropagateWires(state, patternStack, visitedWires, visitedPins, output.StartPoint, output.Values);
-                            }
-                        }
-                    }
-
-                    continue;
-                }
-
-                throw new NotImplementedException();
-
             }
-
-        }
-    }
-
-    internal class WireValuePair
-    {
-        public WireLine Wire;
-        public BitArray Values;
-
-        public WireValuePair(WireLine wire, BitArray values)
-        {
-            Wire = wire;
-            Values = values;
-        }
-
-        public override string ToString()
-        {
-            return Wire.ToString();
-        }
-
-        public override bool Equals(object obj)
-        {
-            WireValuePair pair = obj as WireValuePair;
-            if(pair == null)
-            {
-                return false;
-            }
-            return (Wire.StartPoint == pair.Wire.StartPoint) && (Wire.EndPoint == pair.Wire.EndPoint);
-        }
-
-        public override int GetHashCode()
-        {
-            return 684914040 + EqualityComparer<WireLine>.Default.GetHashCode(Wire);
         }
     }
 }

@@ -9,6 +9,7 @@ using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using Wireform.Utils;
 
 namespace Wireform.Circuitry.Gates.Logic
 {
@@ -199,7 +200,9 @@ namespace Wireform.Circuitry.Gates.Logic
 
         int splitCount = 1;
         [CircuitProperty(1, 32, true)]
-        protected int SplitCount
+        [CircuitPropertyAction("Increment split count", 'i', true, PropertyOverflow.Clip)]
+        [CircuitPropertyAction("Decrement split count", 'i', Modifier.Shift, false, PropertyOverflow.Clip)]
+        public int SplitCount
         {
             get => splitCount;
             set
@@ -211,7 +214,9 @@ namespace Wireform.Circuitry.Gates.Logic
 
         int splitDepth = 1;
         [CircuitProperty(1, 32, true)]
-        protected int SplitDepth
+        [CircuitPropertyAction("Increment split depth", 'd', true, PropertyOverflow.Clip)]
+        [CircuitPropertyAction("Decrement split depth", 'd', Modifier.Shift, false, PropertyOverflow.Clip)]
+        public int SplitDepth
         {
             get => splitDepth;
             set
@@ -227,7 +232,7 @@ namespace Wireform.Circuitry.Gates.Logic
         private Split splitDirection = Split.Expand;
         [CircuitPropertyAction("Flip", 'f', true)]
         [CircuitProperty(0, 1, true, new[] { "Expand", "Contract" })]
-        protected Split SplitDirection
+        public Split SplitDirection
         {
             get => splitDirection;
             set

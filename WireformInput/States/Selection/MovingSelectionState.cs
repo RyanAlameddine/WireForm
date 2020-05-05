@@ -147,6 +147,8 @@ namespace WireformInput.States.Selection
             //If it has moved, register movement
             if (intersectedBoxes.Count == 0 && startPosition != selectedObject.StartPoint)
                 stateControls.RegisterChange(resettable ? "Moved selections" : "Placed selections");
+            else
+                stateControls.State.Propogate();
 
             return (true, new SelectionToolState(selections));
         }

@@ -8,7 +8,8 @@ using Wireform.MathUtils.Collision;
 namespace Wireform.Circuitry.Data
 {
     /// <summary>
-    /// An object which sits on the board and interacts with other objects on the board
+    /// An object which sits on the board and interacts with other objects on the board.
+    /// E.g. Gate, WireLine
     /// </summary>
     public abstract class CircuitObject : BoardObject
     {

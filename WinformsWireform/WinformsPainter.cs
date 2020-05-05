@@ -19,52 +19,52 @@ namespace WinformsWireform
     /// </summary>
     internal class WinformsPainter : IPainter
     {
-        Graphics gfx;
-        float zoom;
+        readonly Graphics gfx;
+        readonly float zoom;
         public WinformsPainter(Graphics gfx, float zoom)
         {
             this.gfx = gfx;
             this.zoom = zoom;
         }
 
-        Pen getPen(Color color, int width)
+        Pen GetPen(Color color, int width)
         {
             return new Pen(color, width * zoom / 50f);
         }
 
-        Brush getEmptyBrush(Color color)
+        Brush GetEmptyBrush(Color color)
         {
             return (new Pen(color, 1)).Brush;
         }
 
         public void DrawLine(Color color, int penWidth, Vec2 startPoint, Vec2 endPoint)
         {
-            gfx.DrawLine(getPen(color, penWidth), startPoint.X, startPoint.Y, endPoint.X, endPoint.Y);
+            gfx.DrawLine(GetPen(color, penWidth), startPoint.X, startPoint.Y, endPoint.X, endPoint.Y);
         }
 
         public void DrawArc(Color color, int penWidth, Vec2 startPoint, Vec2 size, float startAngle, float sweepAngle)
         {
-            gfx.DrawArc(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y, startAngle, sweepAngle);
+            gfx.DrawArc(GetPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y, startAngle, sweepAngle);
         }
 
         public void DrawEllipse(Color color, int penWidth, Vec2 startPoint, Vec2 size)
         {
-            gfx.DrawEllipse(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
+            gfx.DrawEllipse(GetPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
         public void FillEllipse(Color color, Vec2 startPoint, Vec2 size)
         {
-            gfx.FillEllipse(getEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
+            gfx.FillEllipse(GetEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
         public void DrawRectangle(Color color, int penWidth, Vec2 startPoint, Vec2 size)
         {
-            gfx.DrawRectangle(getPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
+            gfx.DrawRectangle(GetPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
         public void FillRectangle(Color color, Vec2 startPoint, Vec2 size)
         {
-            gfx.FillRectangle(getEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
+            gfx.FillRectangle(GetEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
         public void DrawString(string s, Color color, Vec2 startPoint, float scaleDivider)

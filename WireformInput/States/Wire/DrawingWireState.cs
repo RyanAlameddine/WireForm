@@ -68,7 +68,10 @@ namespace WireformInput.States.Wire
             primaryLine  .InsertAndAttach(stateControls.State.wires, stateControls.State.Connections);
             secondaryLine.InsertAndAttach(stateControls.State.wires, stateControls.State.Connections);
 
-            stateControls.RegisterChange($"Created wire from {primaryLine.StartPoint}-{secondaryLine.EndPoint}");
+            if (primaryLine.StartPoint != secondaryLine.EndPoint)
+                stateControls.RegisterChange($"Created wire from {primaryLine.StartPoint}-{secondaryLine.EndPoint}");
+            else
+                stateControls.State.Propogate();
             return (true, new WireToolState());
         }
     }

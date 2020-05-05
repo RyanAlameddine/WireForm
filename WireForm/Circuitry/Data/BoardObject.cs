@@ -9,6 +9,7 @@ namespace Wireform.Circuitry.Data
 {
     /// <summary>
     /// An object which sits on the circuit board
+    /// E.g. WireLine, GatePin, Gate
     /// </summary>
     public abstract class BoardObject
     {

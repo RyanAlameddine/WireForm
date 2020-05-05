@@ -24,7 +24,7 @@ namespace WireformInput.States.Wire
         public override InputReturns MouseRightUp(StateControls stateControls)
         {
             stateControls.RegisterChange("Deleted Wires");
-            return (false, new WireToolState());
+            return (true, new WireToolState());
         }
 
         private InputReturns removeWire(List<WireLine> wires, Vec2 griddedMousePoint, Dictionary<Vec2, List<BoardObject>> connections)

@@ -37,14 +37,14 @@ namespace Wireform.Circuitry
         public bool IsHorizontal { get; set; }
 
         [JsonIgnore]
-        public BitArray Data { get; set; }
+        public BitArray Values { get; set; }
 
         public WireLine(Vec2 start, Vec2 end, bool IsHorizontal)
         {
             StartPoint = start;
             EndPoint = end;
             this.IsHorizontal = IsHorizontal;
-            Data = new BitArray(1);
+            Values = new BitArray(1);
         }
 
         /// <summary>
