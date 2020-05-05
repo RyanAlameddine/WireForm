@@ -244,6 +244,16 @@ namespace Wireform.Circuitry.Data
             return sb.ToString();
         }
 
+        public string ToStringSimplified()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var value in BitValues)
+            {
+                sb.Append(value.ToChar());
+            }
+            return sb.ToString();
+        }
+
         public IEnumerator<BitValue> GetEnumerator()
         {
             return ((IEnumerable<BitValue>)BitValues).GetEnumerator();

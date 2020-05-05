@@ -82,12 +82,28 @@ namespace Wireform
             };
         }
 
-        public static void SetDepth(this GatePin[] pins, int bitDepth)
+        public static bool IsVertical(this Direction direction)
         {
-            for(int i = 0; i < pins.Length; i++)
+            return direction switch
             {
-                pins[i].Values = new BitArray(bitDepth);
-            }
+                Direction.Up    => true ,
+                Direction.Down  => true ,
+                Direction.Left  => false,
+                Direction.Right => false,
+                _ => throw new System.Exception("How did I get here"),
+            };
+        }
+
+        public static bool IsUpOrRight(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => true,
+                Direction.Down => false,
+                Direction.Left => false,
+                Direction.Right => true,
+                _ => throw new System.Exception("How did I get here"),
+            };
         }
 
         public static string GetHotkeyString(this char key, Modifier modifiers)

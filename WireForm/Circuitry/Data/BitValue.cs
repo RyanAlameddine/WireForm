@@ -145,5 +145,17 @@ namespace Wireform.Circuitry.Data
                 _ => throw new System.Exception(),
             };
         }
+
+        public char ToChar()
+        {
+            return Selected switch
+            {
+                0 => '-',
+                1 => 'e',
+                2 => '0',
+                3 => '1',
+                _ => throw new System.Exception(),
+            };
+        }
     }
 }

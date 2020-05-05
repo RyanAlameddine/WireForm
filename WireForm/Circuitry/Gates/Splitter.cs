@@ -31,7 +31,8 @@ namespace Wireform.Circuitry.Gates.Logic
 
         protected override void Compute()
         {
-            if (splitDirection == 0)
+            //Split input into lots of outputs
+            if (splitDirection == Split.Expand)
             {
                 for (int i = 0; i < Outputs.Length; i++)
                 {
@@ -52,6 +53,7 @@ namespace Wireform.Circuitry.Gates.Logic
                     Outputs[i].Values = bits;
                 }
             }
+            //Combine lots of inputs to one large output
             else
             {
                 BitValue[] bits = new BitValue[Outputs[0].Values.Count];
@@ -205,6 +207,9 @@ namespace Wireform.Circuitry.Gates.Logic
         }
 
         int splitCount = 1;
+        /// <summary>
+        /// The amount of split nodes
+        /// </summary>
         [CircuitProperty(1, 32, true)]
         [CircuitPropertyAction("Increment split count", 'i', true, PropertyOverflow.Clip)]
         [CircuitPropertyAction("Decrement split count", 'i', Modifier.Shift, false, PropertyOverflow.Clip)]
@@ -219,6 +224,9 @@ namespace Wireform.Circuitry.Gates.Logic
         }
 
         int splitDepth = 1;
+        /// <summary>
+        /// The bitDepth of each split node
+        /// </summary>
         [CircuitProperty(1, 32, true)]
         [CircuitPropertyAction("Increment split depth", 'd', true, PropertyOverflow.Clip)]
         [CircuitPropertyAction("Decrement split depth", 'd', Modifier.Shift, false, PropertyOverflow.Clip)]

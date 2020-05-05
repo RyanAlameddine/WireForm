@@ -9,6 +9,7 @@ using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
+using Wireform.Utils;
 
 namespace Wireform.Circuitry.Utils
 {
@@ -94,6 +95,7 @@ namespace Wireform.Circuitry.Utils
         /// with [HideCircuitAttributes]
         /// </summary>
         [CircuitPropertyAction("Rotate", 'r', true)]
+        [CircuitPropertyAction("Rotate (reverse)", 'r', Modifier.Shift, false)]
         [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
         public virtual Direction Direction { get; set; } = Direction.Right;
 
@@ -206,7 +208,7 @@ namespace Wireform.Circuitry.Utils
         protected BitArray FoldInputs(Func<BitArray, BitArray, BitArray> func)
         {
             if (Inputs.Length == 0) return new BitArray(0);
-            BitArray accumulator = Inputs[0].Values;
+            BitArray accumulator = Inputs[0].Values.ToArray();
             for(int i = 1; i < Inputs.Length; i++)
             {
                 accumulator = func(accumulator, Inputs[i].Values);

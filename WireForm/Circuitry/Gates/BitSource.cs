@@ -10,6 +10,7 @@ using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 using Wireform.Circuitry.Utils;
 using System.Linq;
+using Wireform.Utils;
 
 namespace Wireform.Circuitry.Gates
 {
@@ -28,6 +29,10 @@ namespace Wireform.Circuitry.Gates
         protected override void Draw(PainterScope painter)
         {
             painter.DrawRectangle(Color.Green, 10, new Vec2(-.4f, -.4f), new Vec2(.8f, .8f));
+
+            painter.DrawStringC(Outputs[0].Values.Count.ToString(), Color.Black, new Vec2(-.3f, -.6f), 4f);
+            painter.DrawStringC("*", Color.Black, new Vec2(0, -.6f), 4f);
+            painter.DrawStringC(Outputs[0].Values[0].ToChar().ToString(), Color.Black, new Vec2(.3f, -.6f), 4f);
         }
 
         protected override void Compute()
@@ -61,6 +66,8 @@ namespace Wireform.Circuitry.Gates
             }
         }
 
+        [CircuitPropertyAction("Increment depth", 'd', true, PropertyOverflow.Clip)]
+        [CircuitPropertyAction("Decrement depth", 'd', Modifier.Shift, false, PropertyOverflow.Clip)]
         [CircuitProperty(1, 32, false)]
         public int BitDepth
         {
@@ -70,9 +77,6 @@ namespace Wireform.Circuitry.Gates
                 Outputs[0].Values = new BitArray(value);
             }
         }
-
-        [HideCircuitAttributes]
-        public override Direction Direction { get => base.Direction; set => base.Direction = value; }
 
         public BitValue currentValue = BitValue.One;
     }
