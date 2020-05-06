@@ -48,16 +48,14 @@ namespace Wireform.Circuitry
                     //Debug.WriteLine("Null parent in gatepin initialization - If this occurs while loading, this is not an error");
                     return;
                 }
-                Vec2 multiplier = Parent.Direction.GetMultiplier();
+                var (xMult, yMult, flipXY) = Parent.Direction.GetMultiplier();
                 Vec2 pos = value;
-                if(multiplier.Y == -1)
-                {
-                    pos = new Vec2(pos.Y, pos.X * multiplier.X);
-                }
+                float x = pos.X * xMult;
+                float y = pos.Y * yMult;
+                if (flipXY)
+                    pos = new Vec2(y, x);
                 else
-                {
-                    pos = new Vec2(pos.X * multiplier.X, pos.Y);
-                }
+                    pos = new Vec2(x, y);
 
                 startPoint = pos + Parent.StartPoint;
 

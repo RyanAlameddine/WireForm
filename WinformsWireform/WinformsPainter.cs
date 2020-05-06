@@ -20,16 +20,14 @@ namespace WinformsWireform
     internal class WinformsPainter : IPainter
     {
         readonly Graphics gfx;
-        readonly float zoom;
-        public WinformsPainter(Graphics gfx, float zoom)
+        public WinformsPainter(Graphics gfx)
         {
             this.gfx = gfx;
-            this.zoom = zoom;
         }
 
         Pen GetPen(Color color, int width)
         {
-            return new Pen(color, width * zoom / 50f);
+            return new Pen(color, width);
         }
 
         Brush GetEmptyBrush(Color color)
@@ -67,15 +65,15 @@ namespace WinformsWireform
             gfx.FillRectangle(GetEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
         }
 
-        public void DrawString(string s, Color color, Vec2 startPoint, float scaleDivider)
+        public void DrawString(string s, Color color, Vec2 startPoint, float scale)
         {
-            Font font = new Font(FontFamily.GenericMonospace, zoom / scaleDivider, FontStyle.Bold);
+            Font font = new Font(FontFamily.GenericMonospace, scale, FontStyle.Bold);
             gfx.DrawString(s, font, new Pen(color, 10).Brush, startPoint.X, startPoint.Y);
         }
 
-        public Vec2 MeasureString(string s, float zoom, float scaleDivider)
+        public Vec2 MeasureString(string s, float zoom, float scale)
         {
-            Font font = new Font(FontFamily.GenericMonospace, zoom / scaleDivider, FontStyle.Bold);
+            Font font = new Font(FontFamily.GenericMonospace, scale, FontStyle.Bold);
             var size = gfx.MeasureString(s, font);
             return new Vec2(size.Width, size.Height);
         }

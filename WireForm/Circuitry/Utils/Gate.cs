@@ -58,19 +58,20 @@ namespace Wireform.Circuitry.Utils
             {
                 localHitbox = value;
 
-                var mult = Direction.GetMultiplier();
+                var (xMult, yMult, flipXY) = Direction.GetMultiplier();
+                float x = value.X * xMult;
+                float y = value.Y * yMult;
                 //Debug.WriteLine(Direction);
-                if (mult.Y == -1)
+                if (flipXY)
                 {
-                    hitBox = new BoxCollider(value.Y, value.X, value.Height, value.Width * mult.X);
-                    mult = new Vec2(1, mult.X);
+                    hitBox = new BoxCollider(y, x, value.Height * yMult, value.Width * xMult);
                 }
                 else
                 {
-                    hitBox = new BoxCollider(value.X, value.Y, value.Width * mult.X, value.Height);
+                    hitBox = new BoxCollider(x, y, value.Width * xMult, value.Height * yMult);
                 }
-                hitBox.X = StartPoint.X + hitBox.X * mult.X;
-                hitBox.Y = StartPoint.Y + hitBox.Y * mult.Y;
+                hitBox.X = StartPoint.X + hitBox.X;
+                hitBox.Y = StartPoint.Y + hitBox.Y;
                 hitBox = hitBox.GetNormalized();
             }
         }
@@ -90,14 +91,45 @@ namespace Wireform.Circuitry.Utils
         }
 
         /// <summary>
-        /// The direction which the gate is facing
-        /// If you would like to disable rotation, simply override Direction and tag it
-        /// with [HideCircuitAttributes]
+        /// The direction which the gate is facing (including flipping).
+        /// This is NOT the circuit property Direction. See <see cref="GateDirection"/>
+        /// </summary>
+        public Direction Direction { get; set; } = Direction.Right;
+        /// <summary>
+        /// The direction which the gate is facing (ignoring flipping) derived from <see cref="Direction"/>.
+        /// If you would like to disable rotation, simply override Direction and Flipped
+        /// and tag them with [HideCircuitAttributes]
         /// </summary>
         [CircuitPropertyAction("Rotate", 'r', true)]
         [CircuitPropertyAction("Rotate (reverse)", 'r', Modifier.Shift, false)]
         [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
-        public virtual Direction Direction { get; set; } = Direction.Right;
+        protected Direction Facing 
+        { 
+            get
+            {
+                return (Direction) ((int)Direction % 4);
+            }
+            set
+            {
+                Direction = (Direction) ((int) value - 0 + (((int)Direction) /4)*4);
+            }
+        }
+
+        /// <summary>
+        /// Whether or not 
+        /// If you would like to disable rotation, simply override Direction and Flipped
+        /// and tag them with [HideCircuitAttributes]
+        /// </summary>
+        [CircuitPropertyAction("Flip", 'f', true)]
+        [CircuitProperty(0, 1, true, new[] { "false", "true" })]
+        public virtual int Flipped 
+        {
+            get => Direction > Direction.Down ? 0 : 1;
+            set
+            {
+                Direction = (Direction)(((int) Direction + 4) % 8); 
+            }
+        }
 
         protected Gate(Vec2 Position, Direction direction, BoxCollider localHitbox)
         {

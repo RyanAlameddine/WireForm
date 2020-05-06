@@ -13,6 +13,10 @@ namespace Wireform.Circuitry.Utils
         Right,
         Down,
         Left,
-        Up
+        Up,
+        RightFlipped,
+        DownFlipped,
+        LeftFlipped,
+        UpFlipped,
     }
 }

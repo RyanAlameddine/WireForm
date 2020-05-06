@@ -19,7 +19,7 @@ namespace Wireform.GraphicsUtils
 
         private Vec2 offset;
 
-        private Vec2 multiplier;
+        private (int xMult, int yMult, bool flipXY) multiplier;
 
         /// <summary>
         /// Creates an empty painter
@@ -29,7 +29,7 @@ namespace Wireform.GraphicsUtils
             this.painter = painter;
             this.zoom = zoom;
             this.offset = Vec2.Zero;
-            this.multiplier = new Vec2(1, 1);
+            this.multiplier = (1, 1, false);
         }
 
         /// <summary>
@@ -44,9 +44,14 @@ namespace Wireform.GraphicsUtils
         /// Sets the multiplier for the un-offsetted position values for drawing.
         /// Converts direction enum into multipliers fo the painting.
         /// </summary>
-        public void SetLocalMultiplier(Direction direction)
+        public void SetLocalMultiplier(Direction direction) => multiplier = direction.GetMultiplier();
+
+        /// <summary>
+        /// Scales a penWidth to match the zoom
+        /// </summary>
+        void ScaleWidth(ref int penWidth)
         {
-            multiplier = direction.GetMultiplier();
+            penWidth = (int) (penWidth * zoom / 50f);
         }
 
         /// <summary>
@@ -63,32 +68,36 @@ namespace Wireform.GraphicsUtils
         /// </summary>
         void OffsetPosition(ref Vec2 position, ref Vec2 size)
         {
-            var mult = multiplier;
-            if (multiplier.Y == -1)
+            var (xMult, yMult, flipXY) = multiplier;
+            if (flipXY)
             {
                 size = new Vec2(size.Y, size.X);
-                position = new Vec2(position.Y, position.X);
-                mult = new Vec2(1, mult.X);
+                position = offset + new Vec2(position.Y * yMult, position.X * xMult);
             }
-            position.X = offset.X + position.X * mult.X;
-            position.Y = offset.Y + position.Y * mult.Y;
+            else
+            {
+                position = offset + new Vec2(position.X * xMult, position.Y * yMult);
+            }
         }
         /// <summary>
         /// Offsets and flips a point to match the PainterScope.offset value and PainterScope.multiplier where the bound is topLeft
         /// </summary>
         void OffsetPositionTL(ref Vec2 position, ref Vec2 size)
         {
-            var mult = multiplier;
-            if (multiplier.Y == -1)
+            var (xMult, yMult, flipXY) = multiplier;
+            float x = position.X;
+            float y = position.Y;
+            if (flipXY)
             {
                 size = new Vec2(size.Y, size.X);
-                position = new Vec2(position.Y, position.X);
-                mult = new Vec2(1, mult.X);
+                float temp = y;
+                y = x;
+                x = temp;
             }
             float xCenter = size.X / 2f;
             float yCenter = size.Y / 2f;
-            position.X = offset.X + (position.X + xCenter) * mult.X - xCenter;
-            position.Y = offset.Y + (position.Y + yCenter) * mult.Y - yCenter;
+            position.X = offset.X + (x + xCenter) * xMult - xCenter;
+            position.Y = offset.Y + (y + yCenter) * yMult - yCenter;
         }
 
         /// <summary>
@@ -105,20 +114,24 @@ namespace Wireform.GraphicsUtils
         /// </summary>
         void MultiplyArc(ref float startAngle, ref float sweepAngle)
         {
-            if(multiplier.X == -1)
+            int xMult = multiplier.xMult;
+            int yMult = multiplier.yMult;
+            if (multiplier.flipXY)
             {
-                if(multiplier.Y == -1)
-                {
-                    startAngle -= 90;
-                    //sweepAngle *= -1;
-                    return;
-                }
+                startAngle = 90 - startAngle;
+                sweepAngle *= -1;
+
+                yMult = multiplier.xMult;
+                xMult = multiplier.yMult;
+            }
+            if(xMult == -1)
+            {
                 startAngle = 180 - startAngle;
                 sweepAngle *= -1;
             }
-            else if(multiplier.Y == -1)
+            if(yMult == -1)
             {
-                startAngle = 90 - startAngle;
+                startAngle = -startAngle;
                 sweepAngle *= -1;
             }
         }
@@ -130,7 +143,8 @@ namespace Wireform.GraphicsUtils
             OffsetPosition(ref endPoint, ref zero);
 
             ScalePoint(ref startPoint);
-            ScalePoint(ref endPoint);
+            ScalePoint(ref endPoint); 
+            ScaleWidth(ref penWidth);
 
             painter.DrawLine(color, penWidth, startPoint, endPoint);
         }
@@ -142,6 +156,7 @@ namespace Wireform.GraphicsUtils
 
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
+            ScaleWidth(ref penWidth);
 
             painter.DrawArc(color, penWidth, startPoint, size, startAngle, sweepAngle);
         }
@@ -154,6 +169,7 @@ namespace Wireform.GraphicsUtils
 
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
+            ScaleWidth(ref penWidth);
 
             painter.DrawArc(color, penWidth, centralPoint, size, startAngle, sweepAngle);
         }
@@ -164,6 +180,7 @@ namespace Wireform.GraphicsUtils
 
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
+            ScaleWidth(ref penWidth);
 
             painter.DrawEllipse(color, penWidth, startPoint, size);
         }
@@ -175,6 +192,7 @@ namespace Wireform.GraphicsUtils
 
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
+            ScaleWidth(ref penWidth);
 
             painter.DrawEllipse(color, penWidth, centralPoint, size);
         }
@@ -207,6 +225,7 @@ namespace Wireform.GraphicsUtils
 
             ScalePoint(ref startPoint);
             ScalePoint(ref size);
+            ScaleWidth(ref penWidth);
 
             painter.DrawRectangle(color, penWidth, startPoint, size);
         }
@@ -232,24 +251,24 @@ namespace Wireform.GraphicsUtils
             painter.FillRectangle(color, centralPoint, size);
         }
 
-        public void DrawString(string s, Color color, Vec2 startPoint, float scaleDivider)
+        public void DrawString(string s, Color color, Vec2 startPoint, float scale)
         {
-            var size = painter.MeasureString(s, zoom, scaleDivider);
+            var size = painter.MeasureString(s, zoom, scale * zoom);
             var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPositionTL(ref startPoint, ref V2Size);
 
-            painter.DrawString(s, color, startPoint * zoom, scaleDivider);
+            painter.DrawString(s, color, startPoint * zoom, scale * zoom);
         }
 
-        public void DrawStringC(string s, Color color, Vec2 centralPoint, float scaleDivider)
+        public void DrawStringC(string s, Color color, Vec2 centralPoint, float scale)
         {
-            var size = painter.MeasureString(s, zoom, scaleDivider);
+            var size = painter.MeasureString(s, zoom, scale * zoom);
             var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPosition(ref centralPoint, ref V2Size);
 
-            painter.DrawString(s, color, centralPoint * zoom - size / 2f, scaleDivider);
+            painter.DrawString(s, color, centralPoint * zoom - size / 2f, scale * zoom);
         }
     }
 }

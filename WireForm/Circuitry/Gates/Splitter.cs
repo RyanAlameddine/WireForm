@@ -81,21 +81,21 @@ namespace Wireform.Circuitry.Gates.Logic
             painter.DrawLine(Color.DarkGray, 10, new Vec2(-1, -1), Vec2.Zero);
 
             painter.DrawLine(Color.DarkGray, 10, new Vec2(0 - 1 / 20f, 0), new Vec2(1, 0));
-            painter.DrawStringC(GetRange(0), Color.Black, new Vec2(.4f, 0), 4);
+            painter.DrawStringC(GetRange(0), Color.Black, new Vec2(.4f, 0), 1/4f);
             
             base.Draw(painter);
 
             if (splitDirection == 0)
             {
-                painter.DrawStringC("I", Color.Black,  new Vec2(0f, -.5f), 3);
-                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 3);
-                painter.DrawStringC("O", Color.Black, new Vec2(.8f, -.5f), 3);
+                painter.DrawStringC("I", Color.Black,  new Vec2(0f, -.5f), 1/3f);
+                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 1/3f);
+                painter.DrawStringC("O", Color.Black, new Vec2(.8f, -.5f), 1/3f);
             }
             else
             {
-                painter.DrawStringC("O", Color.Black,  new Vec2(0f, -.5f), 3);
-                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 3);
-                painter.DrawStringC("I", Color.Black, new Vec2(.8f, -.5f), 3);
+                painter.DrawStringC("O", Color.Black,  new Vec2(0f, -.5f), 1/3f);
+                painter.DrawStringC("/", Color.Black, new Vec2(.4f, -.5f), 1/3f);
+                painter.DrawStringC("I", Color.Black, new Vec2(.8f, -.5f), 1/3f);
             }
         }
 
@@ -202,7 +202,7 @@ namespace Wireform.Circuitry.Gates.Logic
             for (int i = 1; i < splitCount; i++)
             {
                 painter.DrawLine(Color.DarkGray, 10, new Vec2(0, i), new Vec2(1, i));
-                painter.DrawStringC(GetRange(i), Color.Black, new Vec2(.4f, i), 4);
+                painter.DrawStringC(GetRange(i), Color.Black, new Vec2(.4f, i), 1/4f);
             }
         }
 
@@ -244,7 +244,7 @@ namespace Wireform.Circuitry.Gates.Logic
         /// The way in which the splitter expands or contracts inputs or outputs
         /// </summary>
         private Split splitDirection = Split.Expand;
-        [CircuitPropertyAction("Flip", 'f', true)]
+        [CircuitPropertyAction("Toggle split direction", 't', true)]
         [CircuitProperty(0, 1, true, new[] { "Expand", "Contract" })]
         public Split SplitDirection
         {

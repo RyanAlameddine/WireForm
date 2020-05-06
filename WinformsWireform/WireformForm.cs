@@ -78,7 +78,7 @@ namespace WinformsWireform
         private void DrawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            PainterScope painter = new PainterScope(new WinformsPainter(e.Graphics, inputStateManager.SizeScale), inputStateManager.SizeScale);
+            PainterScope painter = new PainterScope(new WinformsPainter(e.Graphics), inputStateManager.SizeScale);
             inputStateManager.Draw(stateStack.CurrentState, painter, new Vec2(Width, Height));
         }
         #endregion Graphics

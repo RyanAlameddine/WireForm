@@ -70,38 +70,22 @@ namespace Wireform
             foreach (var wire in toAdd   ) circuitObjects.Add   (wire);
         }
 
-        public static Vec2 GetMultiplier(this Direction direction)
+        /// <summary>
+        /// Gets drawing multiplier information from direction and flipped bool
+        /// </summary>
+        public static (int xMult, int yMult, bool flipXY) GetMultiplier(this Direction direction)
         {
             return direction switch
             {
-                Direction.Up    => new Vec2(-1, -1),
-                Direction.Down  => new Vec2( 1, -1),
-                Direction.Left  => new Vec2(-1,  1),
-                Direction.Right => new Vec2( 1,  1),
-                _ => throw new System.Exception("How did I get here"),
-            };
-        }
-
-        public static bool IsVertical(this Direction direction)
-        {
-            return direction switch
-            {
-                Direction.Up    => true ,
-                Direction.Down  => true ,
-                Direction.Left  => false,
-                Direction.Right => false,
-                _ => throw new System.Exception("How did I get here"),
-            };
-        }
-
-        public static bool IsUpOrRight(this Direction direction)
-        {
-            return direction switch
-            {
-                Direction.Up => true,
-                Direction.Down => false,
-                Direction.Left => false,
-                Direction.Right => true,
+                Direction.Up    => (-1,  1, true ),
+                Direction.Down  => ( 1, -1, true ),
+                Direction.Left  => (-1, -1, false),
+                Direction.Right => ( 1,  1, false),
+                //All Y values flipped
+                Direction.UpFlipped    => ( 1,  1, true ),
+                Direction.DownFlipped  => (-1, -1, true ),
+                Direction.LeftFlipped  => ( 1, -1, false),
+                Direction.RightFlipped => (-1,  1, false),
                 _ => throw new System.Exception("How did I get here"),
             };
         }
