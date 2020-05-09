@@ -57,7 +57,8 @@ namespace Wireform.Circuitry
 
                 foreach (GatePin output in currentGate.Outputs)
                 {
-                    PropogateDownPoint(output.StartPoint, output.Values, state, gateQueue, visitedInputs, visitedWires, updatedObjects);
+                    output.Values.CopyTo(out var values);
+                    PropogateDownPoint(output.StartPoint, values, state, gateQueue, visitedInputs, visitedWires, updatedObjects);
                 }
 
                 //infinite oscillation catch:
@@ -65,7 +66,7 @@ namespace Wireform.Circuitry
                 {
                     foreach (BoardObject boardObject in updatedObjects)
                     {
-                        if (boardObject is WireLine wire) wire.Values = wire.Values.Select((_) => BitValue.Error);
+                        if (boardObject is WireLine wire) wire.Values.SetAll(BitValue.Error);
                     }
                     Debug.WriteLine("Infinite oscillation caught!");
                     break;
@@ -75,13 +76,13 @@ namespace Wireform.Circuitry
             //Set unvisited wires to Nothing
             foreach (WireLine wire in state.Wires.Where((wire) => !visitedWires.Contains(wire)))
             {
-                wire.Values = wire.Values.Select((_) => BitValue.Nothing);
+                wire.Values.SetAll(BitValue.Nothing);
             }
 
             //Sets unvisited pins to Nothing
             foreach (GatePin pin in state.Gates.SelectMany((gate) => gate.Inputs).Where((pin) => !visitedInputs.Contains(pin)))
             {
-                pin.Values = pin.Values.Select((_) => BitValue.Nothing);
+                pin.Values.SetAll(BitValue.Nothing);
             }
         }
 
@@ -101,6 +102,7 @@ namespace Wireform.Circuitry
                 List<BoardObject> boardObjects = state.Connections[position];
                 foreach (var boardObject in boardObjects)
                 {
+                    values.CopyTo(out var copiedVals);
                     if (boardObject is GatePin pin)
                     {
                         //if pin is an output pin, nothing to be done
@@ -113,7 +115,7 @@ namespace Wireform.Circuitry
                         updatedObjects.Add(pin);
 
                         //update pin values and add to queue
-                        pin.Values = values;
+                        pin.Values = copiedVals;
 
                         //Note to self: if something isn't working and it makes no sense and I have no clue why:
                         //It's probably because this check is wrong
@@ -129,7 +131,7 @@ namespace Wireform.Circuitry
                         //wire has already been visited this propogation
                         if (vWires.Contains(wire)) continue;
 
-                        wire.Values = values;
+                        wire.Values = copiedVals;
                         vWires.Add(wire);
                         updatedObjects.Add(wire);
                         //if this point is the start of the wire, return the end and vice versa

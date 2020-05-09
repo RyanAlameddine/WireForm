@@ -9,29 +9,21 @@ using System.Text;
 
 namespace Wireform.Circuitry.Data
 {
-    /// <summary>
-    /// An immutable array of bits (implicitly converts from BitValue[] and ImmutableArray<BitValue>
-    /// </summary>
     [JsonConverter(typeof(BitArrayConverter))]
-    public struct BitArray : IEnumerable<BitValue>
+    public class BitArray : IEnumerable<BitValue>
     {
-        public readonly ImmutableArray<BitValue> BitValues;
+        public readonly BitValue[] BitValues;
         [JsonIgnore]
         public int Count { get => BitValues.Length; }
 
-        public BitArray(int length)
+        public BitArray(int Count)
         {
-            BitValues = ImmutableArray.CreateRange(Enumerable.Repeat<BitValue>(BitValue.Nothing, length));
-        }
-
-        public BitArray(ImmutableArray<BitValue> bitValues)
-        {
-            BitValues = bitValues;
+            BitValues = new BitValue[Count];
         }
 
         public BitArray(IEnumerable<BitValue> bitValues)
         {
-            BitValues = ImmutableArray.CreateRange(bitValues);
+            BitValues = bitValues.ToArray();
         }
 
         public BitValue this[int i]
@@ -39,6 +31,29 @@ namespace Wireform.Circuitry.Data
             get
             {
                 return BitValues[i];
+            }
+            set
+            {
+                BitValues[i] = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets a bit at the specified index to the value
+        /// </summary>
+        public void Set(int i, BitValue value)
+        {
+            BitValues[i] = value;
+        }
+
+        /// <summary>
+        /// Sets all bits to the value
+        /// </summary>
+        public void SetAll(BitValue value)
+        {
+            for(int i = 0; i < Count; i++)
+            {
+                BitValues[i] = value;
             }
         }
 
@@ -73,12 +88,12 @@ namespace Wireform.Circuitry.Data
 
         public BitArray Select(Func<BitValue, BitValue> map)
         {
-            var builder = ImmutableArray.CreateBuilder<BitValue>(Count);
+            BitArray newArray = new BitArray(Count);
             for(int i = 0; i < Count; i++)
             {
-                builder.Add(map(BitValues[i]));
+                newArray[i] = map(BitValues[i]);
             }
-            return builder.ToImmutable();
+            return newArray;
         }
 
         /// <summary>
@@ -86,7 +101,16 @@ namespace Wireform.Circuitry.Data
         /// </summary>
         public static BitArray operator !(BitArray values)
         {
-            return ImmutableArray.CreateRange(values.Select((x)=> !x));
+            return values.Select((x)=> !x);
+        }
+
+        public void CopyTo(out BitArray values)
+        {
+            values = new BitArray(Count);
+            for(int i = 0; i < Count; i++)
+            {
+                values[i] = this[i];
+            }
         }
 
         /// <summary>
@@ -94,8 +118,8 @@ namespace Wireform.Circuitry.Data
         /// </summary>
         public static BitArray operator &(BitArray values1, BitArray values2)
         {
-            int minLength = ErrorOverflow(values1, values2, out var newBits);
-            for (int i = 0; i < minLength; i++)
+            int minCount = ErrorOverflow(values1, values2, out var newBits);
+            for (int i = 0; i < minCount; i++)
             {
                 newBits[i] = values1[i] & values2[i];
             }
@@ -107,8 +131,8 @@ namespace Wireform.Circuitry.Data
         /// </summary>
         public static BitArray operator |(BitArray values1, BitArray values2)
         {
-            int minLength = ErrorOverflow(values1, values2, out var newBits);
-            for (int i = 0; i < minLength; i++)
+            int minCount = ErrorOverflow(values1, values2, out var newBits);
+            for (int i = 0; i < minCount; i++)
             {
                 newBits[i] = values1[i] | values2[i];
             }
@@ -120,8 +144,8 @@ namespace Wireform.Circuitry.Data
         /// </summary>
         public static BitArray operator ^(BitArray values1, BitArray values2)
         {
-            int minLength = ErrorOverflow(values1, values2, out var newBits);
-            for (int i = 0; i < minLength; i++)
+            int minCount = ErrorOverflow(values1, values2, out var newBits);
+            for (int i = 0; i < minCount; i++)
             {
                 newBits[i] = values1[i] ^ values2[i];
             }
@@ -134,14 +158,14 @@ namespace Wireform.Circuitry.Data
         public static BitArray Only1Input1(IEnumerable<BitArray> bitArrays)
         {
             List<BitValue> bitValues = new List<BitValue>();
-            int minLength = int.MaxValue;
+            int minCount = int.MaxValue;
 
             //Nothing + Anything = Anything, 
             //0 + 1 = 1, 
             //1 + 1 = Error
             foreach(BitArray array in bitArrays)
             {
-                minLength = Math.Min(minLength, array.Count);
+                minCount = Math.Min(minCount, array.Count);
                 while (array.Count > bitValues.Count) bitValues.Add(BitValue.Nothing);
 
                 for(int i = 0; i < array.Count; i++)
@@ -162,23 +186,18 @@ namespace Wireform.Circuitry.Data
             }
 
             //Replace all errors with zero
-            for(int i = 0; i < minLength; i++)
+            for(int i = 0; i < minCount; i++)
             {
                 if (bitValues[i] == BitValue.Error) bitValues[i] = BitValue.Zero;
             }
 
             //Replace all trailing values with error
-            for(int i = minLength; i < bitValues.Count; i++)
+            for(int i = minCount; i < bitValues.Count; i++)
             {
                 bitValues[i] = BitValue.Error;
             }
 
-            return new BitArray(bitValues.ToArray());
-        }
-
-        public static implicit operator BitArray(ImmutableArray<BitValue> bitValues)
-        {
-            return new BitArray(bitValues);
+            return bitValues.ToArray();
         }
 
         public static implicit operator BitArray(BitValue[] bitValues)
@@ -193,7 +212,7 @@ namespace Wireform.Circuitry.Data
         ///      ---------------------
         ///      newBits = { 0, 0, 0, 0, Error, Error }
         /// </summary>
-        /// <returns>the length of the array before it begins erroring</returns>
+        /// <returns>the Count of the array before it begins erroring</returns>
         private static int ErrorOverflow(BitArray values1, BitArray values2, out BitValue[] newBits)
         {
             int min = Math.Min(values1.Count, values2.Count);
@@ -228,7 +247,7 @@ namespace Wireform.Circuitry.Data
 
         public override int GetHashCode()
         {
-            return 808299910 + EqualityComparer<ImmutableArray<BitValue>>.Default.GetHashCode(BitValues);
+            return 808299910 + EqualityComparer<BitValue[]>.Default.GetHashCode(BitValues);
         }
 
         public override string ToString()
