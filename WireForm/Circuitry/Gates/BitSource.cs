@@ -37,7 +37,7 @@ namespace Wireform.Circuitry.Gates
 
         protected override void Compute()
         {
-            Outputs[0].Values.SetAll(currentValue);
+            Outputs[0].Values = Outputs[0].Values.Select((_) => currentValue);
         }
 
         public override CircuitObject Copy()

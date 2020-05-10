@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
@@ -33,24 +36,27 @@ namespace Wireform.Circuitry.Gates.Logic
             {
                 for (int i = 0; i < Outputs.Length; i++)
                 {
+                    BitValue[] bits = new BitValue[Outputs[i].Values.Count];
                     for (int j = 0; j < splitDepth; j++)
                     {
                         int k = splitDepth * i + j;
 
                         if (Inputs[0].Values.Count > k)
                         {
-                            Outputs[i].Values.Set(j, Inputs[0].Values[k]);
+                            bits[j] = Inputs[0].Values[k];
                         }
                         else
                         {
-                            Outputs[i].Values.Set(j, BitValue.Error);
+                            bits[j] = BitValue.Error;
                         }
                     }
+                    Outputs[i].Values = bits;
                 }
             }
             //Combine lots of inputs to one large output
             else
             {
+                BitValue[] bits = new BitValue[Outputs[0].Values.Count];
                 for (int i = 0; i < Inputs.Length; i++)
                 {
                     for (int j = 0; j < Inputs[i].Values.Count; j++)
@@ -58,10 +64,15 @@ namespace Wireform.Circuitry.Gates.Logic
                         int k = splitDepth * i + j;
                         if (Outputs[0].Values.Count > k)
                         {
-                            Outputs[0].Values.Set(k, Inputs[i].Values[j]);
+                            bits[k] = Inputs[i].Values[j];
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Splitter overflow");
                         }
                     }
                 }
+                Outputs[0].Values = bits;
             }
         }
 
