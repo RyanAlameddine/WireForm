@@ -7,7 +7,7 @@ namespace WinformsWireform.Helpers
 {
     internal static class MenuHelper
     {
-        public static void CreateGateMenuFromRoot(ToolStripMenuItem rootItem, WinformsInputHandler helper)
+        public static void CreateGateMenuFromRoot(ToolStripMenuItem rootItem, InputStateManager manager)
         {
             var gates = GateCollection.GatePaths;
 
@@ -37,9 +37,8 @@ namespace WinformsWireform.Helpers
                     (s, e) =>
                     {
                         //Place created gate onto board
-                        StateControls stateControls = helper.MakeControls(null, Keys.None);
                         Gate newGate = GateCollection.CreateGate(gatePath, Vec2.Zero);
-                        helper.RunInputEvent(helper.stateManager.PlaceNewGate(newGate));
+                        manager.PlaceNewGate(newGate);
                     });
                 currentMenuItem.DropDownItems.Add(gateItem);
             }

@@ -78,7 +78,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\CircuitPropertyBoxHelper.cs" />
-    <Compile Include="WinformsInputHandler.cs" />
+    <Compile Include="FormsEventRunner.cs" />
     <Compile Include="Helpers\MenuHelper.cs" />
     <Compile Include="LocalSaveable.cs" />
     <Compile Include="Program.cs" />

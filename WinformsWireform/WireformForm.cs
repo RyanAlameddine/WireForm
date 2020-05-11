@@ -14,13 +14,6 @@ namespace WinformsWireform
     {
         readonly BoardStack stateStack;
         readonly InputStateManager inputStateManager;
-
-        /// <summary>
-        /// Helper class for WinformsWireform 
-        /// Handles all the processing of input and output data to the stateManager
-        /// </summary>
-        readonly WinformsInputHandler inputHandler;
-
         public WireformForm()
         {
             InitializeComponent();
@@ -28,9 +21,10 @@ namespace WinformsWireform
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, DrawingPanel, new object[] { true });
             
             stateStack = new BoardStack(new LocalSaveable(openFileDialog, saveFileDialog));
-            inputStateManager = new InputStateManager();
 
-            inputHandler = new WinformsInputHandler(inputStateManager, stateStack, GateMenu, CircuitPropertyBox, CircuitPropertyValueBox, DrawingPanel, () => ModifierKeys);
+            var eventRunner = new FormsEventRunner(stateStack, GateMenu, CircuitPropertyBox, CircuitPropertyValueBox, DrawingPanel, () => ModifierKeys, () => GetKey);
+            inputStateManager = new InputStateManager(eventRunner);
+            eventRunner.stateManager = inputStateManager;
 
             toolBox.SelectedIndex = 0;
             //FlowPropagator.DebugStep = DrawingPanel.Refresh;
@@ -39,7 +33,7 @@ namespace WinformsWireform
         private void Form1_Load(object sender, EventArgs e)
         {
             //Create the Create menu
-            MenuHelper.CreateGateMenuFromRoot(createToolStripMenuItem, inputHandler);
+            MenuHelper.CreateGateMenuFromRoot(createToolStripMenuItem, inputStateManager);
         }
 
         #region Input
@@ -107,24 +101,26 @@ namespace WinformsWireform
 
         private void DrawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            if      (e.Button == MouseButtons.Left)  inputHandler.RunInputEvent(inputStateManager.MouseLeftDown);
-            else if (e.Button == MouseButtons.Right) inputHandler.RunInputEvent(inputStateManager.MouseRightDown);
+            if      (e.Button == MouseButtons.Left)  inputStateManager.MouseLeftDown ();
+            else if (e.Button == MouseButtons.Right) inputStateManager.MouseRightDown();
         }
 
         private void DrawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            if      (e.Button == MouseButtons.Left)  inputHandler.RunInputEvent(inputStateManager.MouseLeftUp);
-            else if (e.Button == MouseButtons.Right) inputHandler.RunInputEvent(inputStateManager.MouseRightUp);
+            if      (e.Button == MouseButtons.Left)  inputStateManager.MouseLeftUp ();
+            else if (e.Button == MouseButtons.Right) inputStateManager.MouseRightUp();
         }
 
-        private void Form1_KeyPress (object sender, KeyPressEventArgs e) => inputHandler.RunInputEvent(inputStateManager.KeyDown, e.KeyChar);
-        private void Panel_MouseMove(object sender, MouseEventArgs    e) => inputHandler.RunInputEvent(inputStateManager.MouseMove);
+        private char? GetKey { get; set; }
+        private void Form1_KeyPress (object sender, KeyPressEventArgs e) { GetKey = e.KeyChar; inputStateManager.KeyDown(); }
+        
+        private void Panel_MouseMove(object sender, MouseEventArgs e   ) => inputStateManager.MouseMove();
 
-        private void UndoButton_Click (object sender, EventArgs e) => inputHandler.RunInputEvent(inputStateManager.Undo );
-        private void RedoButton_Click (object sender, EventArgs e) => inputHandler.RunInputEvent(inputStateManager.Redo );
-        private void CopyButton_Click (object sender, EventArgs e) => inputHandler.RunInputEvent(inputStateManager.Copy );
-        private void CutButton_Click  (object sender, EventArgs e) => inputHandler.RunInputEvent(inputStateManager.Cut  );
-        private void PasteButton_Click(object sender, EventArgs e) => inputHandler.RunInputEvent(inputStateManager.Paste);
+        private void UndoButton_Click (object sender, EventArgs e) => inputStateManager.Undo ();
+        private void RedoButton_Click (object sender, EventArgs e) => inputStateManager.Redo ();
+        private void CopyButton_Click (object sender, EventArgs e) => inputStateManager.Copy ();
+        private void CutButton_Click  (object sender, EventArgs e) => inputStateManager.Cut  ();
+        private void PasteButton_Click(object sender, EventArgs e) => inputStateManager.Paste();
 
         private void OpenButton_Click(object sender, EventArgs e) => stateStack.Load();
         private void Save_Click      (object sender, EventArgs e) => stateStack.Save();
@@ -137,10 +133,10 @@ namespace WinformsWireform
 
         int? previousValue = 0;
         private void CircuitPropertyBox_SelectedIndexChanged(object sender, EventArgs e)
-            => CircuitPropertyBoxHelper.ChangeSelectedProperty(inputHandler, ref previousValue);
+            => CircuitPropertyBoxHelper.ChangeSelectedProperty((FormsEventRunner) inputStateManager.eventRunner, ref previousValue);
 
         private void CircuitPropertyValueBox_SelectedIndexChanged(object sender, EventArgs e)
-            => CircuitPropertyBoxHelper.ChangeSelectedValue(inputHandler, ref previousValue);
+            => CircuitPropertyBoxHelper.ChangeSelectedValue((FormsEventRunner) inputStateManager.eventRunner, ref previousValue);
         #endregion CircuitProperties
     }
 }

@@ -8,7 +8,7 @@ namespace WinformsWireform.Helpers
 {
     internal static class CircuitPropertyBoxHelper
     {
-        public static void ChangeSelectedProperty(WinformsInputHandler inputHandler, ref int? previousValue)
+        public static void ChangeSelectedProperty(FormsEventRunner inputHandler, ref int? previousValue)
         {
             inputHandler.circuitPropertyValueBox.Items.Clear();
             if (inputHandler.circuitPropertyBox.SelectedIndex == -1) { return; }
@@ -26,7 +26,7 @@ namespace WinformsWireform.Helpers
             inputHandler.circuitPropertyValueBox.SelectedIndex = value == null ? -1 : (int)value - prop.valueRange.min;
         }
 
-        public static void ChangeSelectedValue(WinformsInputHandler inputHandler, ref int? previousValue)
+        public static void ChangeSelectedValue(FormsEventRunner inputHandler, ref int? previousValue)
         {
             var prop = inputHandler.CircuitProperties[inputHandler.circuitPropertyBox.SelectedItem.ToString()];
 

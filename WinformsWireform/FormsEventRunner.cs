@@ -8,26 +8,27 @@ using WireformInput;
 
 namespace WinformsWireform.Helpers
 {
-    internal class WinformsInputHandler
+    internal class FormsEventRunner : IEventRunner
     {
-        public  readonly InputStateManager stateManager;
-        public  readonly BoardStack        stateStack;
+        public InputStateManager stateManager;
+        public readonly BoardStack        stateStack;
 
-        public readonly ContextMenuStrip rightClickMenu;
-        public readonly ListBox          circuitPropertyBox;
-        public readonly ComboBox         circuitPropertyValueBox;
-        public readonly Panel            drawingPanel;
-        public readonly Func<Keys>       modifierKeys;
+        public readonly ContextMenuStrip  rightClickMenu;
+        public readonly ListBox           circuitPropertyBox;
+        public readonly ComboBox          circuitPropertyValueBox;
+        public readonly Panel             drawingPanel;
+        public readonly Func<Keys>        getModifiers;
+        public readonly Func<char?>       getKey;
 
-        public WinformsInputHandler(InputStateManager stateManager, BoardStack stateStack, ContextMenuStrip rightClickMenu, ListBox circuitPropertyBox, ComboBox circuitPropertyValueBox, Panel drawingPanel, Func<Keys> modifierKeys)
+        public FormsEventRunner(BoardStack stateStack, ContextMenuStrip rightClickMenu, ListBox circuitPropertyBox, ComboBox circuitPropertyValueBox, Panel drawingPanel, Func<Keys> getModifiers, Func<char?> getKey)
         {
-            this.stateManager = stateManager;
             this.rightClickMenu = rightClickMenu;
             this.circuitPropertyBox = circuitPropertyBox;
             this.circuitPropertyValueBox = circuitPropertyValueBox;
             this.drawingPanel = drawingPanel;
             this.stateStack = stateStack;
-            this.modifierKeys = modifierKeys;
+            this.getModifiers = getModifiers;
+            this.getKey = getKey;
         }
 
         public CircuitPropertyCollection CircuitProperties { get; private set; }
@@ -39,17 +40,9 @@ namespace WinformsWireform.Helpers
         /// <param name="key">if a key was not pressed this event, null, else char</param>
         public void RunInputEvent(Func<StateControls, bool> inputEvent)
         {
-            RunInputEvent(inputEvent, null);
-        }
+            char? key = getKey();
 
-        /// <summary>
-        /// Function for the Form to interact with the input manager.
-        /// The inputEvent should be a function in the InputStateManager.
-        /// </summary>
-        /// <param name="key">if a key was not pressed this event, null, else char</param>
-        public void RunInputEvent(Func<StateControls, bool> inputEvent, char? key)
-        {
-            var stateControls = MakeControls(key, modifierKeys());
+            var stateControls = MakeControls(key, getModifiers());
             bool toRefresh = inputEvent(stateControls);
 
             //Process [CircuitActions]

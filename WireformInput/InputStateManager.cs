@@ -14,8 +14,7 @@ namespace WireformInput
 {
     /// <summary>
     /// A class which manages all input which can communicate with the Wireform.
-    /// Each operation function takes in the current StateControls and outputs a boolean 
-    /// for whether or not the operation requires a drawing refresh.
+    /// Each operation function calls upon the IEventRunner to run the specified input event.
     /// </summary>
     public class InputStateManager
     {
@@ -35,12 +34,15 @@ namespace WireformInput
 
         InputState state;
         readonly HashSet<CircuitObject> clipBoard;
+        public IEventRunner eventRunner;
 
-        public InputStateManager()
+        public InputStateManager(IEventRunner eventRunner)
         {
             clipBoard = new HashSet<CircuitObject>();
 
             state = new SelectionToolState();
+
+            this.eventRunner = eventRunner;
         }
 
         private float scale = 50f;
@@ -97,51 +99,52 @@ namespace WireformInput
         /// <summary>
         /// Evaluates the returnValue and updates internal state
         /// </summary>
-        protected bool Eval(InputReturns returnValue)
-        {
-            //if (state != returnValue.state) 
-            //    Debug.WriteLine($"{state.GetType().Name}->{returnValue.state.GetType().Name}");
-            state = returnValue.state;
-            return returnValue.toRefresh;
-        }
-
+        protected void Eval(Func<StateControls, InputReturns> inputEvent)
+            => eventRunner.RunInputEvent((stateControls) =>
+            {
+                //if (state != returnValue.state) 
+                //    Debug.WriteLine($"{state.GetType().Name}->{returnValue.state.GetType().Name}");
+                InputReturns returnValue = inputEvent(stateControls);
+                state = returnValue.state;
+                return returnValue.toRefresh;
+            });
+            
         //Mouse Operations
-        public bool MouseLeftDown (StateControls stateControls) => Eval(state.MouseLeftDown (stateControls));
-        public bool MouseRightDown(StateControls stateControls) => Eval(state.MouseRightDown(stateControls));
-        public bool MouseMove     (StateControls stateControls) => Eval(state.MouseMove     (stateControls));
-        public bool MouseLeftUp   (StateControls stateControls) => Eval(state.MouseLeftUp   (stateControls));
-        public bool MouseRightUp  (StateControls stateControls) => Eval(state.MouseRightUp  (stateControls));
+        public void MouseLeftDown () => Eval(state.MouseLeftDown );
+        public void MouseRightDown() => Eval(state.MouseRightDown);
+        public void MouseMove     () => Eval(state.MouseMove     );
+        public void MouseLeftUp   () => Eval(state.MouseLeftUp   );
+        public void MouseRightUp  () => Eval(state.MouseRightUp  );
 
         //Keyboard Operations
-        public bool KeyDown(StateControls stateControls) => Eval(state.KeyDown(stateControls));
-        public bool KeyUp  (StateControls stateControls) => Eval(state.KeyUp  (stateControls));
+        public void KeyDown() => Eval(state.KeyDown);
+        public void KeyUp  () => Eval(state.KeyUp  );
 
         //History Operations
-        public bool Undo(StateControls stateControls) => Eval(state.Undo(stateControls));
-        public bool Redo(StateControls stateControls) => Eval(state.Redo(stateControls));
+        public void Undo() => Eval(state.Undo);
+        public void Redo() => Eval(state.Redo);
 
         //Clipboard operations
-        public bool Copy (StateControls stateControls) => Eval(state.Copy (stateControls, clipBoard));
-        public bool Cut  (StateControls stateControls) => Eval(state.Cut  (stateControls, clipBoard));
-        public bool Paste(StateControls stateControls) => Eval(state.Paste(stateControls, clipBoard));
+        public void Copy () => Eval((stateControls) => state.Copy (stateControls, clipBoard));
+        public void Cut  () => Eval((stateControls) => state.Cut  (stateControls, clipBoard));
+        public void Paste() => Eval((stateControls) => state.Paste(stateControls, clipBoard));
 
         //Special operations
         /// <summary>
         /// Special operation that, if the current state IsClean, will change state to MovingSelectionState
         /// and place the newGate into the selections list.
-        /// Returns a function which matches the 'takes in the current StateControls and outputs a boolean' pattern.
         /// NOTE: new gates can be greated through the GatesCollection class
         /// </summary>
-        public Func<StateControls, bool> PlaceNewGate(Gate newGate)
+        public void PlaceNewGate(Gate newGate)
         {
-            return (stateControls =>
+            Eval((stateControls) =>
             {
-                if (!state.IsClean()) return false;
+                if (!state.IsClean()) return new InputReturns(false, state);
                 var newState = new MovingSelectionState(new Vec2(0, 0), new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false);
 
                 stateControls.CircuitPropertiesOutput = newState.GetUpdatedCircuitProperties(stateControls.RegisterChange);
 
-                return Eval(new InputReturns(true, newState));
+                return new InputReturns(true, newState);
             });
         }
     }
