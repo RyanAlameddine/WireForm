@@ -81,7 +81,7 @@ namespace Wireform
                 Direction.Down  => ( 1, -1, true ),
                 Direction.Left  => (-1, -1, false),
                 Direction.Right => ( 1,  1, false),
-                //All Y values flipped
+                //All X values flipped
                 Direction.UpFlipped    => ( 1,  1, true ),
                 Direction.DownFlipped  => (-1, -1, true ),
                 Direction.LeftFlipped  => ( 1, -1, false),

@@ -93,6 +93,10 @@ namespace Wireform.GraphicsUtils
                 float temp = y;
                 y = x;
                 x = temp;
+
+                int tempMult = yMult;
+                yMult = xMult;
+                xMult = tempMult;
             }
             float xCenter = size.X / 2f;
             float yCenter = size.Y / 2f;
@@ -136,29 +140,29 @@ namespace Wireform.GraphicsUtils
             }
         }
 
-        public void DrawLine(Color color, int penWidth, Vec2 startPoint, Vec2 endPoint)
+        public void DrawLine(Color color, int penWidth, Vec2 point, Vec2 endPoint)
         {
             Vec2 zero = Vec2.Zero;
-            OffsetPosition(ref startPoint, ref zero);
+            OffsetPosition(ref point, ref zero);
             OffsetPosition(ref endPoint, ref zero);
 
-            ScalePoint(ref startPoint);
+            ScalePoint(ref point);
             ScalePoint(ref endPoint); 
             ScaleWidth(ref penWidth);
 
-            painter.DrawLine(color, penWidth, startPoint, endPoint);
+            painter.DrawLine(color, penWidth, point, endPoint);
         }
 
-        public void DrawArc(Color color, int penWidth, Vec2 startPoint, Vec2 size, float startAngle, float sweepAngle)
+        public void DrawArc(Color color, int penWidth, Vec2 point, Vec2 size, float startAngle, float sweepAngle)
         {
             MultiplyArc(ref startAngle, ref sweepAngle);
-            OffsetPositionTL(ref startPoint, ref size);
+            OffsetPositionTL(ref point, ref size);
 
-            ScalePoint(ref startPoint);
+            ScalePoint(ref point);
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawArc(color, penWidth, startPoint, size, startAngle, sweepAngle);
+            painter.DrawArc(color, penWidth, point, size, startAngle, sweepAngle);
         }
 
         public void DrawArcC(Color color, int penWidth, Vec2 centralPoint, Vec2 size, float startAngle, float sweepAngle)
@@ -174,15 +178,15 @@ namespace Wireform.GraphicsUtils
             painter.DrawArc(color, penWidth, centralPoint, size, startAngle, sweepAngle);
         }
 
-        public void DrawEllipse(Color color, int penWidth, Vec2 startPoint, Vec2 size)
+        public void DrawEllipse(Color color, int penWidth, Vec2 point, Vec2 size)
         {
-            OffsetPositionTL(ref startPoint, ref size);
+            OffsetPositionTL(ref point, ref size);
 
-            ScalePoint(ref startPoint);
+            ScalePoint(ref point);
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawEllipse(color, penWidth, startPoint, size);
+            painter.DrawEllipse(color, penWidth, point, size);
         }
 
         public void DrawEllipseC(Color color, int penWidth, Vec2 centralPoint, Vec2 size)
@@ -197,14 +201,14 @@ namespace Wireform.GraphicsUtils
             painter.DrawEllipse(color, penWidth, centralPoint, size);
         }
 
-        public void FillEllipse(Color color, Vec2 startPoint, Vec2 size)
+        public void FillEllipse(Color color, Vec2 point, Vec2 size)
         {
-            OffsetPositionTL(ref startPoint, ref size);
+            OffsetPositionTL(ref point, ref size);
 
-            ScalePoint(ref startPoint);
+            ScalePoint(ref point);
             ScalePoint(ref size);
 
-            painter.FillEllipse(color, startPoint, size);
+            painter.FillEllipse(color, point, size);
         }
 
         public void FillEllipseC(Color color, Vec2 centralPoint, Vec2 size)
@@ -219,25 +223,25 @@ namespace Wireform.GraphicsUtils
             painter.FillEllipse(color, centralPoint, size);
         }
 
-        public void DrawRectangle(Color color, int penWidth, Vec2 startPoint, Vec2 size)
+        public void DrawRectangle(Color color, int penWidth, Vec2 point, Vec2 size)
         {
-            OffsetPositionTL(ref startPoint, ref size);
+            OffsetPositionTL(ref point, ref size);
 
-            ScalePoint(ref startPoint);
+            ScalePoint(ref point);
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawRectangle(color, penWidth, startPoint, size);
+            painter.DrawRectangle(color, penWidth, point, size);
         }
 
-        public void FillRectangle(Color color, Vec2 startPoint, Vec2 size)
+        public void FillRectangle(Color color, Vec2 point, Vec2 size)
         {
-            OffsetPositionTL(ref startPoint, ref size);
+            OffsetPositionTL(ref point, ref size);
 
-            ScalePoint(ref startPoint);
+            ScalePoint(ref point);
             ScalePoint(ref size);
 
-            painter.FillRectangle(color, startPoint, size);
+            painter.FillRectangle(color, point, size);
         }
 
         public void FillRectangleC(Color color, Vec2 centralPoint, Vec2 size)
@@ -251,14 +255,14 @@ namespace Wireform.GraphicsUtils
             painter.FillRectangle(color, centralPoint, size);
         }
 
-        public void DrawString(string s, Color color, Vec2 startPoint, float scale)
+        public void DrawString(string s, Color color, Vec2 point, float scale)
         {
             var size = painter.MeasureString(s, zoom, scale * zoom);
             var V2Size = new Vec2(size.X, size.Y);
 
-            OffsetPositionTL(ref startPoint, ref V2Size);
+            OffsetPositionTL(ref point, ref V2Size);
 
-            painter.DrawString(s, color, startPoint * zoom, scale * zoom);
+            painter.DrawString(s, color, point * zoom, scale * zoom);
         }
 
         public void DrawStringC(string s, Color color, Vec2 centralPoint, float scale)

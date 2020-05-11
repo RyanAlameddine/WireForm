@@ -97,8 +97,8 @@ namespace Wireform.Circuitry.Utils
         public Direction Direction { get; set; } = Direction.Right;
         /// <summary>
         /// The direction which the gate is facing (ignoring flipping) derived from <see cref="Direction"/>.
-        /// If you would like to disable rotation, simply override Direction and Flipped
-        /// and tag them with [HideCircuitAttributes]
+        /// If you would like to disable rotation, simply override Direction
+        /// and tag it with [HideCircuitAttributes]
         /// </summary>
         [CircuitPropertyAction("Rotate", 'r', true)]
         [CircuitPropertyAction("Rotate (reverse)", 'r', Modifier.Shift, false)]
@@ -116,12 +116,13 @@ namespace Wireform.Circuitry.Utils
         }
 
         /// <summary>
-        /// Whether or not 
-        /// If you would like to disable rotation, simply override Direction and Flipped
-        /// and tag them with [HideCircuitAttributes]
+        /// Whether or not the gate is flipped (horizontally or vertically)
+        /// If you would like to enable flipping, simply override Flipped and call the base functions
+        /// (this will override the [HideCircuitAttributes]
         /// </summary>
         [CircuitPropertyAction("Flip", 'f', true)]
         [CircuitProperty(0, 1, true, new[] { "false", "true" })]
+        //[HideCircuitAttributes]
         public virtual int Flipped 
         {
             get => Direction > Direction.Down ? 0 : 1;
