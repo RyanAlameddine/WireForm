@@ -80,7 +80,7 @@
     <Compile Include="Helpers\CircuitPropertyBoxHelper.cs" />
     <Compile Include="FormsEventRunner.cs" />
     <Compile Include="Helpers\MenuHelper.cs" />
-    <Compile Include="LocalSaveable.cs" />
+    <Compile Include="LocalSaver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WinformsPainter.cs" />

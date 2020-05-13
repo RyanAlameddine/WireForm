@@ -20,7 +20,7 @@ namespace WinformsWireform
 
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, DrawingPanel, new object[] { true });
             
-            stateStack = new BoardStack(new LocalSaveable(openFileDialog, saveFileDialog));
+            stateStack = new BoardStack(new LocalSaver(openFileDialog, saveFileDialog));
 
             var eventRunner = new FormsEventRunner(stateStack, GateMenu, CircuitPropertyBox, CircuitPropertyValueBox, DrawingPanel, () => ModifierKeys, () => GetKey);
             inputStateManager = new InputStateManager(eventRunner);
