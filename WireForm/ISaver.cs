@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Wireform
 {
-    public interface ISaveable
+    public interface ISaver
     {
         /// <summary>
         /// Saves the specified json string to the location specified by the identifier.

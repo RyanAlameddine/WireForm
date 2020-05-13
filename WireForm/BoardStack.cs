@@ -19,10 +19,10 @@ namespace Wireform
             }
         }
 
-        private readonly ISaveable saveable;
+        private readonly ISaver saveable;
         string locationIdentifier = "";
 
-        public BoardStack(ISaveable saveable)
+        public BoardStack(ISaver saveable)
         {
             this.saveable = saveable;
             currentState = new BoardState();

@@ -9,12 +9,12 @@ using Wireform;
 
 namespace WinformsWireform
 {
-    internal class LocalSaveable : ISaveable
+    internal class LocalSaver : ISaver
     {
         readonly OpenFileDialog openFileDialog;
         readonly SaveFileDialog saveFileDialog;
 
-        public LocalSaveable(OpenFileDialog openFileDialog, SaveFileDialog saveFileDialog)
+        public LocalSaver(OpenFileDialog openFileDialog, SaveFileDialog saveFileDialog)
         {
             this.openFileDialog = openFileDialog;
             this.saveFileDialog = saveFileDialog;
