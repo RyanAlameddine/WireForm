@@ -9,11 +9,11 @@ using Wireform.MathUtils;
 
 namespace Wireform
 {
-    internal class SaveManager
+    internal static class SaveManager
     {
-        public static string Serialize(BoardState propogator)
+        public static string Serialize(BoardState state)
         {
-            string output = JsonConvert.SerializeObject(propogator, Formatting.Indented,
+            string output = JsonConvert.SerializeObject(state, Formatting.Indented,
                 new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,

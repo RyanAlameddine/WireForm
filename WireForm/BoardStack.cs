@@ -10,23 +10,16 @@ namespace Wireform
     public sealed class BoardStack
     {
         private BoardStackNode currentNode;
-        private BoardState currentState;
-        public BoardState CurrentState
-        {
-            get
-            {
-                return currentState;
-            }
-        }
+        public BoardState CurrentState { get; private set; }
 
-        private readonly ISaver saveable;
+        private readonly ISaver saver;
         string locationIdentifier = "";
 
-        public BoardStack(ISaver saveable)
+        public BoardStack(ISaver saver)
         {
-            this.saveable = saveable;
-            currentState = new BoardState();
-            currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
+            this.saver = saver;
+            CurrentState = new BoardState();
+            currentNode = new BoardStackNode(null, null, CurrentState.Copy(), "Created Board");
         }
 
         /// <summary>
@@ -35,7 +28,7 @@ namespace Wireform
         public void RegisterChange(string message)
         {
             Debug.WriteLine(message);
-            currentNode.Next = new BoardStackNode(null, currentNode, currentState.Copy(), message);
+            currentNode.Next = new BoardStackNode(null, currentNode, CurrentState.Copy(), message);
             currentNode = currentNode.Next;
             CurrentState.Propogate();
         }
@@ -48,7 +41,7 @@ namespace Wireform
             if(currentNode.Next != null)
             {
                 currentNode = currentNode.Next;
-                currentState = currentNode.State.Copy();
+                CurrentState = currentNode.State.Copy();
                 CurrentState.Propogate();
             }
         }
@@ -61,36 +54,37 @@ namespace Wireform
             if (currentNode.Previous != null)
             {
                 currentNode = currentNode.Previous;
-                currentState = currentNode.State.Copy();
+                CurrentState = currentNode.State.Copy();
                 CurrentState.Propogate();
             }
         }
 
         public void Load()
         {
-            string json = saveable.GetJson();
+            string json = saver.GetJson();
             if (json.Length == 0) return;
-            SaveManager.Load(json, out currentState);
-            currentNode = new BoardStackNode(null, null, currentState.Copy(), "Created Board");
+            SaveManager.Load(json, out var newState);
+            CurrentState = newState;
+            currentNode = new BoardStackNode(null, null, CurrentState.Copy(), "Created Board");
             CurrentState.Propogate();
         }
 
         public void Clear()
         {
             currentNode = new BoardStackNode(null, null, new BoardState(), "Created Board");
-            currentState = currentNode.State;
+            CurrentState = currentNode.State;
             locationIdentifier = "";
         }
 
         public void Save()
         {
-            locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), locationIdentifier);
+            locationIdentifier = saver.WriteJson(SaveManager.Serialize(CurrentState), locationIdentifier);
             if (locationIdentifier.Length == 0) return;
         }
 
         public void SaveAs()
         {
-            locationIdentifier = saveable.WriteJson(SaveManager.Serialize(currentState), "");
+            locationIdentifier = saver.WriteJson(SaveManager.Serialize(CurrentState), "");
             if (locationIdentifier.Length == 0) return;
         }
 

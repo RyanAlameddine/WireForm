@@ -147,14 +147,14 @@ namespace Wireform.MathUtils.Collision
         /// </summary>
         /// <param name="intersectBoxes">The rectangles for the intersections</param>
         /// <returns>Did the BoxCollider intersect with anything</returns>
-        public bool GetIntersections(BoardState propogator, bool hitWires, out HashSet<BoxCollider> intersectBoxes, out HashSet<CircuitObject> intersectedcircuitObjects, bool only2D = true)
+        public bool GetIntersections(BoardState state, bool hitWires, out HashSet<BoxCollider> intersectBoxes, out HashSet<CircuitObject> intersectedcircuitObjects, bool only2D = true)
         {
             intersectBoxes = new HashSet<BoxCollider>();
             intersectedcircuitObjects = new HashSet<CircuitObject>();
 
             if (hitWires)
             {
-                foreach (WireLine wire in propogator.Wires)
+                foreach (WireLine wire in state.Wires)
                 {
                     BoxCollider collider = wire.HitBox;
                     if (Intersects(collider, out var intersection))
@@ -165,7 +165,7 @@ namespace Wireform.MathUtils.Collision
                 }
             }
 
-            foreach (Gate gate in propogator.Gates)
+            foreach (Gate gate in state.Gates)
             {
                 BoxCollider collider = gate.HitBox;
                 if (Intersects(collider, out var intersection))

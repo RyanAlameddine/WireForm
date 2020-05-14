@@ -8,12 +8,12 @@ namespace Wireform.GraphicsUtils
     public static class WirePainter
     {
         private const float wireSize = 1.4f;
-        public static void DrawWireLine(PainterScope painter, BoardState propogator, WireLine wireLine)
+        public static void DrawWireLine(PainterScope painter, BoardState state, WireLine wireLine)
         {
             Color[] bitColors = wireLine.Values.BitColors();
-            DrawWireLine(painter, propogator, wireLine, bitColors);
+            DrawWireLine(painter, state, wireLine, bitColors);
         }
-        public static void DrawWireLine(PainterScope painter, BoardState propogator, WireLine wireLine, Color[] colors)
+        public static void DrawWireLine(PainterScope painter, BoardState state, WireLine wireLine, Color[] colors)
         {
             Vec2 squareFixerSize;
             if (colors.Length != 1)
@@ -42,20 +42,20 @@ namespace Wireform.GraphicsUtils
 
             painter.FillRectangleC(colors[0]                , wireLine.StartPoint, squareFixerSize);
             painter.FillRectangleC(colors[colors.Length - 1], wireLine.EndPoint  , squareFixerSize);
-            drawPoint(painter, propogator, wireLine.StartPoint, colors[0]);
-            drawPoint(painter, propogator, wireLine.EndPoint, colors[colors.Length - 1]);
+            drawPoint(painter, state, wireLine.StartPoint, colors[0]);
+            drawPoint(painter, state, wireLine.EndPoint, colors[colors.Length - 1]);
         }
 
-        private static void drawPoint(PainterScope painter, BoardState propogator, Vec2 point, Color bitColor)
+        private static void drawPoint(PainterScope painter, BoardState state, Vec2 point, Color bitColor)
         {
 
             ///Draws point in the following cases:
             ///    The point has an amount of connections greater than or less than 2
             ///    The point is attached to a gatePin
             bool draw = true;
-            if (propogator.Connections.ContainsKey(point))
+            if (state.Connections.ContainsKey(point))
             {
-                var connections = propogator.Connections[point];
+                var connections = state.Connections[point];
                 draw = connections.Count != 2;
                 if (!draw)
                 {

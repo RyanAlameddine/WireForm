@@ -423,10 +423,10 @@ namespace Wireform.Circuitry
             base.SetPosition(position);
         }
 
-        public override void Delete(BoardState propogator)
+        public override void Delete(BoardState state)
         {
-            propogator.Wires.Remove(this);
-            RemoveConnections(propogator.Connections);
+            state.Wires.Remove(this);
+            RemoveConnections(state.Connections);
         }
 
         public override CircuitObject Copy()

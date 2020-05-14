@@ -249,10 +249,10 @@ namespace Wireform.Circuitry.Utils
             return accumulator;
         }
 
-        public override void Delete(BoardState propogator)
+        public override void Delete(BoardState state)
         {
-            propogator.Gates.Remove(this);
-            RemoveConnections(propogator.Connections);
+            state.Gates.Remove(this);
+            RemoveConnections(state.Connections);
         }
     }
 }
