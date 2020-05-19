@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Data.Bits;
 using Wireform.Circuitry.Utils;
 using Wireform.MathUtils;
 using Wireform.Utils;
@@ -42,7 +43,7 @@ namespace Wireform.Circuitry
             //Stores the last 25% of circuit objects which have been visited
             //This is used if there is an overflow and the propogator is stuck oscillating
             //All objects contained here will have their values set to ERROR
-            WrappingArray<BoardObject> updatedObjects = new WrappingArray<BoardObject>(GlobalSettings.PropogationRepetitionOverflow / 4);
+            WrappingArray<DrawableObject> updatedObjects = new WrappingArray<DrawableObject>(GlobalSettings.PropogationRepetitionOverflow / 4);
 
             //Each iteration represents one propogation
             for (int i = 0; gateQueue.Count != 0; i++)
@@ -63,7 +64,7 @@ namespace Wireform.Circuitry
                 //infinite oscillation catch:
                 if (i > GlobalSettings.PropogationRepetitionOverflow)
                 {
-                    foreach (BoardObject boardObject in updatedObjects)
+                    foreach (DrawableObject boardObject in updatedObjects)
                     {
                         if (boardObject is WireLine wire) wire.Values = wire.Values.Select((_) => BitValue.Error);
                     }
@@ -88,7 +89,7 @@ namespace Wireform.Circuitry
         /// <summary>
         /// Propogates down wires instantly from a point, and adds gates to gateQueue
         /// </summary>
-        private static void PropogateDownPoint(Vec2 point, BitArray values, BoardState state, Queue<Gate> gateQueue, HashSet<GatePin> visitedInputs, HashSet<WireLine> visitedWires, WrappingArray<BoardObject> updatedObjects)
+        private static void PropogateDownPoint(Vec2 point, BitArray values, BoardState state, Queue<Gate> gateQueue, HashSet<GatePin> visitedInputs, HashSet<WireLine> visitedWires, WrappingArray<DrawableObject> updatedObjects)
         {
             HashSet<WireLine> newWires = new HashSet<WireLine>();
             RecursivePropogate(newWires, point);
@@ -98,7 +99,7 @@ namespace Wireform.Circuitry
             //inner recursive function which builds up the local visited wires collection
             void RecursivePropogate(HashSet<WireLine> vWires, Vec2 position)
             {
-                List<BoardObject> boardObjects = state.Connections[position];
+                List<DrawableObject> boardObjects = state.Connections[position];
                 foreach (var boardObject in boardObjects)
                 {
                     if (boardObject is GatePin pin)

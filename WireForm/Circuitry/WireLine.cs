@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Data.Bits;
+using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 
@@ -54,7 +56,7 @@ namespace Wireform.Circuitry
         /// Note: The original wire this function was run on might not end up being added into the wires list depending on the case,
         /// so please only refer to the list of WireLines which are returned.
         /// </summary>
-        public List<WireLine> InsertAndAttach(List<WireLine> wires, Dictionary<Vec2, List<BoardObject>> connections)
+        public List<WireLine> InsertAndAttach(List<WireLine> wires, Dictionary<Vec2, List<DrawableObject>> connections)
         {
             List<WireLine> createdWires = new List<WireLine>();
             wires.Remove(this);
@@ -264,7 +266,7 @@ namespace Wireform.Circuitry
             return createdWires;
         }
 
-        private bool checkMatchCases(Dictionary<Vec2, List<BoardObject>> connections, List<WireLine> wires, int i, List<WireLine> createdWires)
+        private bool checkMatchCases(Dictionary<Vec2, List<DrawableObject>> connections, List<WireLine> wires, int i, List<WireLine> createdWires)
         {
             if (wires[i].StartPoint == StartPoint)
             {
@@ -290,7 +292,7 @@ namespace Wireform.Circuitry
         /// <param name="chkThis">Point on this wire that may or may not be equal to chkThat</param>
         /// <param name="eqThat">Point on taret wire that is equal to eqThis</param>
         /// <param name="chkThat">Point on target wire that may or may not be equal to chkThis</param>
-        private bool runCases(Vec2 eqThis, Vec2 chkThis, Vec2 eqThat, Vec2 chkThat, Dictionary<Vec2, List<BoardObject>> connections, List<WireLine> wires, int i, List<WireLine> createdWires)
+        private bool runCases(Vec2 eqThis, Vec2 chkThis, Vec2 eqThat, Vec2 chkThat, Dictionary<Vec2, List<DrawableObject>> connections, List<WireLine> wires, int i, List<WireLine> createdWires)
         {
             //Wires are the same
             if (chkThat == chkThis)
@@ -334,15 +336,15 @@ namespace Wireform.Circuitry
         /// <summary>
         /// Add wire to connections
         /// </summary>
-        public override void AddConnections(Dictionary<Vec2, List<BoardObject>> connections)
+        public override void AddConnections(Dictionary<Vec2, List<DrawableObject>> connections)
         {
             if (!connections.ContainsKey(StartPoint))
             {
-                connections[StartPoint] = new List<BoardObject>();
+                connections[StartPoint] = new List<DrawableObject>();
             }
             if (!connections.ContainsKey(EndPoint))
             {
-                connections[EndPoint] = new List<BoardObject>();
+                connections[EndPoint] = new List<DrawableObject>();
             }
 
             connections[StartPoint].Add(this);
@@ -352,14 +354,14 @@ namespace Wireform.Circuitry
         /// <summary>
         /// Remove wire from connections
         /// </summary>
-        public override void RemoveConnections(Dictionary<Vec2, List<BoardObject>> connections)
+        public override void RemoveConnections(Dictionary<Vec2, List<DrawableObject>> connections)
         {
             connections[StartPoint].Remove(this);
             //if(connections[StartPoint].)
             connections[EndPoint  ].Remove(this);
         }
 
-        public static void RemovePointFromWire(Vec2 point, Dictionary<Vec2, List<BoardObject>> connections, List<WireLine> wires, int i)
+        public static void RemovePointFromWire(Vec2 point, Dictionary<Vec2, List<DrawableObject>> connections, List<WireLine> wires, int i)
         {
             wires[i].RemoveConnections(connections);
             Vec2 initialStart = wires[i].StartPoint;
@@ -429,7 +431,12 @@ namespace Wireform.Circuitry
             RemoveConnections(state.Connections);
         }
 
-        public override CircuitObject Copy()
+        public override void Draw(PainterScope scope, BoardState state)
+        {
+            WirePainter.DrawWireLine(scope, state, this);
+        }
+
+        public override BoardObject Copy()
         {
             return new WireLine(StartPoint, EndPoint, IsHorizontal);
         }

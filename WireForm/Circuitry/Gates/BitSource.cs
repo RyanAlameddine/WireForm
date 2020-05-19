@@ -11,6 +11,7 @@ using Wireform.MathUtils.Collision;
 using Wireform.Circuitry.Utils;
 using System.Linq;
 using Wireform.Utils;
+using Wireform.Circuitry.Data.Bits;
 
 namespace Wireform.Circuitry.Gates
 {
@@ -26,7 +27,7 @@ namespace Wireform.Circuitry.Gates
             };
         }
 
-        protected override void Draw(PainterScope painter)
+        protected override void DrawGate(PainterScope painter)
         {
             painter.DrawRectangle(Color.Green, 10, new Vec2(-.4f, -.4f), new Vec2(.8f, .8f));
 
@@ -40,7 +41,7 @@ namespace Wireform.Circuitry.Gates
             Outputs[0].Values = Outputs[0].Values.Select((_) => currentValue);
         }
 
-        public override CircuitObject Copy()
+        public override BoardObject Copy()
         {
             var gate = new BitSource(StartPoint, Direction)
             {

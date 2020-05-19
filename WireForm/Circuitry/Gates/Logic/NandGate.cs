@@ -23,20 +23,20 @@ namespace Wireform.Circuitry.Gates.Logic
             Outputs[0].Values = ! FoldInputs((a, c) => a & c);
         }
 
-        protected override void Draw(PainterScope painter)
+        protected override void DrawGate(PainterScope painter)
         {
-            painter.DrawLine(Color.Black, 10, new Vec2(-2, 1.5f), new Vec2(-2, -1.5f));
+            painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, 1.5f), new Vec2(-2, -1.5f));
             
-            painter.DrawLine(Color.Black, 10, new Vec2(-2, 1.5f), new Vec2(-.5f + .1f, 1.5f));
-            painter.DrawLine(Color.Black, 10, new Vec2(-2, -1.5f), new Vec2(-.5f + .1f, -1.5f));
-            painter.DrawArc(Color.Black, 10, new Vec2(-2f, -1.5f), new Vec2(3f, 3f), 270, 180);
+            painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, 1.5f), new Vec2(-.5f + .1f, 1.5f));
+            painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, -1.5f), new Vec2(-.5f + .1f, -1.5f));
+            painter.DrawArc(Color.Black, PenWidth, new Vec2(-2f, -1.5f), new Vec2(3f, 3f), 270, 180);
             
-            painter.DrawEllipseC(Color.Black, 10, new Vec2(1, 0), new Vec2(.6f, .6f));
+            painter.DrawEllipseC(Color.Black, PenWidth, new Vec2(1, 0), new Vec2(.6f, .6f));
 
-            base.Draw(painter);
+            base.DrawGate(painter);
         }
 
-        public override CircuitObject Copy()
+        public override BoardObject Copy()
         {
             return new NandGate(StartPoint, Direction, InputCount, OutputCount);
         }

@@ -113,7 +113,7 @@ namespace WireformInput.States.Selection
             foreach (var selection in selections)
             {
                 selection.Delete(stateControls.State);
-                clipBoard.Add(selection.Copy());
+                clipBoard.Add((CircuitObject) selection.Copy());
             }
             selections.Clear();
 
@@ -130,7 +130,7 @@ namespace WireformInput.States.Selection
             Vec2 averagePosition = Vec2.Zero;
             foreach (var obj in clipBoard)
             {
-                var newObj = obj.Copy();
+                var newObj = (CircuitObject) obj.Copy();
                 selections.Add(newObj);
 
                 if (currentObject == null) currentObject = newObj;

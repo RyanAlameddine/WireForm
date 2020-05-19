@@ -1,36 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Wireform.MathUtils;
+using Wireform.Circuitry.CircuitAttributes;
+using Wireform.MathUtils.Collision;
 
 namespace Wireform.Circuitry.Data
 {
     /// <summary>
-    /// An object which sits on the circuit board
-    /// E.g. WireLine, GatePin, Gate
+    /// An object which sits on the circuit board and can be interacted with
+    /// E.g. WireLine, Gate
     /// </summary>
-    public abstract class BoardObject
+    public abstract class BoardObject : DrawableObject
     {
-        public abstract Vec2 StartPoint { get; set; }
+        public abstract BoxCollider HitBox { get; }
 
-        /// <summary>
-        /// Move BoardObject so that StartPoint = newPosition;
-        /// In the case of WireLines, will also update EndPoint
-        /// </summary>
-        public virtual void SetPosition(Vec2 position)
-        {
-            StartPoint = position;
-        }
+        public abstract BoardObject Copy();
 
-        /// <summary>
-        /// Offsets the BoardObject so that StartPoint = StartPoint + offset;
-        /// In the case of WireLines, will also update EndPoint
-        /// </summary>
-        public void OffsetPosition(Vec2 offset)
-        {
-            SetPosition(StartPoint + offset);
-        }
+        [CircuitAction("Delete", 'x')]
+        public abstract void Delete(BoardState state);
     }
 }

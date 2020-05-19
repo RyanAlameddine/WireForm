@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace Wireform.Circuitry.Data
+namespace Wireform.Circuitry.Data.Bits
 {
     /// <summary>
     /// An immutable array of bits (implicitly converts from BitValue[] and ImmutableArray<BitValue>
@@ -48,7 +48,7 @@ namespace Wireform.Circuitry.Data
         public Color[] BitColors()
         {
             Color[] colors = new Color[Count];
-            for(int i = 0; i < colors.Length; i++)
+            for (int i = 0; i < colors.Length; i++)
             {
                 colors[i] = GetBitColor(i);
             }
@@ -62,10 +62,10 @@ namespace Wireform.Circuitry.Data
         {
             return BitValues[index].Selected switch
             {
-                BitValue.Error   => Color.DarkRed,
+                BitValue.Error => Color.DarkRed,
                 BitValue.Nothing => Color.DimGray,
-                BitValue.One     => Color.FromArgb(51, 171, 212),//Color.Blue,
-                BitValue.Zero    => Color.FromArgb(26, 30, 153),//Color.DarkBlue,
+                BitValue.One => Color.FromArgb(51, 171, 212),//Color.Blue,
+                BitValue.Zero => Color.FromArgb(26, 30, 153),//Color.DarkBlue,
 
                 _ => throw new Exception("BitValue undefined")
             };
@@ -74,7 +74,7 @@ namespace Wireform.Circuitry.Data
         public BitArray Select(Func<BitValue, BitValue> map)
         {
             var builder = ImmutableArray.CreateBuilder<BitValue>(Count);
-            for(int i = 0; i < Count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 builder.Add(map(BitValues[i]));
             }
@@ -86,7 +86,7 @@ namespace Wireform.Circuitry.Data
         /// </summary>
         public static BitArray operator !(BitArray values)
         {
-            return ImmutableArray.CreateRange(values.Select((x)=> !x));
+            return ImmutableArray.CreateRange(values.Select((x) => !x));
         }
 
         /// <summary>
@@ -139,22 +139,22 @@ namespace Wireform.Circuitry.Data
             //Nothing + Anything = Anything, 
             //0 + 1 = 1, 
             //1 + 1 = Error
-            foreach(BitArray array in bitArrays)
+            foreach (BitArray array in bitArrays)
             {
                 minLength = Math.Min(minLength, array.Count);
                 while (array.Count > bitValues.Count) bitValues.Add(BitValue.Nothing);
 
-                for(int i = 0; i < array.Count; i++)
+                for (int i = 0; i < array.Count; i++)
                 {
                     if (bitValues[i] == BitValue.Nothing)
                     {
                         bitValues[i] = array[i];
                     }
-                    else if(bitValues[i] == BitValue.One && array[i] == BitValue.One)
+                    else if (bitValues[i] == BitValue.One && array[i] == BitValue.One)
                     {
                         bitValues[i] = BitValue.Error;
                     }
-                    else if(bitValues[i] == BitValue.Zero && array[i] == BitValue.One)
+                    else if (bitValues[i] == BitValue.Zero && array[i] == BitValue.One)
                     {
                         bitValues[i] = BitValue.One;
                     }
@@ -162,13 +162,13 @@ namespace Wireform.Circuitry.Data
             }
 
             //Replace all errors with zero
-            for(int i = 0; i < minLength; i++)
+            for (int i = 0; i < minLength; i++)
             {
                 if (bitValues[i] == BitValue.Error) bitValues[i] = BitValue.Zero;
             }
 
             //Replace all trailing values with error
-            for(int i = minLength; i < bitValues.Count; i++)
+            for (int i = minLength; i < bitValues.Count; i++)
             {
                 bitValues[i] = BitValue.Error;
             }
@@ -199,7 +199,7 @@ namespace Wireform.Circuitry.Data
             int min = Math.Min(values1.Count, values2.Count);
             int max = Math.Max(values1.Count, values2.Count);
             newBits = new BitValue[max];
-            for(int i = min; i < max; i++)
+            for (int i = min; i < max; i++)
             {
                 newBits[i] = BitValue.Error;
             }

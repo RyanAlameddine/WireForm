@@ -14,14 +14,8 @@ namespace Wireform.Circuitry.Data
     public abstract class CircuitObject : BoardObject
     {
 
-        public abstract BoxCollider HitBox { get; }
+        public abstract void AddConnections(Dictionary<Vec2, List<DrawableObject>> connections);
 
-        public abstract void AddConnections(Dictionary<Vec2, List<BoardObject>> connections);
-
-        public abstract void RemoveConnections(Dictionary<Vec2, List<BoardObject>> connections);
-        public abstract CircuitObject Copy();
-
-        [CircuitAction("Delete", 'x')]
-        public abstract void Delete(BoardState state);
+        public abstract void RemoveConnections(Dictionary<Vec2, List<DrawableObject>> connections);
     }
 }

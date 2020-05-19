@@ -125,7 +125,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
         /// <summary>
         /// Invokes the Set function on the property with the given input
         /// </summary>
-        public void InvokeSet(string propertyName, int value, Dictionary<Vec2, List<BoardObject>> connections)
+        public void InvokeSet(string propertyName, int value, Dictionary<Vec2, List<DrawableObject>> connections)
         {
             var property = propertyMap[propertyName];
             string valueName = property.GetValueName(value);

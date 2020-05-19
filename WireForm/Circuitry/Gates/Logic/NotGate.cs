@@ -28,14 +28,14 @@ namespace Wireform.Circuitry.Gates.Logic
             Outputs[0].Values = !Inputs[0].Values;
         }
 
-        protected override void Draw(PainterScope painter)
+        protected override void DrawGate(PainterScope painter)
         {
-            painter.DrawLine(Color.Black, 10, new Vec2(-1, .75f), new Vec2(-1, -.75f));
-            painter.DrawLine(Color.Black, 10, new Vec2(-1, .75f), new Vec2(1, 0));
-            painter.DrawLine(Color.Black, 10, new Vec2(-1, -.75f), new Vec2(1, 0));
+            painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, .75f), new Vec2(-1, -.75f));
+            painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, .75f), new Vec2(1, 0));
+            painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, -.75f), new Vec2(1, 0));
         }
 
-        public override CircuitObject Copy()
+        public override BoardObject Copy()
         {
             return new NotGate(StartPoint, Direction);
         }

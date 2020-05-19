@@ -1,14 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace Wireform.Circuitry.Data
+namespace Wireform.Circuitry.Data.Bits
 {
     public struct BitValue
     {
         public const int Nothing = 0;
-        public const int Error   = 1;
-        public const int Zero    = 2;
-        public const int One     = 3;
+        public const int Error = 1;
+        public const int Zero = 2;
+        public const int One = 3;
 
         public readonly byte Selected;
 
@@ -142,7 +142,7 @@ namespace Wireform.Circuitry.Data
                 1 => "Error",
                 2 => "Zero",
                 3 => "One",
-                _ => throw new System.Exception(),
+                _ => throw new Exception(),
             };
         }
 
@@ -154,7 +154,7 @@ namespace Wireform.Circuitry.Data
                 1 => 'e',
                 2 => '0',
                 3 => '1',
-                _ => throw new System.Exception(),
+                _ => throw new Exception(),
             };
         }
     }

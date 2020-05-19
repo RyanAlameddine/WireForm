@@ -186,7 +186,7 @@ namespace Wireform.Circuitry.Utils
             return positions;
         }
 
-        protected override void Draw(PainterScope painter)
+        protected override void DrawGate(PainterScope painter)
         {
             ExtensionLine(painter, InputCount , inputCenterLocal );
             ExtensionLine(painter, OutputCount, outputCenterLocal);

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Data.Bits;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
@@ -17,6 +18,9 @@ namespace Wireform.Circuitry.Utils
     {
         //TODO: MAKE COLOR ABLE TO BE A CONSTANT
         //public const Color LineColor = Color.Black;
+        /// <summary>
+        /// The standard pen width for gate lines
+        /// </summary>
         public const int PenWidth = 10;
 
         [JsonIgnore]
@@ -142,7 +146,7 @@ namespace Wireform.Circuitry.Utils
         /// <summary>
         /// Adds gate pins in Inputs and Outputs to connections
         /// </summary>
-        public override void AddConnections(Dictionary<Vec2, List<BoardObject>> connections)
+        public override void AddConnections(Dictionary<Vec2, List<DrawableObject>> connections)
         {
             RefreshChildren();
             foreach (GatePin input in Inputs)
@@ -158,7 +162,7 @@ namespace Wireform.Circuitry.Utils
         /// <summary>
         /// Removes gate pins in Inputs and Outputs from connections
         /// </summary>
-        public override void RemoveConnections(Dictionary<Vec2, List<BoardObject>> connections)
+        public override void RemoveConnections(Dictionary<Vec2, List<DrawableObject>> connections)
         {
             foreach (GatePin input in Inputs)
             {
@@ -170,13 +174,13 @@ namespace Wireform.Circuitry.Utils
             }
         }
 
-        protected abstract void Draw(PainterScope painter);
-        public void DrawGate(PainterScope painter)
+        protected abstract void DrawGate(PainterScope painter);
+        public override void Draw(PainterScope painter, BoardState _)
         {
             painter.AppendOffset(StartPoint);
 
             painter.SetLocalMultiplier(Direction);
-            Draw(painter);
+            DrawGate(painter);
 
             painter.DrawEllipseC(Color.Red, 3, Vec2.Zero, new Vec2(.1f, .1f));
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);

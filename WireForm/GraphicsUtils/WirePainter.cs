@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Data.Bits;
 using Wireform.MathUtils;
 
 namespace Wireform.GraphicsUtils

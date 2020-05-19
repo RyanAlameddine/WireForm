@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Data.Bits;
 using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
@@ -26,19 +27,19 @@ namespace Wireform.Circuitry.Gates.Logic
             Outputs[0].Values = ! BitArray.Only1Input1(Inputs.Select((x) => x.Values));
         }
 
-        protected override void Draw(PainterScope painter)
+        protected override void DrawGate(PainterScope painter)
         {
-            painter.DrawArcC(Color.Black, 10, new Vec2(-3.5f - .75f, 0), new Vec2(5, 5), 321, 78);
-            painter.DrawArcC(Color.Black, 10, new Vec2(-2.5f - .75f, 0), new Vec2(5, 5), 321, 78);
-            painter.DrawArcC(Color.Black, 10, new Vec2(-1.3f       , 2), new Vec2(8, 7), 270, 60);
-            painter.DrawArcC(Color.Black, 10, new Vec2(-1.3f       , -2), new Vec2(8, 7), 90, -60);
+            painter.DrawArcC(Color.Black, PenWidth, new Vec2(-3.5f - .75f, 0), new Vec2(5, 5), 321, 78);
+            painter.DrawArcC(Color.Black, PenWidth, new Vec2(-2.5f - .75f, 0), new Vec2(5, 5), 321, 78);
+            painter.DrawArcC(Color.Black, PenWidth, new Vec2(-1.3f       , 2), new Vec2(8, 7), 270, 60);
+            painter.DrawArcC(Color.Black, PenWidth, new Vec2(-1.3f       , -2), new Vec2(8, 7), 90, -60);
 
-            painter.DrawEllipseC(Color.Black, 10, new Vec2(2, 0), new Vec2(.6f, .6f));
+            painter.DrawEllipseC(Color.Black, PenWidth, new Vec2(2, 0), new Vec2(.6f, .6f));
 
-            base.Draw(painter);
+            base.DrawGate(painter);
         }
 
-        public override CircuitObject Copy()
+        public override BoardObject Copy()
         {
             return new XorGate(StartPoint, Direction, InputCount, OutputCount);
         }

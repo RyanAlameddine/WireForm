@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Data.Bits;
 using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
@@ -76,14 +77,14 @@ namespace Wireform.Circuitry.Gates.Logic
             }
         }
 
-        protected override void Draw(PainterScope painter)
+        protected override void DrawGate(PainterScope painter)
         {
             painter.DrawLine(Color.DarkGray, 10, new Vec2(-1, -1), Vec2.Zero);
 
             painter.DrawLine(Color.DarkGray, 10, new Vec2(0 - 1 / 20f, 0), new Vec2(1, 0));
             painter.DrawStringC(GetRange(0), Color.Black, new Vec2(.4f, 0), 1/4f);
             
-            base.Draw(painter);
+            base.DrawGate(painter);
 
             if (splitDirection == 0)
             {
@@ -265,7 +266,7 @@ namespace Wireform.Circuitry.Gates.Logic
         [HideCircuitAttributes]
         public override int InputCount { get => base.InputCount; set => base.InputCount = value; }
 
-        public override CircuitObject Copy()
+        public override BoardObject Copy()
         {
             Splitter splitter = new Splitter(StartPoint, Direction, splitCount, splitDepth, splitDirection);
 

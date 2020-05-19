@@ -11,7 +11,7 @@ namespace WireformInput.States.Wire
     /// </summary>
     class RemovingWireState : InputState
     {
-        public RemovingWireState(List<WireLine> wires, Vec2 griddedMousePoint, Dictionary<Vec2, List<BoardObject>> connections)
+        public RemovingWireState(List<WireLine> wires, Vec2 griddedMousePoint, Dictionary<Vec2, List<DrawableObject>> connections)
         {
             removeWire(wires, griddedMousePoint, connections);
         }
@@ -27,7 +27,7 @@ namespace WireformInput.States.Wire
             return (true, new WireToolState());
         }
 
-        private InputReturns removeWire(List<WireLine> wires, Vec2 griddedMousePoint, Dictionary<Vec2, List<BoardObject>> connections)
+        private InputReturns removeWire(List<WireLine> wires, Vec2 griddedMousePoint, Dictionary<Vec2, List<DrawableObject>> connections)
         {
             for (int i = 0; i < wires.Count; i++)
             {

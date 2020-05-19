@@ -89,9 +89,9 @@ namespace WireformInput
                 for (int y = 0; y * SizeScale < viewportSize.Y; y += step)
                     painter.FillRectangleC(Color.DarkBlue, new Vec2(x, y), new Vec2(.05f * step, .05f * step));
             //Draw gates
-            foreach (Gate gate in currentState.Gates) gate.DrawGate(painter);
+            foreach (Gate gate in currentState.Gates) gate.Draw(painter, currentState);
             //Draw Wires
-            foreach (WireLine wireLine in currentState.Wires) WirePainter.DrawWireLine(painter, currentState, wireLine);
+            foreach (WireLine wireLine in currentState.Wires) wireLine.Draw(painter, currentState);
             //Draw state-specific info
             state.Draw(currentState, painter);
         }

@@ -98,7 +98,7 @@ namespace WireformInput.States.Selection
             {
                 if (selection is Gate gate)
                 {
-                    gate.DrawGate(painter);
+                    gate.Draw(painter, currentState);
                     BoxCollider selectionBox = selection.HitBox;
 
                     painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);

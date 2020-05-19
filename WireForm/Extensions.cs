@@ -12,11 +12,11 @@ namespace Wireform
         /// <summary>
         /// Adds BoardObject to connections
         /// </summary>
-        public static void Attach(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject boardObject)
+        public static void Attach(this Dictionary<Vec2, List<DrawableObject>> connections, DrawableObject boardObject)
         {
             if (!connections.ContainsKey(boardObject.StartPoint))
             {
-                connections.Add(boardObject.StartPoint, new List<BoardObject>());
+                connections.Add(boardObject.StartPoint, new List<DrawableObject>());
             }
             connections[boardObject.StartPoint].Add(boardObject);
         }
@@ -24,7 +24,7 @@ namespace Wireform
         /// <summary>
         /// Removes BoardObject from connections
         /// </summary>
-        public static void Detatch(this Dictionary<Vec2, List<BoardObject>> connections, BoardObject boardObject)
+        public static void Detatch(this Dictionary<Vec2, List<DrawableObject>> connections, DrawableObject boardObject)
         {
             connections[boardObject.StartPoint].Remove(boardObject);
         }

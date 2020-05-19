@@ -10,14 +10,16 @@ namespace Wireform.Circuitry.Data
     public class BoardState
     {
         [JsonIgnore]
-        public Dictionary<Vec2, List<BoardObject>> Connections { get; set; }
+        public Dictionary<Vec2, List<DrawableObject>> Connections { get; set; }
         public List<WireLine> Wires { get; set; }
         public List<Gate> Gates { get; set; }
+        //public List<BoardObject> Extras { get; set; }
         public BoardState()
         {
-            Connections = new Dictionary<Vec2, List<BoardObject>>();
+            Connections = new Dictionary<Vec2, List<DrawableObject>>();
             Wires = new List<WireLine>();
             Gates = new List<Gate>();
+            //Extras = new List<BoardObject>();
         }
 
         public void Propogate()
@@ -51,6 +53,12 @@ namespace Wireform.Circuitry.Data
                 state.Gates.Add(newGate);
                 newGate.AddConnections(state.Connections);
             }
+
+            //foreach(BoardObject obj in Extras)
+            //{
+            //    BoardObject newObj = obj.Copy();
+            //}
+
             return state;
         }
     }

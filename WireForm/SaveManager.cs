@@ -30,7 +30,7 @@ namespace Wireform
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.Auto
                 });
-            state.Connections = new Dictionary<Vec2, List<BoardObject>>();
+            state.Connections = new Dictionary<Vec2, List<DrawableObject>>();
             for (int i = 0; i < state.Wires.Count; i++)
             {
                 if (state.Wires[i].StartPoint.Y == state.Wires[i].EndPoint.Y)

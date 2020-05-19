@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Wireform.Circuitry.Data;
+using Wireform.Circuitry.Data.Bits;
 using Wireform.Circuitry.Utils;
+using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using Wireform.MathUtils.Collision;
 
 namespace Wireform.Circuitry
 {
-    public class GatePin : BoardObject
+    public class GatePin : DrawableObject
     {
         [JsonIgnore]
         Vec2 startPoint;
@@ -77,6 +79,11 @@ namespace Wireform.Circuitry
         public void RefreshLocation()
         {
             LocalPoint = localPoint;
+        }
+
+        public override void Draw(PainterScope scope, BoardState state)
+        {
+            WirePainter.DrawPin(scope, StartPoint, Values);
         }
     }
 }
