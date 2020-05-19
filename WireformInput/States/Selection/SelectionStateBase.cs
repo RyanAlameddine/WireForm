@@ -113,7 +113,7 @@ namespace WireformInput.States.Selection
                     BoxCollider selectionBox = selection.HitBox;
 
                     painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
-                    WirePainter.DrawWireLine(painter, currentState, wire, new[] { Color.FromArgb(255, 0, 128, 128) });
+                    wire.Draw(painter, currentState);
                 }
             }
         }

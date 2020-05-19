@@ -23,9 +23,9 @@ namespace Wireform.Circuitry
         /// Computes each source and propogates down wires from sources (breadth-first search), 
         /// computing all gates found along the way.
         /// </summary>
-        public static void PropogateBits(BoardState state, Queue<Gate> sources)
+        public static void PropagateBits(BoardState state, Queue<Gate> sources)
         {
-            Debug.WriteLine("propogated");
+            //Debug.WriteLine("propogated");
             //Copy sources into currentGates
             Queue<Gate> gateQueue = new Queue<Gate>(sources);
 #if DEBUG
@@ -58,7 +58,7 @@ namespace Wireform.Circuitry
 
                 foreach (GatePin output in currentGate.Outputs)
                 {
-                    PropogateDownPoint(output.StartPoint, output.Values, state, gateQueue, visitedInputs, visitedWires, updatedObjects);
+                    PropagateDownWire(output.StartPoint, output.Values, state, gateQueue, visitedInputs, visitedWires, updatedObjects);
                 }
 
                 //infinite oscillation catch:
@@ -89,7 +89,7 @@ namespace Wireform.Circuitry
         /// <summary>
         /// Propogates down wires instantly from a point, and adds gates to gateQueue
         /// </summary>
-        private static void PropogateDownPoint(Vec2 point, BitArray values, BoardState state, Queue<Gate> gateQueue, HashSet<GatePin> visitedInputs, HashSet<WireLine> visitedWires, WrappingArray<DrawableObject> updatedObjects)
+        private static void PropagateDownWire(Vec2 point, BitArray values, BoardState state, Queue<Gate> gateQueue, HashSet<GatePin> visitedInputs, HashSet<WireLine> visitedWires, WrappingArray<DrawableObject> updatedObjects)
         {
             HashSet<WireLine> newWires = new HashSet<WireLine>();
             RecursivePropogate(newWires, point);

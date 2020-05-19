@@ -11,15 +11,24 @@ namespace Wireform.Circuitry.Data
     {
         [JsonIgnore]
         public Dictionary<Vec2, List<DrawableObject>> Connections { get; set; }
+
+        /// <summary>
+        /// A Union of the Wires, Gates, and Extras collections
+        /// </summary>
+        public IEnumerable<BoardObject> BoardObjects
+        {
+            get => ((IEnumerable<BoardObject>)Wires).Union(Gates).Union(Extras);
+        }
+
         public List<WireLine> Wires { get; set; }
         public List<Gate> Gates { get; set; }
-        //public List<BoardObject> Extras { get; set; }
+        public List<BoardObject> Extras { get; set; }
         public BoardState()
         {
             Connections = new Dictionary<Vec2, List<DrawableObject>>();
             Wires = new List<WireLine>();
             Gates = new List<Gate>();
-            //Extras = new List<BoardObject>();
+            Extras = new List<BoardObject>();
         }
 
         public void Propogate()
@@ -32,7 +41,7 @@ namespace Wireform.Circuitry.Data
                     sources.Enqueue(gate);
                 }
             }
-            FlowPropagator.PropogateBits(this, sources);
+            FlowPropagator.PropagateBits(this, sources);
         }
 
         public BoardState Copy()
@@ -54,10 +63,10 @@ namespace Wireform.Circuitry.Data
                 newGate.AddConnections(state.Connections);
             }
 
-            //foreach(BoardObject obj in Extras)
-            //{
-            //    BoardObject newObj = obj.Copy();
-            //}
+            foreach (BoardObject obj in Extras)
+            {
+                BoardObject newObj = obj.Copy();
+            }
 
             return state;
         }

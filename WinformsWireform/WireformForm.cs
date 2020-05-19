@@ -54,8 +54,6 @@ namespace WinformsWireform
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-
-
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
         {
             float delta = e.Delta / 40;

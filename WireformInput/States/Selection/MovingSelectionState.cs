@@ -59,7 +59,15 @@ namespace WireformInput.States.Selection
             startPosition = selectedObject.StartPoint;
             offset = selectedObject.StartPoint - localPoint;
 
-            if(resettable) state.DetatchAll(selections);
+            if (resettable)
+            {
+                state.DetatchAll(selections);
+            }
+            else
+            {
+                //set startPosition to an invalid start value
+                startPosition = new Vec2(float.MinValue, float.MinValue);
+            }
 
             CheckIntersections(state);
         }

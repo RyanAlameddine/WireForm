@@ -175,7 +175,7 @@ namespace Wireform.Circuitry.Utils
         }
 
         protected abstract void DrawGate(PainterScope painter);
-        public override void Draw(PainterScope painter, BoardState _)
+        public override void Draw(PainterScope painter, BoardState state)
         {
             painter.AppendOffset(StartPoint);
 
@@ -187,13 +187,9 @@ namespace Wireform.Circuitry.Utils
 
             //gfx._DrawEllipseC(Color.Black, 3, StartPoint.X, StartPoint.Y, .01f, .01f);
 
-            foreach (var output in Outputs)
+            foreach (var pin in Outputs.Union(Inputs))
             {
-                WirePainter.DrawPin(painter, output.LocalPoint, output.Values);
-            }
-            foreach (var input in Inputs)
-            {
-                WirePainter.DrawPin(painter, input.LocalPoint, input.Values);
+                pin.Draw(painter, state);
             }
         }
 

@@ -34,8 +34,8 @@ namespace WireformInput.States.Wire
 
         public override void Draw(BoardState currentState, PainterScope painter)
         {
-            WirePainter.DrawWireLine(painter, currentState, primaryLine  );
-            WirePainter.DrawWireLine(painter, currentState, secondaryLine);
+            primaryLine.Draw(painter, currentState);
+            secondaryLine.Draw(painter, currentState);
         }
 
         public override InputReturns MouseMove(StateControls stateControls)

@@ -6,7 +6,7 @@ using Wireform.MathUtils;
 
 namespace Wireform.GraphicsUtils
 {
-    public static class WirePainter
+    internal static class WirePainter
     {
         private const float wireSize = 1.4f;
         public static void DrawWireLine(PainterScope painter, BoardState state, WireLine wireLine)
@@ -43,13 +43,12 @@ namespace Wireform.GraphicsUtils
 
             painter.FillRectangleC(colors[0]                , wireLine.StartPoint, squareFixerSize);
             painter.FillRectangleC(colors[colors.Length - 1], wireLine.EndPoint  , squareFixerSize);
-            drawPoint(painter, state, wireLine.StartPoint, colors[0]);
-            drawPoint(painter, state, wireLine.EndPoint, colors[colors.Length - 1]);
+            DrawPoint(painter, state, wireLine.StartPoint, colors[0]);
+            DrawPoint(painter, state, wireLine.EndPoint, colors[colors.Length - 1]);
         }
 
-        private static void drawPoint(PainterScope painter, BoardState state, Vec2 point, Color bitColor)
+        private static void DrawPoint(PainterScope painter, BoardState state, Vec2 point, Color bitColor)
         {
-
             ///Draws point in the following cases:
             ///    The point has an amount of connections greater than or less than 2
             ///    The point is attached to a gatePin
@@ -75,12 +74,6 @@ namespace Wireform.GraphicsUtils
             {
                 painter.FillEllipseC(bitColor, point, new Vec2(.5f, .5f));
             }
-        }
-
-        //This might need to be improved a tad
-        public static void DrawPin(PainterScope painter, Vec2 position, BitArray values)
-        {
-            painter.FillEllipseC(values.BitColors()[0], position, new Vec2(.4f, .4f));
         }
     }
 }

@@ -83,7 +83,7 @@ namespace Wireform.Circuitry
 
         public override void Draw(PainterScope scope, BoardState state)
         {
-            WirePainter.DrawPin(scope, StartPoint, Values);
+            scope.FillEllipseC(Values.BitColors()[0], LocalPoint, new Vec2(.4f, .4f));
         }
     }
 }
