@@ -12,6 +12,7 @@ using Wireform.Circuitry.Utils;
 using System.Linq;
 using Wireform.Utils;
 using Wireform.Circuitry.Data.Bits;
+using Wireform.Circuitry.CircuitAttributes.Utils.StringValidators;
 
 namespace Wireform.Circuitry.Gates
 {
@@ -53,8 +54,8 @@ namespace Wireform.Circuitry.Gates
 
 
         [JsonIgnore]
-        [CircuitPropertyAction("Toggle", 't', true)]
-        [CircuitProperty(2, 3, false, new[] { "Zero", "One" })]
+        [CircuitDropdownAction("Toggle", 't', true)]
+        [CircuitPropertyDropdown(2, 3, false, new[] { "Zero", "One" })]
         public int Value
         {
             get
@@ -67,9 +68,9 @@ namespace Wireform.Circuitry.Gates
             }
         }
 
-        [CircuitPropertyAction("Increment depth", 'd', true, PropertyOverflow.Clip)]
-        [CircuitPropertyAction("Decrement depth", 'd', Modifier.Shift, false, PropertyOverflow.Clip)]
-        [CircuitProperty(1, 32, false)]
+        [CircuitDropdownAction("Increment depth", 'd', true, PropertyOverflow.Clip)]
+        [CircuitDropdownAction("Decrement depth", 'd', Modifier.Shift, false, PropertyOverflow.Clip)]
+        [CircuitPropertyDropdown(1, 32, false)]
         public int BitDepth
         {
             get => Outputs[0].Values.Count;

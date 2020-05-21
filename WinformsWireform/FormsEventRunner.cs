@@ -16,15 +16,17 @@ namespace WinformsWireform.Helpers
         public readonly ContextMenuStrip  rightClickMenu;
         public readonly ListBox           circuitPropertyBox;
         public readonly ComboBox          circuitPropertyValueBox;
+        public readonly TextBox           circuitPropertyTextBox;
         public readonly Panel             drawingPanel;
         public readonly Func<Keys>        getModifiers;
         public readonly Func<char?>       getKey;
 
-        public FormsEventRunner(BoardStack stateStack, ContextMenuStrip rightClickMenu, ListBox circuitPropertyBox, ComboBox circuitPropertyValueBox, Panel drawingPanel, Func<Keys> getModifiers, Func<char?> getKey)
+        public FormsEventRunner(BoardStack stateStack, ContextMenuStrip rightClickMenu, ListBox circuitPropertyBox, ComboBox circuitPropertyValueBox, TextBox circuitPropertyTextBox, Panel drawingPanel, Func<Keys> getModifiers, Func<char?> getKey)
         {
             this.rightClickMenu = rightClickMenu;
             this.circuitPropertyBox = circuitPropertyBox;
             this.circuitPropertyValueBox = circuitPropertyValueBox;
+            this.circuitPropertyTextBox = circuitPropertyTextBox;
             this.drawingPanel = drawingPanel;
             this.stateStack = stateStack;
             this.getModifiers = getModifiers;
@@ -49,6 +51,7 @@ namespace WinformsWireform.Helpers
             if (stateControls.CircuitActionsOutput != null)
             {
                 rightClickMenu.Items.Clear();
+
                 foreach (var action in stateControls.CircuitActionsOutput)
                 {
                     //Creates a dropdown menu item which, when clicked, will invoke the action and refresh the drawing panel
@@ -68,6 +71,8 @@ namespace WinformsWireform.Helpers
             if (stateControls.CircuitPropertiesOutput != null)
             {
                 circuitPropertyBox.Items.Clear();
+                circuitPropertyTextBox.Visible = false;
+                circuitPropertyValueBox.Visible = true;
                 circuitPropertyValueBox.Items.Clear();
                 CircuitProperties = stateControls.CircuitPropertiesOutput;
 

@@ -51,9 +51,9 @@ namespace Wireform.Circuitry.Utils
         /// The amount of generated inputs for a dynamic gate.
         /// Setting this will update the Inputs if applicable.
         /// </summary>
-        [CircuitPropertyAction("Increment inputs", 'i', true, PropertyOverflow.Clip)]
-        [CircuitPropertyAction("Decrement inputs", 'i', Modifier.Shift, false, PropertyOverflow.Clip)]
-        [CircuitProperty(2, 32, true)]
+        [CircuitDropdownAction("Increment inputs", 'i', true, PropertyOverflow.Clip)]
+        [CircuitDropdownAction("Decrement inputs", 'i', Modifier.Shift, false, PropertyOverflow.Clip)]
+        [CircuitPropertyDropdown(2, 32, true)]
         public virtual int InputCount
         {
             get => inputCount;
@@ -72,7 +72,7 @@ namespace Wireform.Circuitry.Utils
         /// NOTE: Circuit property is hidden by default, but overriding it will enable it ([HideCircuitAttributes] is not inherited).
         /// </summary>
         [HideCircuitAttributes]
-        [CircuitProperty(2, 16, true)]
+        [CircuitPropertyDropdown(2, 16, true)]
         public virtual int OutputCount
         {
             get => outputCount;

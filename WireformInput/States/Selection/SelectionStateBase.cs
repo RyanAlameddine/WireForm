@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Wireform.Circuitry;
-using Wireform.Circuitry.CircuitAttributes.Utilities;
 using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;

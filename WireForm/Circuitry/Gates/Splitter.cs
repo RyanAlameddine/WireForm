@@ -211,9 +211,9 @@ namespace Wireform.Circuitry.Gates.Logic
         /// <summary>
         /// The amount of split nodes
         /// </summary>
-        [CircuitProperty(1, 32, true)]
-        [CircuitPropertyAction("Increment split count", 'i', true, PropertyOverflow.Clip)]
-        [CircuitPropertyAction("Decrement split count", 'i', Modifier.Shift, false, PropertyOverflow.Clip)]
+        [CircuitPropertyDropdown(1, 32, true)]
+        [CircuitDropdownAction("Increment split count", 'i', true, PropertyOverflow.Clip)]
+        [CircuitDropdownAction("Decrement split count", 'i', Modifier.Shift, false, PropertyOverflow.Clip)]
         public int SplitCount
         {
             get => splitCount;
@@ -228,9 +228,9 @@ namespace Wireform.Circuitry.Gates.Logic
         /// <summary>
         /// The bitDepth of each split node
         /// </summary>
-        [CircuitProperty(1, 32, true)]
-        [CircuitPropertyAction("Increment split depth", 'd', true, PropertyOverflow.Clip)]
-        [CircuitPropertyAction("Decrement split depth", 'd', Modifier.Shift, false, PropertyOverflow.Clip)]
+        [CircuitPropertyDropdown(1, 32, true)]
+        [CircuitDropdownAction("Increment split depth", 'd', true, PropertyOverflow.Clip)]
+        [CircuitDropdownAction("Decrement split depth", 'd', Modifier.Shift, false, PropertyOverflow.Clip)]
         public int SplitDepth
         {
             get => splitDepth;
@@ -245,8 +245,8 @@ namespace Wireform.Circuitry.Gates.Logic
         /// The way in which the splitter expands or contracts inputs or outputs
         /// </summary>
         private Split splitDirection = Split.Expand;
-        [CircuitPropertyAction("Toggle split direction", 't', true)]
-        [CircuitProperty(0, 1, true, new[] { "Expand", "Contract" })]
+        [CircuitDropdownAction("Toggle split direction", 't', true)]
+        [CircuitPropertyDropdown(0, 1, true, new[] { "Expand", "Contract" })]
         public Split SplitDirection
         {
             get => splitDirection;

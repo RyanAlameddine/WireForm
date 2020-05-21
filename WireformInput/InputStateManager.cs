@@ -23,14 +23,14 @@ namespace WireformInput
         /// This collection exists for convienience only, and is never neccessary to use.
         /// However, this is what will be checked when a Tools is passed into ChangeTool(Tools);
         /// </summary>
-        public static IReadOnlyDictionary<Tools, InputState> StandardToolStates 
-        { 
-            get => new Dictionary<Tools, InputState>()
+        public static Dictionary<Tools, Func<InputState>> ToolStates { get; set; } 
+            = new Dictionary<Tools, Func<InputState>>()
                 {
-                    { Tools.SelectionTool, new SelectionToolState() },
-                    { Tools.WireTool, new WireToolState() },
+                    { Tools.SelectionTool, () => new SelectionToolState() },
+                    { Tools.WireTool,      () => new WireToolState     () },
                 };
-        }
+
+        public Tools SelectedTool { get; private set; }
 
         InputState state;
         readonly HashSet<CircuitObject> clipBoard;
@@ -41,6 +41,7 @@ namespace WireformInput
             clipBoard = new HashSet<CircuitObject>();
 
             state = new SelectionToolState();
+            SelectedTool = Tools.SelectionTool;
 
             this.eventRunner = eventRunner;
         }
@@ -56,23 +57,14 @@ namespace WireformInput
         }
 
         /// <summary>
-        /// If the current state is clean, inserts the new state (loaded from StandardToolState) and returns true.
+        /// If the current state is clean, inserts the new state (loaded from <see cref="ToolStates"/>) and returns true.
         /// If not, return false.
         /// </summary>
         public bool TryChangeTool(Tools newState)
         {
-            return TryChangeTool(StandardToolStates[newState]);
-        }
-
-        /// <summary>
-        /// If the current state is clean, inserts the new state and returns true.
-        /// If not, return false.
-        /// </summary>
-        private bool TryChangeTool(InputState newState)
-        {
             if (state.IsClean())
             {
-                state = newState;
+                state = ToolStates[newState]();
                 return true;
             }
             else

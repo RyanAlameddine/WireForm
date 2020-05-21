@@ -19,10 +19,10 @@ namespace WinformsWireform
             InitializeComponent();
 
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, DrawingPanel, new object[] { true });
-            
+
             stateStack = new BoardStack(new LocalSaver(openFileDialog, saveFileDialog));
 
-            var eventRunner = new FormsEventRunner(stateStack, GateMenu, CircuitPropertyBox, CircuitPropertyValueBox, DrawingPanel, () => ModifierKeys, () => GetKey);
+            var eventRunner = new FormsEventRunner(stateStack, GateMenu, CircuitPropertyBox, CircuitPropertyValueBox, CircuitPropertyValueTextBox, DrawingPanel, () => ModifierKeys, () => GetKey);
             inputStateManager = new InputStateManager(eventRunner);
             eventRunner.stateManager = inputStateManager;
 
@@ -39,17 +39,20 @@ namespace WinformsWireform
         #region Input
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            //If W is pressed, change to Wire tool
-            if (keyData == Keys.W)
+            if (!CircuitPropertyValueTextBox.Focused)
             {
-                toolBox.SelectedIndex = 1;
-                ToolBox_SelectedIndexChanged(this, new EventArgs());
-            }
-            //If G is pressed, change to selection tool
-            else if (keyData == Keys.G)
-            {
-                toolBox.SelectedIndex = 0;
-                ToolBox_SelectedIndexChanged(this, new EventArgs());
+                //If W is pressed, change to Wire tool
+                if (keyData == Keys.W)
+                {
+                    toolBox.SelectedIndex = 1;
+                    ToolBox_SelectedIndexChanged(this, new EventArgs());
+                }
+                //If G is pressed, change to selection tool
+                else if (keyData == Keys.G)
+                {
+                    toolBox.SelectedIndex = 0;
+                    ToolBox_SelectedIndexChanged(this, new EventArgs());
+                }
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -79,15 +82,18 @@ namespace WinformsWireform
         Tools tool = Tools.SelectionTool;
         private void ToolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(!inputStateManager.TryChangeTool(tool))
+            if (!inputStateManager.TryChangeTool((Tools)toolBox.SelectedIndex))
             {
                 toolBox.SelectedIndex = (int)tool;
                 return;
             }
-            tool                            = (Tools)toolBox.SelectedIndex;
+            tool = (Tools)toolBox.SelectedIndex;
             createToolStripMenuItem.Visible = tool == Tools.SelectionTool;
-            CircuitPropertyBox.Visible      = tool == Tools.SelectionTool;
-            CircuitPropertyValueBox.Visible = tool == Tools.SelectionTool;
+
+            CircuitPropertyBox.Visible          = tool == Tools.SelectionTool;
+            CircuitPropertyValueBox.Visible     = tool == Tools.SelectionTool;
+            CircuitPropertyValueTextBox.Visible = tool == Tools.SelectionTool;
+
             DrawingPanel.Refresh();
         }
 
@@ -99,25 +105,28 @@ namespace WinformsWireform
 
         private void DrawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            if      (e.Button == MouseButtons.Left)  inputStateManager.MouseLeftDown ();
+            if (e.Button == MouseButtons.Left) inputStateManager.MouseLeftDown();
             else if (e.Button == MouseButtons.Right) inputStateManager.MouseRightDown();
         }
 
         private void DrawingPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            if      (e.Button == MouseButtons.Left)  inputStateManager.MouseLeftUp ();
+            if (e.Button == MouseButtons.Left) inputStateManager.MouseLeftUp();
             else if (e.Button == MouseButtons.Right) inputStateManager.MouseRightUp();
         }
 
         private char? GetKey { get; set; }
-        private void Form1_KeyPress (object sender, KeyPressEventArgs e) { GetKey = e.KeyChar; inputStateManager.KeyDown(); }
-        
-        private void Panel_MouseMove(object sender, MouseEventArgs e   ) => inputStateManager.MouseMove();
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!CircuitPropertyValueTextBox.Focused) { GetKey = e.KeyChar; inputStateManager.KeyDown(); }
+        }
 
-        private void UndoButton_Click (object sender, EventArgs e) => inputStateManager.Undo ();
-        private void RedoButton_Click (object sender, EventArgs e) => inputStateManager.Redo ();
-        private void CopyButton_Click (object sender, EventArgs e) => inputStateManager.Copy ();
-        private void CutButton_Click  (object sender, EventArgs e) => inputStateManager.Cut  ();
+        private void Panel_MouseMove(object sender, MouseEventArgs e) => inputStateManager.MouseMove();
+
+        private void UndoButton_Click (object sender, EventArgs e) => inputStateManager.Undo();
+        private void RedoButton_Click (object sender, EventArgs e) => inputStateManager.Redo();
+        private void CopyButton_Click (object sender, EventArgs e) => inputStateManager.Copy();
+        private void CutButton_Click  (object sender, EventArgs e) => inputStateManager.Cut();
         private void PasteButton_Click(object sender, EventArgs e) => inputStateManager.Paste();
 
         private void OpenButton_Click(object sender, EventArgs e) => stateStack.Load();
@@ -129,12 +138,22 @@ namespace WinformsWireform
 
         #region CircuitProperties
 
-        int? previousValue = 0;
+        int selectedIndex = 0;
         private void CircuitPropertyBox_SelectedIndexChanged(object sender, EventArgs e)
-            => CircuitPropertyBoxHelper.ChangeSelectedProperty((FormsEventRunner) inputStateManager.eventRunner, ref previousValue);
+            => CircuitPropertyBoxHelper.ChangeSelectedProperty((FormsEventRunner)inputStateManager.eventRunner, ref selectedIndex);
 
         private void CircuitPropertyValueBox_SelectedIndexChanged(object sender, EventArgs e)
-            => CircuitPropertyBoxHelper.ChangeSelectedValue((FormsEventRunner) inputStateManager.eventRunner, ref previousValue);
+            => CircuitPropertyBoxHelper.ChangeSelectedValue((FormsEventRunner)inputStateManager.eventRunner, ref selectedIndex);
+
+        private void CircuitPropertyValueTextBox_TextChanged(object sender, EventArgs e)
+            => CircuitPropertyBoxHelper.ChangeSelectedValue((FormsEventRunner)inputStateManager.eventRunner, ref selectedIndex);
+
+        private void CircuitPropertyValueTextBox_Validated(object sender, EventArgs e)
+           => CircuitPropertyBoxHelper.ValidateText((FormsEventRunner)inputStateManager.eventRunner, ref selectedIndex);
+
+        private void CircuitPropertyValueTextBox_KeyDown(object sender, KeyEventArgs e)
+            { if (e.KeyCode == Keys.Enter) { CircuitPropertyValueTextBox_Validated(sender, e); e.SuppressKeyPress = true; } }
+
         #endregion CircuitProperties
     }
 }

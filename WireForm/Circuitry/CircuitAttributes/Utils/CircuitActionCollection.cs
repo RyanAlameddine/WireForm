@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Wireform.Circuitry.Data;
 using Wireform.Utils;
 
-namespace Wireform.Circuitry.CircuitAttributes.Utilities
+namespace Wireform.Circuitry.CircuitAttributes.Utils
 {
     /// <summary>
     /// A collection which is able to process lists of [CircuitAction]
@@ -42,7 +42,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utilities
 
             string hotkeyStr = hotkey.GetHotkeyString(modifiers);
 
-            if(toRefresh) registerChange($"Executed hotkey {hotkeyStr} on selection(s)");
+            if (toRefresh) registerChange($"Executed hotkey {hotkeyStr} on selection(s)");
             return toRefresh;
         }
 

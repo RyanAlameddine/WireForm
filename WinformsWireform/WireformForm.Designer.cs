@@ -51,6 +51,7 @@
             this.redoButton = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DrawingPanel = new System.Windows.Forms.Panel();
+            this.CircuitPropertyValueTextBox = new System.Windows.Forms.TextBox();
             this.menuStrip.SuspendLayout();
             this.DrawingPanel.SuspendLayout();
             this.SuspendLayout();
@@ -101,6 +102,7 @@
             // 
             // menuStrip
             // 
+            this.menuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileButton,
@@ -232,13 +234,14 @@
             this.createToolStripMenuItem.Size = new System.Drawing.Size(78, 29);
             this.createToolStripMenuItem.Text = "Create";
             // 
-            // drawingPanel
+            // DrawingPanel
             // 
+            this.DrawingPanel.Controls.Add(this.CircuitPropertyValueTextBox);
             this.DrawingPanel.Controls.Add(this.CircuitPropertyBox);
             this.DrawingPanel.Controls.Add(this.CircuitPropertyValueBox);
             this.DrawingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DrawingPanel.Location = new System.Drawing.Point(0, 33);
-            this.DrawingPanel.Name = "drawingPanel";
+            this.DrawingPanel.Name = "DrawingPanel";
             this.DrawingPanel.Size = new System.Drawing.Size(1200, 659);
             this.DrawingPanel.TabIndex = 9;
             this.DrawingPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingPanel_Paint);
@@ -246,7 +249,18 @@
             this.DrawingPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Panel_MouseMove);
             this.DrawingPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DrawingPanel_MouseUp);
             // 
-            // Form1
+            // CircuitPropertyValueTextBox
+            // 
+            this.CircuitPropertyValueTextBox.Location = new System.Drawing.Point(1000, 376);
+            this.CircuitPropertyValueTextBox.Name = "CircuitPropertyValueTextBox";
+            this.CircuitPropertyValueTextBox.Size = new System.Drawing.Size(179, 26);
+            this.CircuitPropertyValueTextBox.TabIndex = 8;
+            this.CircuitPropertyValueTextBox.Visible = false;
+            this.CircuitPropertyValueTextBox.TextChanged += new System.EventHandler(this.CircuitPropertyValueTextBox_TextChanged);
+            this.CircuitPropertyValueTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CircuitPropertyValueTextBox_KeyDown);
+            this.CircuitPropertyValueTextBox.Validated += new System.EventHandler(this.CircuitPropertyValueTextBox_Validated);
+            // 
+            // WireformForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -257,7 +271,7 @@
             this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.Name = "Form1";
+            this.Name = "WireformForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
@@ -265,6 +279,7 @@
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.DrawingPanel.ResumeLayout(false);
+            this.DrawingPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -294,6 +309,7 @@
         private System.Windows.Forms.ToolStripMenuItem pasteButton;
         internal System.Windows.Forms.Panel DrawingPanel;
         private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
+        private System.Windows.Forms.TextBox CircuitPropertyValueTextBox;
     }
 }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using Wireform.Circuitry.CircuitAttributes.Utilities;
 using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
 using Wireform.MathUtils;

@@ -94,7 +94,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
                 }
 
                 //determine the value
-                int? propValue = property.Get();
+                string propValue = property.Get();
                 if (propValue != existingProp.Get()) propValue = null;
 
                 //create and insert the new property
@@ -105,7 +105,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
                         property.Set(value, connections);
                         existingProp.Set(value, connections);
                     }, 
-                    property.circuitObject, (min, max), valueNames, property.RequireReconnect, property.Name);
+                    true, property.circuitObject, (min, max), valueNames, property.RequireReconnect, property.Name);
 
                 propertyMap[property.Name] = newProp;
             }
@@ -117,7 +117,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
         /// Invokes the Get function on the property and returns the result
         /// </summary>
         /// <returns>null only if the values are different for different selections</returns>
-        public int? InvokeGet(string propertyName)
+        public string InvokeGet(string propertyName)
         {
             return propertyMap[propertyName].Get();
         }
@@ -125,12 +125,13 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
         /// <summary>
         /// Invokes the Set function on the property with the given input
         /// </summary>
-        public void InvokeSet(string propertyName, int value, Dictionary<Vec2, List<DrawableObject>> connections)
+        public void InvokeSet(string propertyName, string value, Dictionary<Vec2, List<DrawableObject>> connections)
         {
             var property = propertyMap[propertyName];
-            string valueName = property.GetValueName(value);
+            //string valueName = property.GetValueName(int.Parse(value));
+            string oldValue = property.Get();
             property.Set(value, connections);
-            registerChange($"Changed {property.Name} from {valueName} to {property.GetValueName(value)} on selection(s)");
+            registerChange($"Changed {property.Name} from {oldValue} to {value} on selection(s)");
         }
 
         public CircuitProp this[string key] => propertyMap[key];

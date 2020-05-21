@@ -104,9 +104,9 @@ namespace Wireform.Circuitry.Utils
         /// If you would like to disable rotation, simply override Direction
         /// and tag it with [HideCircuitAttributes]
         /// </summary>
-        [CircuitPropertyAction("Rotate", 'r', true)]
-        [CircuitPropertyAction("Rotate (reverse)", 'r', Modifier.Shift, false)]
-        [CircuitProperty(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
+        [CircuitDropdownAction("Rotate", 'r', true)]
+        [CircuitDropdownAction("Rotate (reverse)", 'r', Modifier.Shift, false)]
+        [CircuitPropertyDropdown(0, 3, true, new[] { "Right", "Down", "Left", "Up" })]
         protected Direction Facing 
         { 
             get
@@ -124,8 +124,8 @@ namespace Wireform.Circuitry.Utils
         /// If you would like to enable flipping, simply override Flipped and call the base functions
         /// (this will override the [HideCircuitAttributes]
         /// </summary>
-        [CircuitPropertyAction("Flip", 'f', true)]
-        [CircuitProperty(0, 1, true, new[] { "false", "true" })]
+        [CircuitDropdownAction("Flip", 'f', true)]
+        [CircuitPropertyDropdown(0, 1, true, new[] { "false", "true" })]
         //[HideCircuitAttributes]
         public virtual int Flipped 
         {

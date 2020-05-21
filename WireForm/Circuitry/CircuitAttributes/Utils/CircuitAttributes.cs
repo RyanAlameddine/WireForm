@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using Wireform.Circuitry.CircuitAttributes.Utilities;
 using Wireform.Circuitry.Data;
 
 namespace Wireform.Circuitry.CircuitAttributes.Utils
 {
     /// <summary>
-    /// Contains static functions required to load and process [CircuitAction], [CircuitProperty], and [HideCircuitAttributes]
+    /// Contains static functions required to load and process [CircuitAction], [CircuitPropertyDropdown], and [HideCircuitAttributes]
     /// </summary>
     public static class CircuitAttributes
     {
@@ -22,17 +21,11 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
 
             foreach (var property in properties)
             {
-                var attribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
+                var attribute = property.GetCustomAttribute<CircuitPropertyBase>(true);
                 ///If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
                 if (attribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
 
-                //create CircuitProp
-                CircuitProp prop = new CircuitProp(
-                    () => (int) property.GetValue(target),
-                    (value, connections) => property.SetValue(target, value),
-                    target, attribute.ValueRange, attribute.ValueNames, attribute.RequireReconnect, property.Name);
-
-                circuitProps.Add(prop);
+                circuitProps.Add(attribute.ToProp(property, target));
             }
             return new CircuitPropertyCollection(circuitProps, registerChange);
         }
@@ -70,23 +63,20 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
 
             foreach (var property in properties)
             {
-                var propertyAttribute = property.GetCustomAttribute<CircuitPropertyAttribute>(true);
-                var actionAttributes = property.GetCustomAttributes<CircuitPropertyActionAttribute>(true);
+                var propertyAttribute = property.GetCustomAttribute<CircuitPropertyDropdownAttribute>(true);
+                var actionAttributes = property.GetCustomAttributes<CircuitDropdownActionAttribute>(true);
                 foreach (var actionAttribute in actionAttributes)
                 {
                     //If attribute is not found or if property has an [IgnoreCircuitAttributesAttribute]
                     if (actionAttribute == null || property.GetCustomAttribute(typeof(HideCircuitAttributesAttribute), true) != null) continue;
-                    if (propertyAttribute == null) throw new NotImplementedException("All [CircuitPropertyAction] attributes on a property must also have a [CircuitProperty] attribute.");
+                    if (propertyAttribute == null) throw new NotImplementedException("All [CircuitPropertyAction] attributes on a property must also have a [CircuitPropertyDropdown] attribute.");
 
-                    CircuitProp prop = new CircuitProp(
-                        () => (int)property.GetValue(target),
-                        (value, connections) => property.SetValue(target, value),
-                        target, propertyAttribute.ValueRange, propertyAttribute.ValueNames, propertyAttribute.RequireReconnect, property.Name);
+                    CircuitProp prop = propertyAttribute.ToProp(property, target);
 
                     //Increments/decrements the property's value and resets to valueRange.min/max if it goes over/under the valueRange.max/min
                     void action(BoardState state)
                     {
-                        int value = (int)prop.Get();
+                        int value = prop.valueRange.min + Array.IndexOf(prop.valueNames, prop.Get());
                         if (actionAttribute.increment)
                         {
                             if (++value > prop.valueRange.max)
@@ -103,7 +93,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
                                 else
                                     value = prop.valueRange.max;
                         }
-                        prop.Set(value, state.Connections);
+                        prop.Set(prop.valueNames[value - prop.valueRange.min], state.Connections);
                         cleanup(state);
                     }
 
