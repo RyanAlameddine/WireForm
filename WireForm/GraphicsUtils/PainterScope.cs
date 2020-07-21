@@ -7,13 +7,13 @@ namespace Wireform.GraphicsUtils
     /// <summary>
     /// A tool used to draw on the circuit board.
     /// Each painter contains a reference to the current Graphics class
-    /// as well as the current zoom value.
+    /// as well as the current Zoom value.
     /// Painters also contain an internal offset value which will be applied to all position elements
     /// and a multiplier which determines rotational values of drawn gates
     /// </summary>
     public struct PainterScope
     {
-        private readonly float zoom; // = 50f
+        public readonly float Zoom { get; } // = 50f
 
         private readonly IPainter painter;
 
@@ -24,10 +24,10 @@ namespace Wireform.GraphicsUtils
         /// <summary>
         /// Creates an empty painter
         /// </summary>
-        public PainterScope(IPainter painter, float zoom)
+        public PainterScope(IPainter painter, float Zoom)
         {
             this.painter = painter;
-            this.zoom = zoom;
+            this.Zoom = Zoom;
             this.offset = Vec2.Zero;
             this.multiplier = (1, 1, false);
         }
@@ -47,20 +47,20 @@ namespace Wireform.GraphicsUtils
         public void SetLocalMultiplier(Direction direction) => multiplier = direction.GetMultiplier();
 
         /// <summary>
-        /// Scales a penWidth to match the zoom
+        /// Scales a penWidth to match the Zoom
         /// </summary>
         void ScaleWidth(ref int penWidth)
         {
-            penWidth = (int) (penWidth * zoom / 50f);
+            penWidth = (int) (penWidth * Zoom / 50f);
         }
 
         /// <summary>
-        /// Scales a point to match the PainterScope.zoom value
+        /// Scales a point to match the PainterScope.Zoom value
         /// </summary>
         void ScalePoint(ref Vec2 position)
         {
-            position.X *= zoom;
-            position.Y *= zoom;
+            position.X *= Zoom;
+            position.Y *= Zoom;
         }
 
         /// <summary>
@@ -257,22 +257,27 @@ namespace Wireform.GraphicsUtils
 
         public void DrawString(string s, Color color, Vec2 point, float scale)
         {
-            var size = painter.MeasureString(s, zoom, scale * zoom);
+            var size = painter.MeasureString(s, Zoom, scale * Zoom);
             var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPositionTL(ref point, ref V2Size);
 
-            painter.DrawString(s, color, point * zoom, scale * zoom);
+            painter.DrawString(s, color, point * Zoom, scale * Zoom);
         }
 
         public void DrawStringC(string s, Color color, Vec2 centralPoint, float scale)
         {
-            var size = painter.MeasureString(s, zoom, scale * zoom);
+            var size = painter.MeasureString(s, Zoom, scale * Zoom);
             var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPosition(ref centralPoint, ref V2Size);
 
-            painter.DrawString(s, color, centralPoint * zoom - size / 2f, scale * zoom);
+            painter.DrawString(s, color, centralPoint * Zoom - size / 2f, scale * Zoom);
+        }
+
+        public Vec2 MeasureString(string s, float scale)
+        {
+            return painter.MeasureString(s, Zoom, scale * Zoom);
         }
     }
 }

@@ -53,6 +53,12 @@ namespace WinformsWireform
                     toolBox.SelectedIndex = 0;
                     ToolBox_SelectedIndexChanged(this, new EventArgs());
                 }
+                //If E is pressed, change to text tool
+                else if (keyData == Keys.E)
+                {
+                    toolBox.SelectedIndex = 2;
+                    ToolBox_SelectedIndexChanged(this, new EventArgs());
+                }
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -60,10 +66,10 @@ namespace WinformsWireform
         private void Form1_MouseWheel(object sender, MouseEventArgs e)
         {
             float delta = e.Delta / 40;
-            inputStateManager.SizeScale += delta;
-            if (inputStateManager.SizeScale > 70)
+            inputStateManager.Zoom += delta;
+            if (inputStateManager.Zoom > 70)
             {
-                inputStateManager.SizeScale = 70;
+                inputStateManager.Zoom = 70;
             }
             DrawingPanel.Refresh();
         }
@@ -73,26 +79,19 @@ namespace WinformsWireform
         private void DrawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            PainterScope painter = new PainterScope(new WinformsPainter(e.Graphics), inputStateManager.SizeScale);
+            PainterScope painter = new PainterScope(new WinformsPainter(e.Graphics), inputStateManager.Zoom);
             inputStateManager.Draw(stateStack.CurrentState, painter, new Vec2(Width, Height));
         }
         #endregion Graphics
 
         #region FormInput
-        Tools tool = Tools.SelectionTool;
         private void ToolBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!inputStateManager.TryChangeTool((Tools)toolBox.SelectedIndex))
             {
-                toolBox.SelectedIndex = (int)tool;
+                toolBox.SelectedIndex = (int)inputStateManager.SelectedTool;
                 return;
             }
-            tool = (Tools)toolBox.SelectedIndex;
-            createToolStripMenuItem.Visible = tool == Tools.SelectionTool;
-
-            CircuitPropertyBox.Visible          = tool == Tools.SelectionTool;
-            CircuitPropertyValueBox.Visible     = tool == Tools.SelectionTool;
-            CircuitPropertyValueTextBox.Visible = tool == Tools.SelectionTool;
 
             DrawingPanel.Refresh();
         }

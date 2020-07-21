@@ -46,7 +46,7 @@ namespace Wireform.Circuitry.CircuitAttributes
             }
         }
 
-        public override CircuitProp ToProp(PropertyInfo property, CircuitObject target)
+        public override CircuitProp ToProp(PropertyInfo property, BoardObject target)
         {
             return new CircuitProp(
                 () => ValueNames[(int)property.GetValue(target) - ValueRange.min],

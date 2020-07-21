@@ -17,7 +17,7 @@ namespace Wireform.Circuitry.CircuitAttributes
             this.RequireReconnect = RequireReconnect;
         }
 
-        public abstract CircuitProp ToProp(PropertyInfo property, CircuitObject target);
+        public abstract CircuitProp ToProp(PropertyInfo property, BoardObject target);
     }
 
 
@@ -31,18 +31,18 @@ namespace Wireform.Circuitry.CircuitAttributes
         private readonly Action<string, Dictionary<Vec2, List<DrawableObject>>> setter;
         public readonly bool RepresentsInt;
 
-        public readonly CircuitObject circuitObject;
+        public readonly BoardObject boardObject;
         public readonly (int min, int max) valueRange;
         public readonly string[] valueNames;
         public readonly bool RequireReconnect;
         public readonly string Name;
 
-        internal CircuitProp(Func<string> getter, Action<string, Dictionary<Vec2, List<DrawableObject>>> setter, bool RepresentsInt, CircuitObject circuitObject, (int min, int max) valueRange, string[] valueNames, bool RequireReconnect, string Name)
+        internal CircuitProp(Func<string> getter, Action<string, Dictionary<Vec2, List<DrawableObject>>> setter, bool RepresentsInt, BoardObject boardObject, (int min, int max) valueRange, string[] valueNames, bool RequireReconnect, string Name)
         {
             this.getter = getter;
             this.setter = setter;
             this.RepresentsInt = RepresentsInt;
-            this.circuitObject = circuitObject;
+            this.boardObject = boardObject;
             this.valueRange = valueRange;
             this.valueNames = valueNames;
             this.Name = Name;
@@ -56,7 +56,7 @@ namespace Wireform.Circuitry.CircuitAttributes
 
         internal void Set(string value, Dictionary<Vec2, List<DrawableObject>> connections)
         {
-            if (RequireReconnect)
+            if (boardObject is CircuitObject circuitObject && RequireReconnect)
             {
                 circuitObject.RemoveConnections(connections);
                 setter(value, connections);

@@ -33,13 +33,20 @@ namespace Wireform
         /// Removes all mentioned CircuitObjects from state.wires and state.gate
         /// and removes connections for all of those circuitObjects
         /// </summary>
-        public static void DetatchAll(this BoardState state, HashSet<CircuitObject> circuitObjects)
+        public static void DetatchAll(this BoardState state, HashSet<BoardObject> circuitObjects)
         {
-            foreach (CircuitObject circuitObject in circuitObjects)
+            foreach (BoardObject circuitObject in circuitObjects)
             {
-                if (circuitObject is WireLine wire) state.Wires.Remove(wire);
-                else if (circuitObject is Gate gate) state.Gates.Remove(gate);
-                circuitObject.RemoveConnections(state.Connections);
+                if (circuitObject is WireLine wire)
+                {
+                    state.Wires.Remove(wire);
+                    wire.RemoveConnections(state.Connections);
+                }
+                else if (circuitObject is Gate gate)
+                {
+                    state.Gates.Remove(gate);
+                    gate.RemoveConnections(state.Connections);
+                }
             }
         }
 
@@ -47,11 +54,11 @@ namespace Wireform
         /// Puts all mentioned CircuitObjects from state.wires and state.gate
         /// and adds connections for all of those circuitObjects
         /// </summary>
-        public static void AttachAll(this BoardState state, HashSet<CircuitObject> circuitObjects)
+        public static void AttachAll(this BoardState state, HashSet<BoardObject> circuitObjects)
         {
             List<WireLine> toAdd = new List<WireLine>();
             List<WireLine> toRemove = new List<WireLine>();
-            foreach (CircuitObject circuitObject in circuitObjects)
+            foreach (BoardObject circuitObject in circuitObjects)
             {
                 if (circuitObject is WireLine wire)
                 {
@@ -62,7 +69,7 @@ namespace Wireform
                 else if (circuitObject is Gate gate)
                 {
                     state.Gates.Add(gate);
-                    circuitObject.AddConnections(state.Connections);
+                    gate.AddConnections(state.Connections);
                 }
             }
 

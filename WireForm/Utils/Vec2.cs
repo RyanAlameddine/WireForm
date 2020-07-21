@@ -34,6 +34,16 @@ namespace Wireform.MathUtils
             return new Vec2(a.X - b.X, a.Y - b.Y);
         }
 
+        public static Vec2 operator *(Vec2 a, Vec2 b)
+        {
+            return new Vec2(a.X * b.X, a.Y * b.Y);
+        }
+
+        public static Vec2 operator /(Vec2 a, Vec2 b)
+        {
+            return new Vec2(a.X / b.X, a.Y / b.Y);
+        }
+
         //Vector to float
         public static Vec2 operator *(Vec2 a, float b)
         {

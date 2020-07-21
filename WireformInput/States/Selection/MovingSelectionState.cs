@@ -17,7 +17,7 @@ namespace WireformInput.States.Selection
     {
         private readonly Vec2 offset;
         private readonly Vec2 startPosition;
-        private readonly CircuitObject selectedObject;
+        private readonly BoardObject selectedObject;
 
         /// <summary>
         /// false if the object has just been created (like from a paste operation) and has no place to reset to if
@@ -39,7 +39,7 @@ namespace WireformInput.States.Selection
         /// true if the objects which are being moved already exists, 
         /// and thus has a valid start position
         /// </param>
-        public MovingSelectionState(Vec2 localPoint, HashSet<CircuitObject> selections, CircuitObject selectedObject, BoardState state, bool resettable) : base(selections)
+        public MovingSelectionState(Vec2 localPoint, HashSet<BoardObject> selections, BoardObject selectedObject, BoardState state, bool resettable) : base(selections)
         {
             //Make sure all selections start in a gridded position;
             foreach (var selection in selections)
@@ -121,7 +121,7 @@ namespace WireformInput.States.Selection
                 //Calculate intersections with other gates
                 if (selection is Gate)
                 {
-                    if (selection.HitBox.GetIntersections(state, false, out var intersects, out _))
+                    if (selection.HitBox.GetIntersections(state, (true, false, false), out var intersects, out _))
                     {
                         intersectedBoxes.UnionWith(intersects);
                     }

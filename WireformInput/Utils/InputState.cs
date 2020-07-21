@@ -19,24 +19,31 @@ namespace WireformInput.Utils
         public virtual void Draw(BoardState currentState, PainterScope painter) { }
 
         //Mouse Operations
-        public virtual InputReturns MouseLeftDown(StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseLeftDown (StateControls stateControls) => (false, this);
         public virtual InputReturns MouseRightDown(StateControls stateControls) => (false, this);
-        public virtual InputReturns MouseMove(StateControls stateControls) => (false, this);
-        public virtual InputReturns MouseLeftUp(StateControls stateControls) => (false, this);
-        public virtual InputReturns MouseRightUp(StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseMove     (StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseLeftUp   (StateControls stateControls) => (false, this);
+        public virtual InputReturns MouseRightUp  (StateControls stateControls) => (false, this);
 
         //Keyboard Operations
         public virtual InputReturns KeyDown(StateControls stateControls) => (false, this);
-        public virtual InputReturns KeyUp(StateControls stateControls) => (false, this);
+        public virtual InputReturns KeyUp  (StateControls stateControls) => (false, this);
 
         //History Operations
         public virtual InputReturns Undo(StateControls stateControls) => (false, this);
         public virtual InputReturns Redo(StateControls stateControls) => (false, this);
 
         //Clipboard operations
-        public virtual InputReturns Copy(StateControls stateControls, HashSet<CircuitObject> clipBoard) => (false, this);
-        public virtual InputReturns Cut(StateControls stateControls, HashSet<CircuitObject> clipBoard) => (false, this);
-        public virtual InputReturns Paste(StateControls stateControls, HashSet<CircuitObject> clipBoard) => (false, this);
+        public virtual InputReturns Copy (StateControls stateControls, HashSet<BoardObject> clipBoard) => (false, this);
+        public virtual InputReturns Cut  (StateControls stateControls, HashSet<BoardObject> clipBoard) => (false, this);
+        public virtual InputReturns Paste(StateControls stateControls, HashSet<BoardObject> clipBoard) => (false, this);
+
+        //Special operations
+        /// <summary>
+        /// This function is called only if IsClean returned true, and the state manager wishes to change the current
+        /// state. It is the only InputState with no return value.
+        /// </summary>
+        public virtual InputReturns CleanupState(StateControls stateControls) => (false, this);
     }
 
     public struct InputReturns

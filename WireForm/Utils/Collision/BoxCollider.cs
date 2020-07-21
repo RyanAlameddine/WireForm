@@ -147,32 +147,28 @@ namespace Wireform.MathUtils.Collision
         /// </summary>
         /// <param name="intersectBoxes">The rectangles for the intersections</param>
         /// <returns>Did the BoxCollider intersect with anything</returns>
-        public bool GetIntersections(BoardState state, bool hitWires, out HashSet<BoxCollider> intersectBoxes, out HashSet<CircuitObject> intersectedcircuitObjects, bool only2D = true)
+        public bool GetIntersections(BoardState state, (bool hitGates, bool hitWires, bool hitExtras) conditions, out HashSet<BoxCollider> intersectBoxes, out HashSet<BoardObject> intersectedBoardObjects, bool only2D = true)
         {
             intersectBoxes = new HashSet<BoxCollider>();
-            intersectedcircuitObjects = new HashSet<CircuitObject>();
+            intersectedBoardObjects = new HashSet<BoardObject>();
 
-            if (hitWires)
-            {
-                foreach (WireLine wire in state.Wires)
-                {
-                    BoxCollider collider = wire.HitBox;
-                    if (Intersects(collider, out var intersection))
-                    {
-                        intersectedcircuitObjects.Add(wire);
-                        intersectBoxes.Add(intersection);
-                    }
-                }
-            }
+            IEnumerable<BoardObject> objectsToCheck = Enumerable.Empty<BoardObject>();
 
-            foreach (Gate gate in state.Gates)
+            if (conditions.hitGates)  objectsToCheck = objectsToCheck.Union(state.Gates);
+
+            if (conditions.hitWires)  objectsToCheck = objectsToCheck.Union(state.Wires);
+
+            if (conditions.hitExtras) objectsToCheck = objectsToCheck.Union(state.Extras);
+
+            foreach (BoardObject boardObj in objectsToCheck)
             {
-                BoxCollider collider = gate.HitBox;
+                BoxCollider collider = boardObj.HitBox;
                 if (Intersects(collider, out var intersection))
                 {
                     if (only2D && (intersection.Width == 0 || intersection.Height == 0)) continue;
-                    intersectedcircuitObjects.Add(gate);
                     intersectBoxes.Add(intersection);
+
+                    intersectedBoardObjects.Add(boardObj);
                 }
             }
 

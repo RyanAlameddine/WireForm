@@ -95,7 +95,7 @@ namespace WinformsWireform.Helpers
             if (ModifierKeys.HasFlag(Keys.Control)) modifierKeys |= Modifier.Control;
             if (ModifierKeys.HasFlag(Keys.Shift))   modifierKeys |= Modifier.Shift;
             if (ModifierKeys.HasFlag(Keys.Alt))     modifierKeys |= Modifier.Alt;
-            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, stateManager.SizeScale, keyChar, modifierKeys, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
+            var stateControls = new StateControls(stateStack.CurrentState, mousePoint, stateManager.Zoom, keyChar, modifierKeys, stateStack.RegisterChange, stateStack.Reverse, stateStack.Advance);
             return stateControls;
         }
     }

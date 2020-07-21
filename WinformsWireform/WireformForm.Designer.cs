@@ -63,7 +63,8 @@
             this.toolBox.FormattingEnabled = true;
             this.toolBox.Items.AddRange(new object[] {
             "Gate Controller (G)",
-            "Wire Painter (W)"});
+            "Wire Painter (W)",
+            "Text Tool (E)"});
             this.toolBox.Location = new System.Drawing.Point(1000, 18);
             this.toolBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.toolBox.Name = "toolBox";
@@ -102,7 +103,6 @@
             // 
             // menuStrip
             // 
-            this.menuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileButton,

@@ -14,9 +14,9 @@ namespace Wireform.Circuitry.Data
     /// </summary>
     public abstract class DrawableObject
     {
-        public abstract Vec2 StartPoint { get; set; }
+        public virtual Vec2 StartPoint { get; set; }
 
-        public abstract void Draw(PainterScope scope, BoardState state);
+        public abstract void Draw(PainterScope painter, BoardState state);
 
         /// <summary>
         /// Move BoardObject so that StartPoint = newPosition;

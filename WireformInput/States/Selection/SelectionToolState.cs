@@ -15,14 +15,14 @@ namespace WireformInput.States.Selection
     /// </summary>
     public class SelectionToolState : SelectionStateBase
     {
-        public SelectionToolState() : base(new HashSet<CircuitObject>()) { }
-        public SelectionToolState(HashSet<CircuitObject> selections) : base(selections) { }
+        public SelectionToolState() : base(new HashSet<BoardObject>()) { }
+        public SelectionToolState(HashSet<BoardObject> selections) : base(selections) { }
         
         public override bool IsClean() => true;
 
         public override InputReturns KeyDown(StateControls stateControls)
         {
-            bool toRefresh = ExecuteHotkey(stateControls.State, stateControls.Hotkey, stateControls.Modifiers, stateControls.RegisterChange, out var circuitProperties);
+            bool toRefresh = ExecuteHotkey(stateControls.State, stateControls.PressedKeyLower, stateControls.Modifiers, stateControls.RegisterChange, out var circuitProperties);
             stateControls.CircuitPropertiesOutput = circuitProperties;
             return (toRefresh, this);
         }
@@ -34,22 +34,22 @@ namespace WireformInput.States.Selection
             //edit the current set of selections (add/remove selections) without starting over.
             bool additiveSelection = stateControls.Modifiers.HasFlag(Modifier.Shift);
             //true if you click a gate
-            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(stateControls.State, true, out _, out var circuitObjects, false))
+            if (new BoxCollider(localPoint.X, localPoint.Y, 0, 0).GetIntersections(stateControls.State, (true, true, true), out _, out var boardObjects, false))
             {
-                CircuitObject clickedcircuitObject = circuitObjects.First();
+                BoardObject clickedBoardObject = boardObjects.First();
                 //If you click something which is not already selected
-                if (!selections.Contains(clickedcircuitObject))
+                if (!selections.Contains(clickedBoardObject))
                 {
                     if (!additiveSelection) selections.Clear();
-                    selections.Add(clickedcircuitObject);
+                    selections.Add(clickedBoardObject);
                 }
                 //If you click something which is already selected with additiveSelection enabled, remove it
-                else if (additiveSelection) selections.Remove(clickedcircuitObject);
+                else if (additiveSelection) selections.Remove(clickedBoardObject);
 
                 //Load [CircuitProperties] for clicked object
                 stateControls.CircuitPropertiesOutput = GetUpdatedCircuitProperties(stateControls.RegisterChange);
 
-                return (true, new MovingSelectionState(stateControls.LocalMousePosition, selections, clickedcircuitObject, stateControls.State, true));
+                return (true, new MovingSelectionState(stateControls.LocalMousePosition, selections, clickedBoardObject, stateControls.State, true));
             }
             //Begin dragging selection box
             //Clear selections if additiveSelection is not activated
@@ -64,13 +64,13 @@ namespace WireformInput.States.Selection
         public override InputReturns MouseRightDown(StateControls stateControls)
         {
             //true if you click a gate
-            if (new BoxCollider(stateControls.LocalMousePosition.X, stateControls.LocalMousePosition.Y, 0, 0).GetIntersections(stateControls.State, true, out _, out var circuitObjects, false))
+            if (new BoxCollider(stateControls.LocalMousePosition.X, stateControls.LocalMousePosition.Y, 0, 0).GetIntersections(stateControls.State, (true, true, true), out _, out var boardObjects, false))
             {
-                CircuitObject clickedcircuitObject = circuitObjects.First();
+                BoardObject clickedBoardObject = boardObjects.First();
                 selections.Clear();
-                selections.Add(clickedcircuitObject);
+                selections.Add(clickedBoardObject);
                 //Load [CircuitActions]
-                var actions = CircuitAttributes.GetActions(clickedcircuitObject, RefreshSelections, stateControls.RegisterChange);
+                var actions = CircuitAttributes.GetActions(clickedBoardObject, RefreshSelections, stateControls.RegisterChange);
                 stateControls.CircuitActionsOutput = actions;
                 return (true, this);
             }
@@ -93,7 +93,7 @@ namespace WireformInput.States.Selection
             return (true, this);
         }
 
-        public override InputReturns Copy(StateControls stateControls, HashSet<CircuitObject> clipBoard)
+        public override InputReturns Copy(StateControls stateControls, HashSet<BoardObject> clipBoard)
         {
             //if no objects can be copied, return
             if (selections.Count == 0) return (false, this);
@@ -104,7 +104,7 @@ namespace WireformInput.States.Selection
             return (false, this);
         }
 
-        public override InputReturns Cut(StateControls stateControls, HashSet<CircuitObject> clipBoard)
+        public override InputReturns Cut(StateControls stateControls, HashSet<BoardObject> clipBoard)
         {
             //if no objects can be cut, return
             if (selections.Count == 0) return (false, this);
@@ -121,7 +121,7 @@ namespace WireformInput.States.Selection
             return (true, this);
         }
 
-        public override InputReturns Paste(StateControls stateControls, HashSet<CircuitObject> clipBoard)
+        public override InputReturns Paste(StateControls stateControls, HashSet<BoardObject> clipBoard)
         {
             selections.Clear();
 

@@ -105,7 +105,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
                         property.Set(value, connections);
                         existingProp.Set(value, connections);
                     }, 
-                    true, property.circuitObject, (min, max), valueNames, property.RequireReconnect, property.Name);
+                    true, property.boardObject, (min, max), valueNames, property.RequireReconnect, property.Name);
 
                 propertyMap[property.Name] = newProp;
             }

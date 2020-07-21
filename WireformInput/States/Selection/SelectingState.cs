@@ -13,20 +13,18 @@ namespace WireformInput.States.Selection
     /// </summary>
     class SelectingState : SelectionStateBase
     {
-        private readonly HashSet<CircuitObject> additiveSelections;
+        private readonly HashSet<BoardObject> additiveSelections;
 
         /// <summary>
         /// Mouse selection box
         /// </summary>
         private readonly BoxCollider mouseBox;
 
-        public SelectingState(Vec2 position, HashSet<CircuitObject> additiveSelections) : base(new HashSet<CircuitObject>())
+        public SelectingState(Vec2 position, HashSet<BoardObject> additiveSelections) : base(new HashSet<BoardObject>())
         {
             this.additiveSelections = additiveSelections;
             selections.UnionWith(additiveSelections);
             mouseBox = new BoxCollider(position.X, position.Y, 0, 0);
-
-
         }
 
         public override void Draw(BoardState state, PainterScope painter)
@@ -45,7 +43,7 @@ namespace WireformInput.States.Selection
             mouseBox.Height = stateControls.LocalMousePosition.Y - mouseBox.Y;
 
             //Update selection box and load intersections into selections
-            mouseBox.GetNormalized().GetIntersections(stateControls.State, true, out _, out var newSelections);
+            mouseBox.GetNormalized().GetIntersections(stateControls.State, (true, true, true), out _, out var newSelections);
             selections.Clear();
             selections.UnionWith(newSelections);
             selections.UnionWith(additiveSelections);

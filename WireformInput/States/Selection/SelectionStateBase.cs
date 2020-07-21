@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Wireform.Circuitry;
 using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
@@ -19,14 +20,14 @@ namespace WireformInput.States.Selection
     /// </summary>
     public abstract class SelectionStateBase : InputState
     {
-        protected readonly HashSet<CircuitObject> selections;
+        protected readonly HashSet<BoardObject> selections;
 
-        protected SelectionStateBase(HashSet<CircuitObject> selections)
+        protected SelectionStateBase(HashSet<BoardObject> selections)
         {
             this.selections = selections;
         }
 
-        private readonly HashSet<CircuitObject> oldSelections = new HashSet<CircuitObject>();
+        private readonly HashSet<BoardObject> oldSelections = new HashSet<BoardObject>();
         /// <summary>
         /// Returns a list of updated CircuitProperties to be passed into the StateControls
         /// </summary>
@@ -73,47 +74,18 @@ namespace WireformInput.States.Selection
         public void RefreshSelections(BoardState state)
         {
             int count = selections.Count;
-            selections.RemoveWhere((x) =>
-            {
-                if (x is WireLine wire)
-                {
-                    return !state.Wires.Contains(wire);
-                }
-                else if (x is Gate gate)
-                {
-                    return !state.Gates.Contains(gate);
-                }
-                else
-                {
-                    throw new Exception("Invalid object selected");
-                }
-            });
+            selections.RemoveWhere((x) => !state.BoardObjects.Contains(x));
         }
 
         public override void Draw(BoardState currentState, PainterScope painter)
         {
             //Draws selected gates and wires because they are technically no longer on the board
-            foreach (CircuitObject selection in selections)
+            foreach (BoardObject selection in selections)
             {
-                if (selection is Gate gate)
-                {
-                    gate.Draw(painter, currentState);
-                    BoxCollider selectionBox = selection.HitBox;
-
-                    painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
-
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, selectionBox.Position, new Vec2(.4f, .4f));
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X + selectionBox.Width, selectionBox.Y), new Vec2(.4f, .4f));
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X, selectionBox.Y + selectionBox.Height), new Vec2(.4f, .4f));
-                    painter.DrawEllipseC(Color.FromArgb(255, 0, 0, 255), 5, new Vec2(selectionBox.X + selectionBox.Width, selectionBox.Y + selectionBox.Height), new Vec2(.4f, .4f));
-                }
-                if (selection is WireLine wire)
-                {
-                    BoxCollider selectionBox = selection.HitBox;
-
-                    painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
-                    wire.Draw(painter, currentState);
-                }
+                selection.Draw(painter, currentState);
+                
+                BoxCollider selectionBox = selection.HitBox;
+                painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
             }
         }
     }

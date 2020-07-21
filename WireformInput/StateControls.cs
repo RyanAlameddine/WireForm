@@ -19,9 +19,14 @@ namespace WireformInput
         public Vec2 MousePosition { get; }
 
         /// <summary>
-        /// If this control is being created for a keyboard event, should contain the key of note
+        /// If this control is being created for a keyboard event, should contain the lowercase key of note
         /// </summary>
-        public char? Hotkey { get; }
+        public char? PressedKeyLower { get; }
+
+        /// <summary>
+        /// If this control is being created for a keyboard event, should contain the key of note including the correct case
+        /// </summary>
+        public char? PressedKey { get; }
 
         /// <summary>
         /// The key modifiers currently being pressed down
@@ -67,17 +72,18 @@ namespace WireformInput
         /// </summary>
         public CircuitPropertyCollection CircuitPropertiesOutput { get; set; } = null;
 
-        public StateControls(BoardState state, Vec2 mousePosition, float SizeScale, char? hotkey, Modifier modifiers, Action<string> registerChange, Action reverse, Action advance)
+        public StateControls(BoardState state, Vec2 mousePosition, float Zoom, char? pressedKey, Modifier modifiers, Action<string> registerChange, Action reverse, Action advance)
         {
             this.State = state;
             this.MousePosition = mousePosition;
-            this.Hotkey = hotkey == null ? hotkey : hotkey.ToString().ToLower()[0];
+            this.PressedKeyLower = pressedKey == null ? pressedKey : pressedKey.ToString().ToLower()[0];
+            this.PressedKey = pressedKey;
             this.Modifiers = modifiers;
             this.RegisterChange = registerChange;
             this.Reverse = reverse;
             this.Advance = advance;
 
-            this.LocalMousePosition = MathHelper.ViewportToLocalPoint(mousePosition, SizeScale);
+            this.LocalMousePosition = MathHelper.ViewportToLocalPoint(mousePosition, Zoom);
             this.GriddedMousePosition = this.LocalMousePosition.Round();
         }
     }

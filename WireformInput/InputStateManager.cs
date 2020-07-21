@@ -7,6 +7,7 @@ using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 using WireformInput.States.Selection;
+using WireformInput.States.Text;
 using WireformInput.States.Wire;
 using WireformInput.Utils;
 
@@ -28,17 +29,18 @@ namespace WireformInput
                 {
                     { Tools.SelectionTool, () => new SelectionToolState() },
                     { Tools.WireTool,      () => new WireToolState     () },
+                    { Tools.TextTool,      () => new TextToolState     () },
                 };
 
         public Tools SelectedTool { get; private set; }
 
         InputState state;
-        readonly HashSet<CircuitObject> clipBoard;
+        readonly HashSet<BoardObject> clipBoard;
         public IEventRunner eventRunner;
 
         public InputStateManager(IEventRunner eventRunner)
         {
-            clipBoard = new HashSet<CircuitObject>();
+            clipBoard = new HashSet<BoardObject>();
 
             state = new SelectionToolState();
             SelectedTool = Tools.SelectionTool;
@@ -50,7 +52,7 @@ namespace WireformInput
         /// <summary>
         /// The zoom to draw with (small values = zoomed in)
         /// </summary>
-        public float SizeScale
+        public float Zoom
         {
             get => scale;
             set { scale = value > 5 ? value : 5; }
@@ -62,23 +64,28 @@ namespace WireformInput
         /// </summary>
         public bool TryChangeTool(Tools newState)
         {
-            if (state.IsClean())
-            {
-                state = ToolStates[newState]();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return TryChangeTool(ToolStates[newState]());
+        }
+
+        /// <summary>
+        /// Tries to change the current state.
+        /// If state is not clean, returns false, else true.
+        /// </summary>
+        private bool TryChangeTool(InputState newState)
+        {
+            if (!state.IsClean()) return false;
+
+            Eval(state.CleanupState);
+            state = newState;
+            return true;
         }
 
         public void Draw(BoardState currentState, PainterScope painter, Vec2 viewportSize)
         {
             //Draw grid
-            int step = MathHelper.Ceiling((int)(viewportSize.X / SizeScale) / 50f);
-            for (int x = 0; x * SizeScale < viewportSize.X; x += step)
-                for (int y = 0; y * SizeScale < viewportSize.Y; y += step)
+            int step = MathHelper.Ceiling((int)(viewportSize.X / Zoom) / 50f);
+            for (int x = 0; x * Zoom < viewportSize.X; x += step)
+                for (int y = 0; y * Zoom < viewportSize.Y; y += step)
                     painter.FillRectangleC(Color.DarkBlue, new Vec2(x, y), new Vec2(.05f * step, .05f * step));
             //Draw board objects
             foreach (BoardObject obj in currentState.BoardObjects) obj.Draw(painter, currentState);
@@ -129,12 +136,16 @@ namespace WireformInput
         {
             Eval((stateControls) =>
             {
-                if (!state.IsClean()) return new InputReturns(false, state);
-                var newState = new MovingSelectionState(new Vec2(0, 0), new HashSet<CircuitObject>() { newGate }, newGate, stateControls.State, false);
+                if (state.IsClean()) {
+                    var newState = new MovingSelectionState(new Vec2(0, 0), new HashSet<BoardObject>() { newGate }, newGate, stateControls.State, false);
 
-                stateControls.CircuitPropertiesOutput = newState.GetUpdatedCircuitProperties(stateControls.RegisterChange);
+                    TryChangeTool(newState);
 
-                return new InputReturns(true, newState);
+                    stateControls.CircuitPropertiesOutput = newState.GetUpdatedCircuitProperties(stateControls.RegisterChange);
+
+                    return new InputReturns(true, newState);
+                }
+                return new InputReturns(false, state);
             });
         }
     }
@@ -143,5 +154,6 @@ namespace WireformInput
     {
         SelectionTool,
         WireTool,
+        TextTool,
     }
 }

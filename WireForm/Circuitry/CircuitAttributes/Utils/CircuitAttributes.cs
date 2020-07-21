@@ -14,7 +14,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
         /// <summary>
         /// Loads all [CircuitProperties] on the target object
         /// </summary>
-        public static CircuitPropertyCollection GetProperties(CircuitObject target, Action<string> registerChange)
+        public static CircuitPropertyCollection GetProperties(BoardObject target, Action<string> registerChange)
         {
             var properties = target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             var circuitProps = new HashSet<CircuitProp>();
@@ -34,7 +34,7 @@ namespace Wireform.Circuitry.CircuitAttributes.Utils
         /// Reflectively loads all [CircuitActions] on a target CircuitObject.
         /// </summary>
         /// <param name="cleanup">Function to be run after the action is invoked (refresh selections)</param>
-        public static CircuitActionCollection GetActions(CircuitObject target, Action<BoardState> cleanup, Action<string> registerChange)
+        public static CircuitActionCollection GetActions(BoardObject target, Action<BoardState> cleanup, Action<string> registerChange)
         {
             var actions = new HashSet<CircuitAct>();
 

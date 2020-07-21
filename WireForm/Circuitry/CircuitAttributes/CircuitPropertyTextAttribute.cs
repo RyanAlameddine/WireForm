@@ -18,13 +18,19 @@ namespace Wireform.Circuitry.CircuitAttributes
         readonly IStringValidator validator;
 
         /// <param name="RequireReconnect">true if the Circuit Property requires the gate to be reconnected (connections reset) on edit</param>
-        /// <param name="ValidationType">A type that will handle validation of string input, see <see cref="StringValidators"/></param>
+        /// <param name="ValidationType">An <see cref="IStringValidator"/> type that will handle validation of string input, see <see cref="StringValidators"/></param>
         public CircuitPropertyTextAttribute(bool RequireReconnect, Type ValidationType) : base(RequireReconnect)
         {
             validator = (IStringValidator) Activator.CreateInstance(ValidationType);
         }
 
-        public override CircuitProp ToProp(PropertyInfo property, CircuitObject target)
+        /// <param name="ValidationType">An <see cref="IStringValidator"/> type that will handle validation of string input, see <see cref="StringValidators"/></param>
+        public CircuitPropertyTextAttribute(Type ValidationType) : base(false)
+        {
+            validator = (IStringValidator) Activator.CreateInstance(ValidationType);
+        }
+
+        public override CircuitProp ToProp(PropertyInfo property, BoardObject target)
         {
             return new CircuitProp(
                 () => (string) property.GetValue(target),
