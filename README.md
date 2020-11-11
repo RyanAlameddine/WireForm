@@ -12,6 +12,13 @@ WireForm is a .NET Standard 2.0 library created to simulate logic gates and othe
 - Copy-Cut-Paste functionality
 - Other ease of use features such as additive selections (holding shift while selecting), intersected selection properties (multi-object editing), etc.
 
+## Examples
+
+ - Full Adder:
+   <img src="https://i.imgur.com/fdPFBw5.gif" width=1000>
+ - Splitter Example:
+   <img src="https://i.imgur.com/XKX1Yov.gif" width=1000>
+
 ## Installation
 
 Currently, there's no published version of this project, but feel free to build the project on your own.
