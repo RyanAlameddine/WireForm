@@ -14,10 +14,12 @@ WireForm is a .NET Standard 2.0 library created to simulate logic gates and othe
 
 ## Examples
 
+ - Controls Sample
+   <img src="https://i.imgur.com/9nEu6wQ.gif">
  - Full Adder:
-   <img src="https://i.imgur.com/fdPFBw5.gif" width=1000>
+   <img src="https://i.imgur.com/fdPFBw5.gif">
  - Splitter Example:
-   <img src="https://i.imgur.com/XKX1Yov.gif" width=1000>
+   <img src="https://i.imgur.com/XKX1Yov.gif">
 
 ## Installation
 
