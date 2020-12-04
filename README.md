@@ -2,6 +2,8 @@
 
 WireForm is a .NET Standard 2.0 library created to simulate logic gates and other digital circuitry through a simple graphical interface. Currently, the library has an implementation in Windows Forms (.NET Framework).
 
+#### Please refer to the [Project Board](https://github.com/RyanAlameddine/WireForm/projects/1) for information on the current progress of the WireForm.
+
 ## Features
 - Many simple logic gates such as AND, OR, XOR, NOT, etc.
 - The ability to rotate gates for improved control of circuit board
@@ -28,7 +30,3 @@ Currently, there's no published version of this project, but feel free to build 
 ## Extension
 
 Gates can be added by extending the abstract class Gate and registering your new class.
-
-## Tracking progress and future features
-
-Please refer to the [Project](https://github.com/RyanAlameddine/WireForm/projects/1) for information on the current progress of the WireForm project.
