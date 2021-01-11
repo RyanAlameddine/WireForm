@@ -34,12 +34,17 @@ namespace WireformInput.States.Text
             {
                 BoxCollider selectionBox = circuitLabel.HitBox;
                 painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
+                if (draggingLabel)
+                {
+                    circuitLabel.Draw(painter, currentState);
+                }
             }
         }
 
         public override InputReturns MouseLeftDown(StateControls stateControls)
         {
             RemoveBar();
+            DeleteIfEmpty(stateControls);
             circuitLabel = default;
 
             //If mouse clicked a CircuitLabel
@@ -48,17 +53,31 @@ namespace WireformInput.States.Text
                 var label = (CircuitLabel) boardObjects.Where((x) => x is CircuitLabel).FirstOrDefault();
                 if (label != default)
                 {
+                    stateControls.State.Extras.Remove(label);
+                    draggingLabel = true;
                     circuitLabel = label;
                     circuitLabel.Text += '|';
-                    draggingLabel = true;
                 }
             }
             else
             {
                 circuitLabel = new CircuitLabel(stateControls.LocalMousePosition);
+                draggingLabel = true;
             }
 
             return (true, this);
+        }
+
+        /// <summary>
+        /// Deletes the current circuitLabel if the text is empty
+        /// </summary>
+        private void DeleteIfEmpty(StateControls stateControls)
+        {
+            if(circuitLabel != null && circuitLabel.Text == "") 
+            { 
+                circuitLabel.Delete(stateControls.State);
+                stateControls.RegisterChange("Deleted unused circuitLabel");
+            }
         }
 
         public override InputReturns MouseMove(StateControls stateControls)
@@ -73,12 +92,11 @@ namespace WireformInput.States.Text
 
         public override InputReturns MouseLeftUp(StateControls stateControls)
         {
-
-            if (!draggingLabel)
+            if (draggingLabel)
             {
                 //Create and add a circuitLabel
-                circuitLabel = new CircuitLabel(stateControls.LocalMousePosition);
-                circuitLabel.Text = "|";
+                stateControls.State.Extras.Add(circuitLabel);
+                stateControls.RegisterChange("Circuit label created/moved");
             }
 
             draggingLabel = false;
@@ -92,7 +110,20 @@ namespace WireformInput.States.Text
 
             //Add the text to the selected circuitLabel
             RemoveBar();
-            circuitLabel.Text += stateControls.PressedKey + "|";
+            switch (stateControls.PressedKey.Value)
+            {
+                //backspace
+                case (char) 8:
+                    if(circuitLabel.Text.Length > 0)
+                        circuitLabel.Text = circuitLabel.Text.Substring(0, circuitLabel.Text.Length - 1) + "|";
+                    break;
+                //enter
+                //case '\n':
+                //    circuitLabel
+                default:
+                    circuitLabel.Text += stateControls.PressedKey + "|";
+                    break;
+            }
 
             return (true, this);
         }
@@ -100,12 +131,16 @@ namespace WireformInput.States.Text
         public override InputReturns CleanupState(StateControls stateControls)
         {
             RemoveBar();
+            DeleteIfEmpty(stateControls);
             return (true, this);
         }
 
+        /// <summary>
+        /// Removes the typing bar (|) from the end of the text if applicable
+        /// </summary>
         void RemoveBar()
         {
-            if (circuitLabel != null)
+            if (circuitLabel != null && circuitLabel.Text != "")
             {
                 circuitLabel.Text = circuitLabel.Text.Substring(0, circuitLabel.Text.Length - 1);
             }

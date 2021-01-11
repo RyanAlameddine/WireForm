@@ -25,11 +25,12 @@ namespace Wireform.Circuitry
 
         public CircuitLabel(Vec2 StartPoint)
         {
+            Gridded = false;
             this.StartPoint = StartPoint;
         }
 
         [CircuitPropertyText(typeof(StringValidators.NotNullOrEmpty))]
-        public string Text { get; set; }
+        public string Text { get; set; } = "|";
 
 
         [CircuitPropertyDropdown(1, 10, false)]

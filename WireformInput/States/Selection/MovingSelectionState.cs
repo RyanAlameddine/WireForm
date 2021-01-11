@@ -44,7 +44,7 @@ namespace WireformInput.States.Selection
             //Make sure all selections start in a gridded position;
             foreach (var selection in selections)
             {
-                selection.SetPosition(selection.StartPoint.Round());
+                if(selection.Gridded) selection.SetPosition(selection.StartPoint.Round());
             }
 
             this.selectedObject = selectedObject;
@@ -95,21 +95,28 @@ namespace WireformInput.States.Selection
 
         public override InputReturns MouseMove(StateControls stateControls)
         {
-            Vec2 newPosition = stateControls.LocalMousePosition + offset;
-            Vec2 gridPoint = newPosition.Round();
+            Vec2 gridPoint = stateControls.LocalMousePosition + offset;
+            Vec2 gridPointR = gridPoint.Round();
 
-            if (gridPoint == selectedObject.StartPoint) return (false, this);
+            bool delta = gridPoint == selectedObject.StartPoint; //ungridded position unchanged
+            bool deltaR = gridPointR == selectedObject.StartPoint.Round(); //gridded position unchanged
+            if (selectedObject.Gridded && deltaR || !selectedObject.Gridded && delta) return (false, this);
 
             Vec2 change = gridPoint - selectedObject.StartPoint;
+            Vec2 changeR = gridPointR - selectedObject.StartPoint.Round();
 
-            intersectedBoxes.Clear();
+            if(!deltaR)
+                intersectedBoxes.Clear();
+
             //Drag all objects to their new positions
             foreach(var selection in selections)
             {
-                selection.OffsetPosition(change);
+                if (selectedObject.Gridded) selection.OffsetPosition(changeR);
+                else selection.OffsetPosition(selection.Gridded ? changeR : change);
             }
 
-            CheckIntersections(stateControls.State);
+            if(!deltaR)
+                CheckIntersections(stateControls.State);
 
             return (true, this);
         }
@@ -143,9 +150,10 @@ namespace WireformInput.States.Selection
                 }
 
                 Vec2 totalOffset = startPosition - selectedObject.StartPoint;
+                Vec2 totalOffsetR = startPosition.Round() - selectedObject.StartPoint.Round();
                 foreach (var selection in selections)
                 {
-                    selection.OffsetPosition(totalOffset);
+                    selection.OffsetPosition(selection.Gridded ? totalOffsetR : totalOffset);
                 }
             }
 

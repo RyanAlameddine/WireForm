@@ -38,8 +38,7 @@ namespace WireformInput.States.Selection
 
         public override InputReturns MouseMove(StateControls stateControls)
         {
-
-            mouseBox.Width = stateControls.LocalMousePosition.X - mouseBox.X;
+            mouseBox.Width  = stateControls.LocalMousePosition.X - mouseBox.X;
             mouseBox.Height = stateControls.LocalMousePosition.Y - mouseBox.Y;
 
             //Update selection box and load intersections into selections

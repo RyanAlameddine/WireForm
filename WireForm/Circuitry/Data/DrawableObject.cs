@@ -16,6 +16,11 @@ namespace Wireform.Circuitry.Data
     {
         public virtual Vec2 StartPoint { get; set; }
 
+        /// <summary>
+        /// True if the object's position must conform to the grid lines
+        /// </summary>
+        public bool Gridded { get; protected set; } = true;
+
         public abstract void Draw(PainterScope painter, BoardState state);
 
         /// <summary>

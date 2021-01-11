@@ -42,22 +42,25 @@ namespace WinformsWireform
             if (!CircuitPropertyValueTextBox.Focused)
             {
                 //If W is pressed, change to Wire tool
-                if (keyData == Keys.W)
+                if (keyData.HasFlag(Keys.Control))
                 {
-                    toolBox.SelectedIndex = 1;
-                    ToolBox_SelectedIndexChanged(this, new EventArgs());
-                }
-                //If G is pressed, change to selection tool
-                else if (keyData == Keys.G)
-                {
-                    toolBox.SelectedIndex = 0;
-                    ToolBox_SelectedIndexChanged(this, new EventArgs());
-                }
-                //If E is pressed, change to text tool
-                else if (keyData == Keys.E)
-                {
-                    toolBox.SelectedIndex = 2;
-                    ToolBox_SelectedIndexChanged(this, new EventArgs());
+                    if (keyData == (Keys.W | Keys.Control))
+                    {
+                        toolBox.SelectedIndex = 1;
+                        ToolBox_SelectedIndexChanged(this, new EventArgs());
+                    }
+                    //If G is pressed, change to selection tool
+                    else if (keyData == (Keys.G | Keys.Control))
+                    {
+                        toolBox.SelectedIndex = 0;
+                        ToolBox_SelectedIndexChanged(this, new EventArgs());
+                    }
+                    //If E is pressed, change to text tool
+                    else if (keyData == (Keys.E | Keys.Control))
+                    {
+                        toolBox.SelectedIndex = 2;
+                        ToolBox_SelectedIndexChanged(this, new EventArgs());
+                    }
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -104,6 +107,7 @@ namespace WinformsWireform
 
         private void DrawingPanel_MouseDown(object sender, MouseEventArgs e)
         {
+            DrawingPanel.Focus();
             if (e.Button == MouseButtons.Left) inputStateManager.MouseLeftDown();
             else if (e.Button == MouseButtons.Right) inputStateManager.MouseRightDown();
         }

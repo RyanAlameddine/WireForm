@@ -5,6 +5,9 @@ using WireformInput.Utils;
 
 namespace WireformInput.States.Text
 {
+    /// <summary>
+    /// currently unused/unfinished state
+    /// </summary>
     class EditingTextState : InputState
     {
         private CircuitLabel circuitLabel;
