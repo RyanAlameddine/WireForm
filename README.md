@@ -1,6 +1,8 @@
 # WireForm
 
-WireForm is a .NET Standard 2.0 library created to simulate logic gates and other digital circuitry through a simple graphical interface. Currently, the library has an implementation in Windows Forms (.NET Framework).
+WireForm is a .NET Standard 2.0 library created to simulate logic gates and other digital circuitry through a simple graphical interface. Currently, the library has an implementation provided in Windows Forms (.NET Framework). An online Blazor implementation is also being worked on as a subset of SharpVM.
+
+#### Please refer to the [Project Board](https://github.com/RyanAlameddine/WireForm/projects/1) for information on the current progress of the WireForm.
 
 ## Features
 - Many simple logic gates such as AND, OR, XOR, NOT, etc.
@@ -10,7 +12,18 @@ WireForm is a .NET Standard 2.0 library created to simulate logic gates and othe
 - Gates with a dynamic input/output count
 - Undo-Redo functionality
 - Copy-Cut-Paste functionality
-- Other ease of use features such as additive selections (holding shift while selecting), intersected selection properties (multi-object editing), etc.
+- Smart selection features which prohibit gates from overlapping and provide visual feedback of intersection and connection between gates and wires.
+- If multiple objects are selected who share a property (like bitDepth, rotation, etc) all intersecting properties will be displayed and editable
+- Other ease of use features such as additive selections (holding shift while selecting to add items), etc.
+
+## Examples
+
+ - Controls Sample
+   <img src="https://i.imgur.com/9nEu6wQ.gif">
+ - Full Adder:
+   <img src="https://i.imgur.com/fdPFBw5.gif">
+ - Splitter Example:
+   <img src="https://i.imgur.com/XKX1Yov.gif">
 
 ## Installation
 
@@ -19,7 +32,3 @@ Currently, there's no published version of this project, but feel free to build 
 ## Extension
 
 Gates can be added by extending the abstract class Gate and registering your new class.
-
-## Tracking progress and future features
-
-Please refer to the [Project](https://github.com/RyanAlameddine/WireForm/projects/1) for information on the current progress of the WireForm project.
