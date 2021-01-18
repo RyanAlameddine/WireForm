@@ -3,11 +3,24 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
+    <Authors>RyanAlameddine</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>Library created to simulate logic gates and other digital circuitry in a clear object-oriented design. If you would like user-control features for mouse and keyboard input to edit the gates, see WireformInput.</Description>
+    <RepositoryUrl>https://github.com/RyanAlameddine/WireForm</RepositoryUrl>
+    <PackageTags>Wireform, Digital Logic, Logic Gates, Wire</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
