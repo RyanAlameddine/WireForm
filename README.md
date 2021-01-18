@@ -27,8 +27,10 @@ WireForm is a .NET Standard 2.0 library created to simulate logic gates and othe
 
 ## Installation
 
-Currently, there's no published version of this project, but feel free to build the project on your own.
+Currently, there's no published version of the front-end project, but feel free to build the project on your own.
 
 ## Extension
+
+Both Wireform (the base library which handles all the circuitry and electricity) and WireformInput (the layer which handles all the user input, dropdowns, hotkeys, and changes in the circuitboard) are available as NuGet packages on this repository.
 
 Gates can be added by extending the abstract class Gate and registering your new class.
