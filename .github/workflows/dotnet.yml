@@ -21,7 +21,7 @@ jobs:
         uses: rohith/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: WireForm
+          PROJECT_FILE_PATH: ./WireForm/Wireform.csproj
           
           # NuGet package id, used for version detection & defaults to project name
           # PACKAGE_NAME: Core
@@ -55,7 +55,7 @@ jobs:
         uses: rohith/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: WireformInput
+          PROJECT_FILE_PATH: ./WireformInput/WireformInput.csproj
           
           # NuGet package id, used for version detection & defaults to project name
           # PACKAGE_NAME: Core
