@@ -10,10 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
+      #- name: Setup dotnet
+      #  uses: actions/setup-dotnet@v1
+      #  with:
+      #    dotnet-version: 5.0.x
 
       # Publish
       - name: publish on version change
@@ -30,7 +30,7 @@ jobs:
           # VERSION_FILE_PATH: Directory.Build.props
 
           # Regex pattern to extract version info in a capturing group
-          VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
+          #VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
           
           # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
           # VERSION_STATIC: 1.0.0
@@ -58,7 +58,7 @@ jobs:
           PROJECT_FILE_PATH: WireformInput/WireformInput.csproj
           
           # Regex pattern to extract version info in a capturing group
-          VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
+          #VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
            
           # API key to authenticate with NuGet server
           NUGET_KEY: ${{secrets.GITHUB_TOKEN}}
