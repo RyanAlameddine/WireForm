@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.MathUtils;
 
 namespace Wireform.GraphicsUtils
@@ -9,14 +10,14 @@ namespace Wireform.GraphicsUtils
     /// at the TOP LEFT of the bounding box of the object.
     /// </summary>
     public interface IPainter
-    {
-        public void DrawLine(Color color, int penWidth, Vec2 point, Vec2 endPoint);
-        public void DrawArc(Color color, int penWidth, Vec2 point, Vec2 size, float startAngle, float sweepAngle);
-        public void DrawEllipse(Color color, int penWidth, Vec2 point, Vec2 size);
-        public void FillEllipse(Color color, Vec2 point, Vec2 size);
-        public void DrawRectangle(Color color, int penWidth, Vec2 point, Vec2 size);
-        public void FillRectangle(Color color, Vec2 point, Vec2 size);
-        public void DrawString(string s, Color color, Vec2 point, float scaleDivider);
-        public Vec2 MeasureString(string s, float zoom, float scaleDivider);
+    {                     
+        Task DrawLine     (Color color, int penWidth, Vec2 point, Vec2 endPoint);
+        Task DrawArc      (Color color, int penWidth, Vec2 point, Vec2 size, float startAngle, float sweepAngle);
+        Task DrawEllipse  (Color color, int penWidth, Vec2 point, Vec2 size);
+        Task FillEllipse  (Color color, Vec2 point, Vec2 size);
+        Task DrawRectangle(Color color, int penWidth, Vec2 point, Vec2 size);
+        Task FillRectangle(Color color, Vec2 point, Vec2 size);
+        Task DrawString   (string s, Color color, Vec2 point, float scaleDivider);
+        Task<Vec2> MeasureString(string s, float zoom, float scaleDivider);
     }
 }

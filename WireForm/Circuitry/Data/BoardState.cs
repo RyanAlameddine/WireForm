@@ -15,6 +15,7 @@ namespace Wireform.Circuitry.Data
         /// <summary>
         /// A Union of the Wires, Gates, and Extras collections
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<BoardObject> BoardObjects
         {
             get => ((IEnumerable<BoardObject>)Wires).Union(Gates).Union(Extras);

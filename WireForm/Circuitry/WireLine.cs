@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Data.Bits;
@@ -431,9 +432,9 @@ namespace Wireform.Circuitry
             RemoveConnections(state.Connections);
         }
 
-        public override void Draw(PainterScope scope, BoardState state)
+        public override async Task Draw(PainterScope scope, BoardState state)
         {
-            WirePainter.DrawWireLine(scope, state, this);
+            await WirePainter.DrawWireLine(scope, state, this);
         }
 
         public override BoardObject Copy()

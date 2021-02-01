@@ -21,7 +21,7 @@ namespace Wireform.Circuitry.Data
         /// </summary>
         public bool Gridded { get; protected set; } = true;
 
-        public abstract void Draw(PainterScope painter, BoardState state);
+        public abstract Task Draw(PainterScope painter, BoardState state);
 
         /// <summary>
         /// Move BoardObject so that StartPoint = newPosition;

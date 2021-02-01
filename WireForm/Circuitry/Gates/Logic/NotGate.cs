@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
@@ -28,11 +29,11 @@ namespace Wireform.Circuitry.Gates.Logic
             Outputs[0].Values = !Inputs[0].Values;
         }
 
-        protected override void DrawGate(PainterScope painter)
+        protected override async Task DrawGate(PainterScope painter)
         {
-            painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, .75f), new Vec2(-1, -.75f));
-            painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, .75f), new Vec2(1, 0));
-            painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, -.75f), new Vec2(1, 0));
+            await painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, .75f), new Vec2(-1, -.75f));
+            await painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, .75f), new Vec2(1, 0));
+            await painter.DrawLine(Color.Black, PenWidth, new Vec2(-1, -.75f), new Vec2(1, 0));
         }
 
         public override BoardObject Copy()

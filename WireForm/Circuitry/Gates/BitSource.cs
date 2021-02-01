@@ -13,6 +13,7 @@ using System.Linq;
 using Wireform.Utils;
 using Wireform.Circuitry.Data.Bits;
 using Wireform.Circuitry.CircuitAttributes.Utils.StringValidators;
+using System.Threading.Tasks;
 
 namespace Wireform.Circuitry.Gates
 {
@@ -28,13 +29,13 @@ namespace Wireform.Circuitry.Gates
             };
         }
 
-        protected override void DrawGate(PainterScope painter)
+        protected override async Task DrawGate(PainterScope painter)
         {
-            painter.DrawRectangle(Color.Green, 10, new Vec2(-.4f, -.4f), new Vec2(.8f, .8f));
+            await painter.DrawRectangle(Color.Green, 10, new Vec2(-.4f, -.4f), new Vec2(.8f, .8f));
 
-            painter.DrawStringC(Outputs[0].Values.Count.ToString(),       Color.Black, new Vec2(-.3f, -.6f), 1/4f);
-            painter.DrawStringC("*",                                      Color.Black, new Vec2(0   , -.6f), 1/4f);
-            painter.DrawStringC(Outputs[0].Values[0].ToChar().ToString(), Color.Black, new Vec2(.3f , -.6f), 1/4f);
+            await painter.DrawStringC(Outputs[0].Values.Count.ToString(),       Color.Black, new Vec2(-.3f, -.6f), 1/4f);
+            await painter.DrawStringC("*",                                      Color.Black, new Vec2(0   , -.6f), 1/4f);
+            await painter.DrawStringC(Outputs[0].Values[0].ToChar().ToString(), Color.Black, new Vec2(.3f , -.6f), 1/4f);
         }
 
         protected override void Compute()

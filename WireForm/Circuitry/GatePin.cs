@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Data.Bits;
 using Wireform.Circuitry.Utils;
@@ -81,9 +82,9 @@ namespace Wireform.Circuitry
             LocalPoint = localPoint;
         }
 
-        public override void Draw(PainterScope scope, BoardState state)
+        public override async Task Draw(PainterScope scope, BoardState state)
         {
-            scope.FillEllipseC(Values.BitColors()[0], LocalPoint, new Vec2(.4f, .4f));
+            await scope.FillEllipseC(Values.BitColors()[0], LocalPoint, new Vec2(.4f, .4f));
         }
     }
 }

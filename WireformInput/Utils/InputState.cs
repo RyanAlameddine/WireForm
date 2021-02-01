@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
 
@@ -16,7 +17,7 @@ namespace WireformInput.Utils
         /// </summary>
         public virtual bool IsClean() => false;
 
-        public virtual void Draw(BoardState currentState, PainterScope painter) { }
+        public virtual Task Draw(BoardState currentState, PainterScope painter) => Task.CompletedTask;
 
         //Mouse Operations
         public virtual InputReturns MouseLeftDown (StateControls stateControls) => (false, this);

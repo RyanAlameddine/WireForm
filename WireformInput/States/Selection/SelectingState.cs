@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
@@ -27,13 +28,13 @@ namespace WireformInput.States.Selection
             mouseBox = new BoxCollider(position.X, position.Y, 0, 0);
         }
 
-        public override void Draw(BoardState state, PainterScope painter)
+        public override async Task Draw(BoardState state, PainterScope painter)
         {
             BoxCollider newBox = mouseBox.GetNormalized();
-            painter.DrawRectangle(Color.FromArgb(255, 0, 0, 255), 3, newBox.Position, newBox.Bounds);
-            painter.FillRectangle(Color.FromArgb(64, 128, 128, 255), newBox.Position, newBox.Bounds);
+            await painter.DrawRectangle(Color.FromArgb(255, 0, 0, 255), 3, newBox.Position, newBox.Bounds);
+            await painter.FillRectangle(Color.FromArgb(64, 128, 128, 255), newBox.Position, newBox.Bounds);
 
-            base.Draw(state, painter);
+            await base.Draw(state, painter);
         }
 
         public override InputReturns MouseMove(StateControls stateControls)

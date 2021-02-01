@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
@@ -28,15 +29,15 @@ namespace WireformInput.States.Text
 
         public override bool IsClean() => true;
 
-        public override void Draw(BoardState currentState, PainterScope painter)
+        public override async Task Draw(BoardState currentState, PainterScope painter)
         {
             if(circuitLabel != null)
             {
                 BoxCollider selectionBox = circuitLabel.HitBox;
-                painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
+                await painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
                 if (draggingLabel)
                 {
-                    circuitLabel.Draw(painter, currentState);
+                    await circuitLabel.Draw(painter, currentState);
                 }
             }
         }

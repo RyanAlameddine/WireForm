@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.Circuitry.Utils;
 using Wireform.MathUtils;
 
@@ -140,7 +141,7 @@ namespace Wireform.GraphicsUtils
             }
         }
 
-        public void DrawLine(Color color, int penWidth, Vec2 point, Vec2 endPoint)
+        public async Task DrawLine(Color color, int penWidth, Vec2 point, Vec2 endPoint)
         {
             Vec2 zero = Vec2.Zero;
             OffsetPosition(ref point, ref zero);
@@ -150,10 +151,10 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref endPoint); 
             ScaleWidth(ref penWidth);
 
-            painter.DrawLine(color, penWidth, point, endPoint);
+            await painter.DrawLine(color, penWidth, point, endPoint);
         }
 
-        public void DrawArc(Color color, int penWidth, Vec2 point, Vec2 size, float startAngle, float sweepAngle)
+        public async Task DrawArc(Color color, int penWidth, Vec2 point, Vec2 size, float startAngle, float sweepAngle)
         {
             MultiplyArc(ref startAngle, ref sweepAngle);
             OffsetPositionTL(ref point, ref size);
@@ -162,10 +163,10 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawArc(color, penWidth, point, size, startAngle, sweepAngle);
+            await painter.DrawArc(color, penWidth, point, size, startAngle, sweepAngle);
         }
 
-        public void DrawArcC(Color color, int penWidth, Vec2 centralPoint, Vec2 size, float startAngle, float sweepAngle)
+        public async Task DrawArcC(Color color, int penWidth, Vec2 centralPoint, Vec2 size, float startAngle, float sweepAngle)
         {
             MultiplyArc(ref startAngle, ref sweepAngle);
             OffsetPosition(ref centralPoint, ref size);
@@ -175,10 +176,10 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawArc(color, penWidth, centralPoint, size, startAngle, sweepAngle);
+            await painter.DrawArc(color, penWidth, centralPoint, size, startAngle, sweepAngle);
         }
 
-        public void DrawEllipse(Color color, int penWidth, Vec2 point, Vec2 size)
+        public async Task DrawEllipse(Color color, int penWidth, Vec2 point, Vec2 size)
         {
             OffsetPositionTL(ref point, ref size);
 
@@ -186,10 +187,10 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawEllipse(color, penWidth, point, size);
+            await painter.DrawEllipse(color, penWidth, point, size);
         }
 
-        public void DrawEllipseC(Color color, int penWidth, Vec2 centralPoint, Vec2 size)
+        public async Task DrawEllipseC(Color color, int penWidth, Vec2 centralPoint, Vec2 size)
         {
             OffsetPosition(ref centralPoint, ref size);
             CenterPoint(ref centralPoint, size);
@@ -198,20 +199,20 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawEllipse(color, penWidth, centralPoint, size);
+            await painter.DrawEllipse(color, penWidth, centralPoint, size);
         }
 
-        public void FillEllipse(Color color, Vec2 point, Vec2 size)
+        public async Task FillEllipse(Color color, Vec2 point, Vec2 size)
         {
             OffsetPositionTL(ref point, ref size);
 
             ScalePoint(ref point);
             ScalePoint(ref size);
 
-            painter.FillEllipse(color, point, size);
+            await painter.FillEllipse(color, point, size);
         }
 
-        public void FillEllipseC(Color color, Vec2 centralPoint, Vec2 size)
+        public async Task FillEllipseC(Color color, Vec2 centralPoint, Vec2 size)
         {
             OffsetPosition(ref centralPoint, ref size);
 
@@ -220,10 +221,10 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
 
-            painter.FillEllipse(color, centralPoint, size);
+            await painter.FillEllipse(color, centralPoint, size);
         }
 
-        public void DrawRectangle(Color color, int penWidth, Vec2 point, Vec2 size)
+        public async Task DrawRectangle(Color color, int penWidth, Vec2 point, Vec2 size)
         {
             OffsetPositionTL(ref point, ref size);
 
@@ -231,20 +232,20 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref size);
             ScaleWidth(ref penWidth);
 
-            painter.DrawRectangle(color, penWidth, point, size);
+            await painter.DrawRectangle(color, penWidth, point, size);
         }
 
-        public void FillRectangle(Color color, Vec2 point, Vec2 size)
+        public async Task FillRectangle(Color color, Vec2 point, Vec2 size)
         {
             OffsetPositionTL(ref point, ref size);
 
             ScalePoint(ref point);
             ScalePoint(ref size);
 
-            painter.FillRectangle(color, point, size);
+            await painter.FillRectangle(color, point, size);
         }
 
-        public void FillRectangleC(Color color, Vec2 centralPoint, Vec2 size)
+        public async Task FillRectangleC(Color color, Vec2 centralPoint, Vec2 size)
         {
             OffsetPosition(ref centralPoint, ref size);
             CenterPoint(ref centralPoint, size);
@@ -252,30 +253,30 @@ namespace Wireform.GraphicsUtils
             ScalePoint(ref centralPoint);
             ScalePoint(ref size);
 
-            painter.FillRectangle(color, centralPoint, size);
+            await painter.FillRectangle(color, centralPoint, size);
         }
 
-        public void DrawString(string s, Color color, Vec2 point, float scale)
+        public async Task DrawString(string s, Color color, Vec2 point, float scale)
         {
-            var size = painter.MeasureString(s, Zoom, scale * Zoom);
+            var size = await painter.MeasureString(s, Zoom, scale * Zoom);
             var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPositionTL(ref point, ref V2Size);
 
-            painter.DrawString(s, color, point * Zoom, scale * Zoom);
+            await painter.DrawString(s, color, point * Zoom, scale * Zoom);
         }
 
-        public void DrawStringC(string s, Color color, Vec2 centralPoint, float scale)
+        public async Task DrawStringC(string s, Color color, Vec2 centralPoint, float scale)
         {
-            var size = painter.MeasureString(s, Zoom, scale * Zoom);
+            var size = await painter.MeasureString(s, Zoom, scale * Zoom);
             var V2Size = new Vec2(size.X, size.Y);
 
             OffsetPosition(ref centralPoint, ref V2Size);
 
-            painter.DrawString(s, color, centralPoint * Zoom - size / 2f, scale * Zoom);
+            await painter.DrawString(s, color, centralPoint * Zoom - size / 2f, scale * Zoom);
         }
 
-        public Vec2 MeasureString(string s, float scale)
+        public Task<Vec2> MeasureString(string s, float scale)
         {
             return painter.MeasureString(s, Zoom, scale * Zoom);
         }

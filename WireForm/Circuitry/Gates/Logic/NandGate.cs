@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
 using Wireform.GraphicsUtils;
@@ -23,17 +24,17 @@ namespace Wireform.Circuitry.Gates.Logic
             Outputs[0].Values = ! FoldInputs((a, c) => a & c);
         }
 
-        protected override void DrawGate(PainterScope painter)
+        protected override async Task DrawGate(PainterScope painter)
         {
-            painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, 1.5f), new Vec2(-2, -1.5f));
+            await painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, 1.5f), new Vec2(-2, -1.5f));
             
-            painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, 1.5f), new Vec2(-.5f + .1f, 1.5f));
-            painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, -1.5f), new Vec2(-.5f + .1f, -1.5f));
-            painter.DrawArc(Color.Black, PenWidth, new Vec2(-2f, -1.5f), new Vec2(3f, 3f), 270, 180);
+            await painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, 1.5f), new Vec2(-.5f + .1f, 1.5f));
+            await painter.DrawLine(Color.Black, PenWidth, new Vec2(-2, -1.5f), new Vec2(-.5f + .1f, -1.5f));
+            await painter.DrawArc(Color.Black, PenWidth, new Vec2(-2f, -1.5f), new Vec2(3f, 3f), 270, 180);
             
-            painter.DrawEllipseC(Color.Black, PenWidth, new Vec2(1, 0), new Vec2(.6f, .6f));
+            await painter.DrawEllipseC(Color.Black, PenWidth, new Vec2(1, 0), new Vec2(.6f, .6f));
 
-            base.DrawGate(painter);
+            await base.DrawGate(painter);
         }
 
         public override BoardObject Copy()

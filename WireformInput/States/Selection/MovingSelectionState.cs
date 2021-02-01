@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Wireform;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
@@ -72,7 +73,7 @@ namespace WireformInput.States.Selection
             CheckIntersections(state);
         }
 
-        public override void Draw(BoardState currentState, PainterScope painter)
+        public override async Task Draw(BoardState currentState, PainterScope painter)
         {
             if (resettable)
             {
@@ -80,16 +81,16 @@ namespace WireformInput.States.Selection
                 {
                     foreach (var resetBox in resetBoxes)
                     {
-                        painter.FillRectangle(Color.FromArgb(64, 128, 128, 255), resetBox.Position, resetBox.Bounds);
+                        await painter.FillRectangle(Color.FromArgb(64, 128, 128, 255), resetBox.Position, resetBox.Bounds);
                     }
                 }
             }
 
-            base.Draw(currentState, painter);
+            await base.Draw(currentState, painter);
 
             foreach (BoxCollider intersection in intersectedBoxes)
             {
-                painter.FillRectangle(Color.FromArgb(128, 255, 0, 0), intersection.Position, intersection.Bounds);
+                await painter.FillRectangle(Color.FromArgb(128, 255, 0, 0), intersection.Position, intersection.Bounds);
             }
         }
 

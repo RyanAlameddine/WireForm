@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
@@ -186,24 +187,24 @@ namespace Wireform.Circuitry.Utils
             return positions;
         }
 
-        protected override void DrawGate(PainterScope painter)
+        protected override async Task DrawGate(PainterScope painter)
         {
-            ExtensionLine(painter, InputCount , inputCenterLocal );
-            ExtensionLine(painter, OutputCount, outputCenterLocal);
+            await ExtensionLine(painter, InputCount , inputCenterLocal );
+            await ExtensionLine(painter, OutputCount, outputCenterLocal);
         }
 
         /// <summary>
         /// Draws the extension lines of the gate to make it clear that extra inputs are a part of the gate.
         /// This function is called by the DynamicGate.draw function.
         /// </summary>
-        protected virtual void ExtensionLine(PainterScope painter, int gatePinCount, Vec2 centerLocal)
+        protected virtual async Task ExtensionLine(PainterScope painter, int gatePinCount, Vec2 centerLocal)
         {
             int highestOffset = gatePinCount / 2;
             int odd = (1 + gatePinCount) % 2 ;
             if (highestOffset > 1)
             {
-                painter.DrawLine(Color.Black, PenWidth, centerLocal + new Vec2(0, 1), centerLocal + new Vec2(0, highestOffset - odd));
-                painter.DrawLine(Color.Black, PenWidth, centerLocal - new Vec2(0, 1), centerLocal - new Vec2(0, highestOffset));
+                await painter.DrawLine(Color.Black, PenWidth, centerLocal + new Vec2(0, 1), centerLocal + new Vec2(0, highestOffset - odd));
+                await painter.DrawLine(Color.Black, PenWidth, centerLocal - new Vec2(0, 1), centerLocal - new Vec2(0, highestOffset));
             }
         }
     }

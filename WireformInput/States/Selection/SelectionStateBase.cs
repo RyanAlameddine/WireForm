@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Wireform.Circuitry;
 using Wireform.Circuitry.CircuitAttributes.Utils;
 using Wireform.Circuitry.Data;
@@ -77,15 +78,15 @@ namespace WireformInput.States.Selection
             selections.RemoveWhere((x) => !state.BoardObjects.Contains(x));
         }
 
-        public override void Draw(BoardState currentState, PainterScope painter)
+        public override async Task Draw(BoardState currentState, PainterScope painter)
         {
             //Draws selected gates and wires because they are technically no longer on the board
             foreach (BoardObject selection in selections)
             {
-                selection.Draw(painter, currentState);
+                await selection.Draw(painter, currentState);
                 
                 BoxCollider selectionBox = selection.HitBox;
-                painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
+                await painter.DrawRectangle(Color.FromArgb(128, 0, 0, 255), 10, selectionBox.Position, selectionBox.Bounds);
             }
         }
     }

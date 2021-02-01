@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Data.Bits;
@@ -174,22 +175,22 @@ namespace Wireform.Circuitry.Utils
             }
         }
 
-        protected abstract void DrawGate(PainterScope painter);
-        public override void Draw(PainterScope painter, BoardState state)
+        protected abstract Task DrawGate(PainterScope painter);
+        public override async Task Draw(PainterScope painter, BoardState state)
         {
             painter.AppendOffset(StartPoint);
 
             painter.SetLocalMultiplier(Direction);
-            DrawGate(painter);
+            await DrawGate(painter);
 
-            painter.DrawEllipseC(Color.Red, 3, Vec2.Zero, new Vec2(.1f, .1f));
+            await painter.DrawEllipseC(Color.Red, 3, Vec2.Zero, new Vec2(.1f, .1f));
             //gfx._DrawRectangle(Color.Red, 1, HitBox.X, HitBox.Y, HitBox.Width, HitBox.Height);
 
             //gfx._DrawEllipseC(Color.Black, 3, StartPoint.X, StartPoint.Y, .01f, .01f);
 
             foreach (var pin in Outputs.Union(Inputs))
             {
-                pin.Draw(painter, state);
+                await pin.Draw(painter, state);
             }
         }
 

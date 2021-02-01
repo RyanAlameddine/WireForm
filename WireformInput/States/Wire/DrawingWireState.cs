@@ -1,4 +1,5 @@
-﻿using Wireform.Circuitry;
+﻿using System.Threading.Tasks;
+using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
@@ -32,10 +33,10 @@ namespace WireformInput.States.Wire
             secondaryLine = new WireLine(griddedMousePosition, griddedMousePosition, true);
         }
 
-        public override void Draw(BoardState currentState, PainterScope painter)
+        public override async Task Draw(BoardState currentState, PainterScope painter)
         {
-            primaryLine.Draw(painter, currentState);
-            secondaryLine.Draw(painter, currentState);
+            await primaryLine.Draw(painter, currentState);
+            await secondaryLine.Draw(painter, currentState);
         }
 
         public override InputReturns MouseMove(StateControls stateControls)

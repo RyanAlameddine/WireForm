@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
 using Wireform.Circuitry.CircuitAttributes;
 using Wireform.Circuitry.CircuitAttributes.Utils.StringValidators;
 using Wireform.Circuitry.Data;
@@ -41,12 +42,12 @@ namespace Wireform.Circuitry
             state.Extras.Remove(this);
         }
 
-        public override void Draw(PainterScope painter, BoardState state)
+        public override async Task Draw(PainterScope painter, BoardState state)
         {
-            painter.DrawString(Text, Color.Black, StartPoint, Scale / 10f);
+            await painter.DrawString(Text, Color.Black, StartPoint, Scale / 10f);
 
             //update hitbox
-            size = MathHelper.ViewportToLocalPoint(painter.MeasureString(Text, Scale / 10f), painter.Zoom);
+            size = MathHelper.ViewportToLocalPoint(await painter.MeasureString(Text, Scale / 10f), painter.Zoom);
         }
 
         public override BoardObject Copy()

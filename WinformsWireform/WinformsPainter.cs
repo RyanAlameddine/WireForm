@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.GraphicsUtils;
 using Wireform.MathUtils;
 
@@ -29,47 +30,54 @@ namespace WinformsWireform
             return (new Pen(color, 1)).Brush;
         }
 
-        public void DrawLine(Color color, int penWidth, Vec2 startPoint, Vec2 endPoint)
+        public Task DrawLine(Color color, int penWidth, Vec2 startPoint, Vec2 endPoint)
         {
             gfx.DrawLine(GetPen(color, penWidth), startPoint.X, startPoint.Y, endPoint.X, endPoint.Y);
+            return Task.CompletedTask;
         }
 
-        public void DrawArc(Color color, int penWidth, Vec2 startPoint, Vec2 size, float startAngle, float sweepAngle)
+        public Task DrawArc(Color color, int penWidth, Vec2 startPoint, Vec2 size, float startAngle, float sweepAngle)
         {
             gfx.DrawArc(GetPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y, startAngle, sweepAngle);
+            return Task.CompletedTask;
         }
 
-        public void DrawEllipse(Color color, int penWidth, Vec2 startPoint, Vec2 size)
+        public Task DrawEllipse(Color color, int penWidth, Vec2 startPoint, Vec2 size)
         {
             gfx.DrawEllipse(GetPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
+            return Task.CompletedTask;
         }
 
-        public void FillEllipse(Color color, Vec2 startPoint, Vec2 size)
+        public Task FillEllipse(Color color, Vec2 startPoint, Vec2 size)
         {
             gfx.FillEllipse(GetEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
+            return Task.CompletedTask;
         }
 
-        public void DrawRectangle(Color color, int penWidth, Vec2 startPoint, Vec2 size)
+        public Task DrawRectangle(Color color, int penWidth, Vec2 startPoint, Vec2 size)
         {
             gfx.DrawRectangle(GetPen(color, penWidth), startPoint.X, startPoint.Y, size.X, size.Y);
+            return Task.CompletedTask;
         }
 
-        public void FillRectangle(Color color, Vec2 startPoint, Vec2 size)
+        public Task FillRectangle(Color color, Vec2 startPoint, Vec2 size)
         {
             gfx.FillRectangle(GetEmptyBrush(color), startPoint.X, startPoint.Y, size.X, size.Y);
+            return Task.CompletedTask;
         }
 
-        public void DrawString(string s, Color color, Vec2 startPoint, float scale)
+        public Task DrawString(string s, Color color, Vec2 startPoint, float scale)
         {
             Font font = new Font(FontFamily.GenericMonospace, scale, FontStyle.Bold);
             gfx.DrawString(s, font, new Pen(color, 10).Brush, startPoint.X, startPoint.Y);
+            return Task.CompletedTask;
         }
 
-        public Vec2 MeasureString(string s, float zoom, float scale)
+        public Task<Vec2> MeasureString(string s, float zoom, float scale)
         {
             Font font = new Font(FontFamily.GenericMonospace, scale, FontStyle.Bold);
             var size = gfx.MeasureString(s, font);
-            return new Vec2(size.Width, size.Height);
+            return Task.FromResult(new Vec2(size.Width, size.Height));
         }
     }
 }
