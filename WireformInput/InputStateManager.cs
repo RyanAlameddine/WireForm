@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
 using Wireform.Circuitry.Utils;
@@ -80,17 +81,17 @@ namespace WireformInput
             return true;
         }
 
-        public void Draw(BoardState currentState, PainterScope painter, Vec2 viewportSize)
+        public async Task Draw(BoardState currentState, PainterScope painter, Vec2 viewportSize)
         {
             //Draw grid
             int step = MathHelper.Ceiling((int)(viewportSize.X / Zoom) / 50f);
             for (int x = 0; x * Zoom < viewportSize.X; x += step)
                 for (int y = 0; y * Zoom < viewportSize.Y; y += step)
-                    painter.FillRectangleC(Color.DarkBlue, new Vec2(x, y), new Vec2(.05f * step, .05f * step));
+                    await painter.FillRectangleC(Color.DarkBlue, new Vec2(x, y), new Vec2(.05f * step, .05f * step));
             //Draw board objects
-            foreach (BoardObject obj in currentState.BoardObjects) obj.Draw(painter, currentState);
+            foreach (BoardObject obj in currentState.BoardObjects) await obj.Draw(painter, currentState);
             //Draw state-specific info
-            state.Draw(currentState, painter);
+            await state.Draw(currentState, painter);
         }
 
         /// <summary>

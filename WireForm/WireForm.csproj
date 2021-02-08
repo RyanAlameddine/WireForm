@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/RyanAlameddine/WireForm</RepositoryUrl>
     <PackageTags>Wireform, Digital Logic, Logic Gates, Wire</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

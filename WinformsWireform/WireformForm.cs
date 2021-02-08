@@ -79,11 +79,11 @@ namespace WinformsWireform
         #endregion Input
 
         #region Graphics
-        private void DrawingPanel_Paint(object sender, PaintEventArgs e)
+        private async void DrawingPanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             PainterScope painter = new PainterScope(new WinformsPainter(e.Graphics), inputStateManager.Zoom);
-            inputStateManager.Draw(stateStack.CurrentState, painter, new Vec2(Width, Height));
+            await inputStateManager.Draw(stateStack.CurrentState, painter, new Vec2(Width, Height));
         }
         #endregion Graphics
 

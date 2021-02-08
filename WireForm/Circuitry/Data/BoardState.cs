@@ -67,6 +67,7 @@ namespace Wireform.Circuitry.Data
             foreach (BoardObject obj in Extras)
             {
                 BoardObject newObj = obj.Copy();
+                state.Extras.Add(newObj);
             }
 
             return state;
