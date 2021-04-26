@@ -81,17 +81,21 @@ namespace WireformInput
             return true;
         }
 
-        public async Task Draw(BoardState currentState, PainterScope painter, Vec2 viewportSize)
+        public async Task Draw(BoardState currentState, PainterScope painter)
+        {
+            //Draw board objects
+            foreach (BoardObject obj in currentState.BoardObjects) await obj.Draw(painter, currentState);
+            //Draw state-specific info
+            await state.Draw(currentState, painter);
+        }
+
+        public async Task DrawGrid(PainterScope painter, Vec2 viewportSize)
         {
             //Draw grid
             int step = MathHelper.Ceiling((int)(viewportSize.X / Zoom) / 50f);
             for (int x = 0; x * Zoom < viewportSize.X; x += step)
                 for (int y = 0; y * Zoom < viewportSize.Y; y += step)
                     await painter.FillRectangleC(Color.DarkBlue, new Vec2(x, y), new Vec2(.05f * step, .05f * step));
-            //Draw board objects
-            foreach (BoardObject obj in currentState.BoardObjects) await obj.Draw(painter, currentState);
-            //Draw state-specific info
-            await state.Draw(currentState, painter);
         }
 
         /// <summary>

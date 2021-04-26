@@ -83,7 +83,8 @@ namespace WinformsWireform
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             PainterScope painter = new PainterScope(new WinformsPainter(e.Graphics), inputStateManager.Zoom);
-            await inputStateManager.Draw(stateStack.CurrentState, painter, new Vec2(Width, Height));
+            await inputStateManager.DrawGrid(painter, new Vec2(Width, Height));
+            await inputStateManager.Draw(stateStack.CurrentState, painter);
         }
         #endregion Graphics
 

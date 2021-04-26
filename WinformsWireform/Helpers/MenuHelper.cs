@@ -21,9 +21,13 @@ namespace WinformsWireform.Helpers
                     //Checks if currentMenuItem already has category child which matches path[i]
                     var children = currentMenuItem.DropDownItems;
                     bool found = false;
-                    foreach (var child in children) if (child is ToolStripMenuItem item) if (item.Text == path[i])
+                    foreach (var child in children) 
+                        if (child is ToolStripMenuItem item) 
+                            if (item.Text == path[i])
                             {
-                                currentMenuItem = item; found = true; break;
+                                currentMenuItem = item; 
+                                found = true; 
+                                break;
                             }
                     if (found) continue;
 
