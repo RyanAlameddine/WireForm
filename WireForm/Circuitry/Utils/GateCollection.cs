@@ -17,13 +17,14 @@ namespace Wireform.Circuitry.Utils
         /// </summary>
         public static IEnumerable<string> GatePaths
         {
-            get
-            {
-                if (constructors == null) LoadConstructors();
-                return constructors.Keys;
-            }
+            get => constructors.Keys;
         }
 
+        static GateCollection()
+        {
+            LoadConstructors();
+        }
+        
         /// <summary>
         /// Returns a new gate from the GateConstructors dictionary at the desired path
         /// </summary>
