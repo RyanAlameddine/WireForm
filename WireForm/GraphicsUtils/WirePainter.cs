@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using Wireform.Circuitry;
 using Wireform.Circuitry.Data;
@@ -13,6 +14,10 @@ namespace Wireform.GraphicsUtils
         public static async Task DrawWireLine(PainterScope painter, BoardState state, WireLine wireLine)
         {
             Color[] bitColors = wireLine.Values.BitColors();
+
+            //ensures start->end vs end<-start wires will display colors in the same order:
+            if (wireLine.StartPoint.X > wireLine.EndPoint.X || wireLine.StartPoint.Y > wireLine.EndPoint.Y) Array.Reverse(bitColors);
+            
             await DrawWireLine(painter, state, wireLine, bitColors);
         }
         public static async Task DrawWireLine(PainterScope painter, BoardState state, WireLine wireLine, Color[] colors)

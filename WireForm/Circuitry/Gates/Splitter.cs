@@ -261,7 +261,6 @@ namespace Wireform.Circuitry.Gates.Logic
             }
         }
 
-        //overrided Flipped to enable it. (removed [HideCircuitAttributes])
         public override int Flipped { get => base.Flipped; set => base.Flipped = value; }
 
         [HideCircuitAttributes]

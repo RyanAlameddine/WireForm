@@ -121,9 +121,9 @@ namespace Wireform.Circuitry.Utils
         }
 
         /// <summary>
-        /// Whether or not the gate is flipped (horizontally or vertically)
-        /// If you would like to enable flipping, simply override Flipped and call the base functions
-        /// (this will override the [HideCircuitAttributes]
+        /// Whether or not the gate is flipped (horizontally or vertically).
+        /// If you would like to disable flipping, simply override Flipped and call the base functions.
+        /// Then, attach a [HideCircuitAttributes] tag.
         /// </summary>
         [CircuitDropdownAction("Flip", 'f', true)]
         [CircuitPropertyDropdown(0, 1, true, new[] { "false", "true" })]
