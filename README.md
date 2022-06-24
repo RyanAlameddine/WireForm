@@ -1,6 +1,6 @@
 # WireForm
 
-WireForm is a .NET Standard 2.0 library created to simulate logic gates and other digital circuitry through a simple graphical interface. Currently, the library has an implementation provided in Windows Forms (.NET Framework). An online Blazor implementation is also being worked on as a subset of SharpVM.
+WireForm is a .NET Standard 2.0 library created to simulate logic gates and other digital circuitry through a simple graphical interface. Currently, the library has an implementation provided in Windows Forms (.NET Framework). An online Blazor implementation is also being worked on as a subset of SharpVM. I have also developed an app using this library that simulates hand-drawn digital logic circuit diagrams called WireForm-Sketch which can be found [here!](https://github.com/RyanAlameddine/WireFormSketch)
 
 #### Please refer to the [Project Board](https://github.com/RyanAlameddine/WireForm/projects/1) for information on the current progress of the WireForm.
 
