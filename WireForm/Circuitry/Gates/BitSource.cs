@@ -56,17 +56,11 @@ namespace Wireform.Circuitry.Gates
 
         [JsonIgnore]
         [CircuitDropdownAction("Toggle", 't', true)]
-        [CircuitPropertyDropdown(2, 3, false, new[] { "Zero", "One" })]
+        [CircuitPropertyDropdown(BitValue.Zero, BitValue.One, false, new[] { "Zero", "One" })]
         public int Value
         {
-            get
-            {
-                return currentValue.Selected;
-            }
-            set
-            {
-                currentValue = value;
-            }
+            get => currentValue.Selected;
+            set => currentValue = value;
         }
 
         [CircuitDropdownAction("Increment depth", 'd', true, PropertyOverflow.Clip)]
@@ -75,10 +69,7 @@ namespace Wireform.Circuitry.Gates
         public int BitDepth
         {
             get => Outputs[0].Values.Count;
-            set
-            {
-                Outputs[0].Values = new BitArray(value);
-            }
+            set => Outputs[0].Values = new BitArray(value);
         }
 
         public BitValue currentValue = BitValue.One;

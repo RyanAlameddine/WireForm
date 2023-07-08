@@ -1,0 +1,409 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Wireform.Circuitry.CircuitAttributes.Utils.StringValidators.StringValidators" Collapsed="true">
+    <Position X="36.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\Utils\StringValidators\StringValidators.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.Utils.CircuitActionCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="38.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAADAAACIQAAQAAAAAACAGAAAAAgAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\Utils\CircuitActionCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.Utils.CircuitAttributes" Collapsed="true">
+    <Position X="31.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\Utils\CircuitAttributes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.Utils.CircuitPropertyCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="33" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAEABAACCIEAAQAAAAAAgAkAAIgAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\Utils\CircuitPropertyCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.CircuitActionAttribute" Collapsed="true">
+    <Position X="6.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitActionAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.CircuitActionBase" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitActionBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.CircuitDropdownActionAttribute" Collapsed="true">
+    <Position X="4.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitDropdownActionAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.CircuitPropertyBase" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAACAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitPropertyBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.CircuitPropertyDropdownAttribute" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAQAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitPropertyDropdownAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.CircuitPropertyTextAttribute" Collapsed="true">
+    <Position X="2.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAIAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitPropertyTextAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitAttributes.HideCircuitAttributesAttribute" Collapsed="true">
+    <Position X="36.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\HideCircuitAttributesAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Data.Bits.BitArrayConverter" Collapsed="true">
+    <Position X="31.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Circuitry\Data\Bits\BitArrayConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Data.BoardObject" Collapsed="true">
+    <Position X="14.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAgEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Data\BoardObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Data.BoardState" Collapsed="true">
+    <Position X="34.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAEAAAAAABAAAABAAAAAAAAgAAAAAAAEAAACAAAAA=</HashCode>
+      <FileName>Circuitry\Data\BoardState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Data.CircuitObject" Collapsed="true">
+    <Position X="13" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAABAAA=</HashCode>
+      <FileName>Circuitry\Data\CircuitObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Data.DrawableObject" Collapsed="true">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAACAgAAAAAEAAAAAAg=</HashCode>
+      <FileName>Circuitry\Data\DrawableObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Extra.SevenSegment" Collapsed="true">
+    <Position X="21.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Extra\SevenSegment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.AndGate" Collapsed="true">
+    <Position X="17.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Logic\AndGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.NandGate" Collapsed="true">
+    <Position X="4" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Logic\NandGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.NorGate" Collapsed="true">
+    <Position X="6.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Logic\NorGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.NotGate" Collapsed="true">
+    <Position X="19" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Logic\NotGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.OrGate" Collapsed="true">
+    <Position X="8.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Logic\OrGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.XnorGate" Collapsed="true">
+    <Position X="10.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Logic\XnorGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.XorGate" Collapsed="true">
+    <Position X="13" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\Logic\XorGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.Logic.Splitter" Collapsed="true">
+    <Position X="15.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAYAAAIGAABAAADAAAgBAIgIQAAAAAAgAAAAAAAQ=</HashCode>
+      <FileName>Circuitry\Gates\Splitter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Gates.BitSource" Collapsed="true">
+    <Position X="23.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAAAAAAAAEAAAAAAAAgAAAAAAAAAgAEAAAAA=</HashCode>
+      <FileName>Circuitry\Gates\BitSource.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Utils.DynamicGate" Collapsed="true">
+    <Position X="10.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAIAAAAEAAAADAAAARAKAAQAAgAQAAAAgAAAAQ=</HashCode>
+      <FileName>Circuitry\Utils\DynamicGate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Utils.Gate" Collapsed="true">
+    <Position X="14.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BEgAAAAAAAAQAhAABCAAIQAAFAEBIAAAAwAAAAABAAg=</HashCode>
+      <FileName>Circuitry\Utils\Gate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Utils.GateAttribute" Collapsed="true">
+    <Position X="38.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Utils\GateAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.Utils.GateCollection" Collapsed="true">
+    <Position X="31.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAAAAAAAAAAAAAACAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\Utils\GateCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.CircuitLabel" Collapsed="true">
+    <Position X="16" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAABIIAAAAAAgEAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitLabel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.FlowPropagator" Collapsed="true">
+    <Position X="36.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAABAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Circuitry\FlowPropagator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.GatePin" Collapsed="true">
+    <Position X="16.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAQAAAAEAgAAAAQAQAAAAAAAAAAAAAAgAAAAAAg=</HashCode>
+      <FileName>Circuitry\GatePin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Circuitry.WireLine" Collapsed="true">
+    <Position X="12" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAQgAFBAAAAAAAAiEAIgAAAgAgAAABACg=</HashCode>
+      <FileName>Circuitry\WireLine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.GraphicsUtils.GraphicsManager" Collapsed="true">
+    <Position X="34.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GraphicsUtils\GraphicsManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.GraphicsUtils.WirePainter" Collapsed="true">
+    <Position X="38.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAACAAAA=</HashCode>
+      <FileName>GraphicsUtils\WirePainter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.MathUtils.Collision.BoxCollider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="36.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAEggAAAAEBAAwACAIAAAAAAAAAAYqA=</HashCode>
+      <FileName>Utils\Collision\BoxCollider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Wireform.MathUtils.MathHelper" Collapsed="true">
+    <Position X="38.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEEAAAAAAAAAAAgAAABEIQAAA=</HashCode>
+      <FileName>Utils\MathHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.MathUtils.PatternStack&lt;T&gt;" Collapsed="true">
+    <Position X="31.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QADAAACAgQAEAAEAgAAgIAAAAICAAAEAEAAAAAASCAA=</HashCode>
+      <FileName>Utils\PatternStack.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.MathUtils.PatternStackNode&lt;T&gt;" Collapsed="true">
+    <Position X="33" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAgAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Utils\PatternStack.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Utils.WrappingArray&lt;T&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="31.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQIAEAAAIAAAABAAAAAABAQAAAAABAAEIAAAAAAAAAA=</HashCode>
+      <FileName>Utils\WrappingArray.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Wireform.BoardStack" Collapsed="true">
+    <Position X="33" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAIAAACAAAIAAAAACAgAAAAAAAAQBACAABAAAA=</HashCode>
+      <FileName>BoardStack.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.Extensions" Collapsed="true">
+    <Position X="34.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAIAAAAAAAAAAAAAAgAIAAQAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Extensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.GlobalSettings" Collapsed="true">
+    <Position X="33" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GlobalSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wireform.SaveManager" Collapsed="true">
+    <Position X="34.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SaveManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Wireform.Circuitry.CircuitAttributes.CircuitAct" Collapsed="true">
+    <Position X="34.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAIAAAAgAAAAAQAAAAAAIIAAAAAAAAAAiA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitActionBase.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Wireform.Circuitry.CircuitAttributes.CircuitProp" Collapsed="true">
+    <Position X="36.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAhAgAABAASAAAAAgIAAAAAAAAAACjg=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitPropertyBase.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Wireform.Circuitry.Data.Bits.BitArray" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="31.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAgAAAAAABAEiBACAAUAAAIAAIAECAABQBAAAyA=</HashCode>
+      <FileName>Circuitry\Data\Bits\BitArray.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Struct Name="Wireform.Circuitry.Data.Bits.BitValue" Collapsed="true">
+    <Position X="33" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAQEEgBACAAIAAQIAAIAAAAAAAAABAqI=</HashCode>
+      <FileName>Circuitry\Data\Bits\BitValue.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Wireform.GraphicsUtils.PainterScope" Collapsed="true">
+    <Position X="38.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BKCAQAAUABAEAAAAEEiAgAAAASAAAIABBEAEAAAAAAI=</HashCode>
+      <FileName>GraphicsUtils\PainterScope.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Wireform.MathUtils.Vec2" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="31.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAE4gUAAAAAAQAAAIIAAAAAAAAAYiA=</HashCode>
+      <FileName>Utils\Vec2.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Interface Name="Wireform.Circuitry.CircuitAttributes.Utils.StringValidators.IStringValidator" Collapsed="true">
+    <Position X="34.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\Utils\StringValidators\StringValidators.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Wireform.GraphicsUtils.IPainter" Collapsed="true">
+    <Position X="31.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAUABAAAAAAAAAAgAAAACAAAIABAEAAAAAAAAA=</HashCode>
+      <FileName>GraphicsUtils\IPainter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Wireform.ISaver" Collapsed="true">
+    <Position X="33" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ISaver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Wireform.Circuitry.CircuitAttributes.PropertyOverflow" Collapsed="true">
+    <Position X="34.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Circuitry\CircuitAttributes\CircuitDropdownActionAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Wireform.Circuitry.Utils.Direction" Collapsed="true">
+    <Position X="31.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIIAAgAAAAAAAAAAAAAAAAAAgAACACAAAAAAAI=</HashCode>
+      <FileName>Circuitry\Utils\Direction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Wireform.Utils.Modifier" Collapsed="true">
+    <Position X="33" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAgAAAAAAAAAAAAAAAAAAIAAAAEAAAA=</HashCode>
+      <FileName>Utils\Modifier.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Fira Code Retina" Size="9" />
+</ClassDiagram>
